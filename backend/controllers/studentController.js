@@ -24,17 +24,17 @@ exports.updateStudentDetails = async (req, res, next) => {
         name: req.body.name,
         course: req.body.course,
         section: req.body.section,
-    //     birthday: birthdate,
-    //     gender: req.body.gender,
-    //     contact: req.body.contact,
-    //     address: req.body.address,
-    // }
-    // // console.log(data)
-    // // const student = await User.findByIdAndUpdate(req.params.id, data);
-    // res.status(200).json({
-    //     success: true,
-    //     student
-    // })
+        birthday: birthdate,
+        gender: req.body.gender,
+        contact: req.body.contact,
+        address: req.body.address,
+    }
+    // console.log(data)
+    // const student = await User.findByIdAndUpdate(req.params.id, data);
+    res.status(200).json({
+        success: true,
+        student
+    })
 }
 
 
