@@ -57,6 +57,9 @@ import {
 	borrowedBooksLengthReducer,
 	pendingBookRequestsReducer,
 	pendingUserRequestsReducer,
+	borrowedBooksChartReducer,
+	sectionBorrowedChartReducer,
+	bookLeaderboardsReducer
 } from './reducers/borrowReducers'
 
 import { 
@@ -93,6 +96,9 @@ const reducer = combineReducers({
 	borrowedBooksLength: borrowedBooksLengthReducer,
 	pendingBookRequests: pendingBookRequestsReducer,
 	pendingUserRequests: pendingUserRequestsReducer,
+	borrowedBooksCharts: borrowedBooksChartReducer,
+	sectionBorrowedCharts: sectionBorrowedChartReducer,
+	bookLeaderboards: bookLeaderboardsReducer,
 	allActiveStudents: allActiveStudentsReducer,
 	allInactiveStudents: allInactiveStudentsReducer,
 	studentDetails: studentDetailsReducer,

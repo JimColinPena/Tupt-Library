@@ -66,7 +66,7 @@ const BookSearch = () => {
             data.rows.push({
                 call_number: books.call_number,
                 title: <Fragment>
-                    <Link to={`/student/book/${books._id}`} className="">
+                    <Link to={`/book/${books._id}`} className="">
                         {books.title}
                     </Link>
                 </Fragment>,
@@ -80,10 +80,10 @@ const BookSearch = () => {
 
     return (
         <Fragment>
+            <MetaData title={'Books'} />
+            <SideNavbarUser />
             {loading ? <Loader /> : (
                 <Fragment>
-                    <MetaData title={'TUP-T Online Library - Student'} />
-                    <SideNavbarUser />
                     <div className="management-content">
                         {(user.course === undefined | null) ?
                             (<Modal show={show} centered>
@@ -98,7 +98,7 @@ const BookSearch = () => {
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="primary" onClick={handleClose} href="/profile">
-                                            EDIT PROFILE NOW
+                                        EDIT PROFILE NOW
                                     </Button>
                                 </Modal.Footer>
                             </Modal>

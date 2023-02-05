@@ -77,7 +77,7 @@ export const newBooks = (bookData) => async (dispatch) => {
 export const getBookDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: BOOK_DETAILS_REQUEST })
-        const { data } = await axios.get(`/api/v1/book/${id}`)
+        const { data } = await axios.get(`/api/v1/admin/single/book/${id}`)
         dispatch({
             type: BOOK_DETAILS_SUCCESS,
             payload: data.book

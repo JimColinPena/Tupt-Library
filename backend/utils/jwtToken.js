@@ -14,7 +14,6 @@ httpOnly: true
         token,
         user
     })
-    // res.cookie('token', token, options).redirect(`http://localhost:3000/dashboard`);
 
 }
 

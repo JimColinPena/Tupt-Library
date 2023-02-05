@@ -108,12 +108,12 @@ const Appointments = () => {
 
 	return (
 		<Fragment>
-			<MetaData title={'TUP-T Online Library - Appointment'} />
+			<MetaData title={'Book Requests'} />
 			<SideNavbarAdmin />
 			{loading ? <Loader /> : (
 				<div className="management-content">
 					{/* <div className="management-header"> */}
-					<h1>Appointments <span></span>
+					<h1>Book Requests <span></span>
 					</h1>
 					<hr />
 					{/* </div> */}

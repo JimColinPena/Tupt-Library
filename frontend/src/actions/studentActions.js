@@ -54,7 +54,7 @@ export const updateStudent = (id, studentData) => async (dispatch) => {
             }
         }
 
-        const { data } = await axios.put(`/api/v1/update/student/${id}`, studentData, config)
+        const { data } = await axios.put(`/api/v1/profile/update/${id}`, studentData, config)
 
         dispatch({
             type: UPDATE_STUDENT_SUCCESS,
@@ -74,7 +74,7 @@ export const allStudentBooks = () => async (dispatch) => {
 
         dispatch({ type: ALL_STUDENTBOOKS_REQUEST })
 
-        const { data } = await axios.get('/api/v1/student/books')
+        const { data } = await axios.get('/api/v1/books')
 
         dispatch({
             type: ALL_STUDENTBOOKS_SUCCESS,
@@ -93,7 +93,7 @@ export const allStudentBooks = () => async (dispatch) => {
 export const getStudentBookDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: STUDENTBOOK_DETAILS_REQUEST })
-        const { data } = await axios.get(`/api/v1/student/book/${id}`)
+        const { data } = await axios.get(`/api/v1/book/${id}`)
         dispatch({
             type: STUDENTBOOK_DETAILS_SUCCESS,
             payload: data.studentbook
@@ -111,7 +111,7 @@ export const allStudentBorrowBook = () => async (dispatch) => {
 
         dispatch({ type: BORROWBOOK_REQUEST })
 
-        const { data } = await axios.get('/api/v1/studentbook/borrow')
+        const { data } = await axios.get('/api/v1/borrow/request')
 
         dispatch({
             type: BORROWBOOK_SUCCESS,
@@ -131,7 +131,7 @@ export const allStudentAppointmentBook = () => async (dispatch) => {
 
         dispatch({ type: APPOINTMENTBOOK_REQUEST })
 
-        const { data } = await axios.get('/api/v1/studentbook/appointment')
+        const { data } = await axios.get('/api/v1/borrow/books')
 
         dispatch({
             type: APPOINTMENTBOOK_SUCCESS,

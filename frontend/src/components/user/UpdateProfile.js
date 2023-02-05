@@ -76,10 +76,10 @@ const UpdateProfile = () => {
 
 	return (
 		<Fragment>
-			{loading ? <Loader /> : (
+			<MetaData title={'TUP-T Online Library - Student'} />
+            <SideNavbarUser />
+			{loading || loading === undefined ? <Loader /> : (
 				<Fragment>
-					<MetaData title={'TUP-T Online Library - Admin'} />
-					<SideNavbarUser />
 					<div className="management-content">
 						<div className="add-body">
 							<div id="multi-step-form-container">

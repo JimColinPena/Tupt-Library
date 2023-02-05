@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 const MetaData = ({ title }) => {
     return (
         <Helmet>
-            <title>{`${title} - TUP-T Online Library`}</title>
+            <title>{`TUP-T LRC - ${title}`}</title>
         </Helmet>
     )
 }

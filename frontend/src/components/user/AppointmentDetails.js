@@ -37,12 +37,13 @@ const AppointmentDetails = () => {
 
     return (
         <Fragment>
+            <MetaData title={'TUP-T Online Library - Student'} />
+            <SideNavbarUser />
             {loading ? <Loader /> : (
                 <Fragment>
                     {studentappointmentbook ? (
                         <Fragment>
-                            <MetaData title={'TUP-T Online Library - Student'} />
-                            <SideNavbarUser />
+
                             <div className="management-content">
                                 <h1>Borrowed Books</h1>
                                 <hr />
@@ -51,7 +52,6 @@ const AppointmentDetails = () => {
                                         {studentappointmentbook.bookId && studentappointmentbook.bookId.map(data => (
                                             <div className='col-md-4'>
                                                 <div className='card-header'>
-                                                    {/* {console.log(data.book_image.url)} */}
                                                     {(data.book_image.url == null || undefined) ?
                                                         <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
                                                         :

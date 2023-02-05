@@ -30,7 +30,19 @@ import {
 
     USER_PENDING_REQUEST,
     USER_PENDING_SUCCESS,
-    USER_PENDING_FAIL,
+    USER_PENDING_FAIL,  
+
+    GET_BORROWEDBOOKSCHART_REQUEST,
+    GET_BORROWEDBOOKSCHART_SUCCESS,
+    GET_BORROWEDBOOKSCHART_FAIL,
+
+    GET_SECTIONBORROWEDCHART_REQUEST,
+    GET_SECTIONBORROWEDCHART_SUCCESS,
+    GET_SECTIONBORROWEDCHART_FAIL,
+
+    GET_BOOKLEADERBOARDS_REQUEST,
+    GET_BOOKLEADERBOARDS_SUCCESS,
+    GET_BOOKLEADERBOARDS_FAIL,
 
     CLEAR_ERRORS
 } from '../constants/borrowConstants'
@@ -233,6 +245,65 @@ export const pendingUserRequests = () => async (dispatch) => {
     }
 }
 
+export const getBorrowedBooksChart = () => async (dispatch) => {
+    try {
+
+        dispatch({ type:GET_BORROWEDBOOKSCHART_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/borrowedbooksChart`)
+
+        dispatch({
+            type: GET_BORROWEDBOOKSCHART_SUCCESS,
+            payload: data.borrowedDate
+        })
+
+    } catch (error) {
+        dispatch({
+            type: GET_BORROWEDBOOKSCHART_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const getSectionBorrowedChart = () => async (dispatch) => {
+    try {
+
+        dispatch({ type:GET_SECTIONBORROWEDCHART_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/sectionborrowedChart`)
+
+        dispatch({
+            type: GET_SECTIONBORROWEDCHART_SUCCESS,
+            payload: data.sectionArr
+        })
+
+    } catch (error) {
+        dispatch({
+            type: GET_SECTIONBORROWEDCHART_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const getBookLeaderboards = () => async (dispatch) => {
+    try {
+
+        dispatch({ type:GET_BOOKLEADERBOARDS_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/bookLeaderboards`)
+
+        dispatch({
+            type: GET_BOOKLEADERBOARDS_SUCCESS,
+            payload: data.bookCounts
+        })
+
+    } catch (error) {
+        dispatch({
+            type: GET_BOOKLEADERBOARDS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
 
 export const clearErrors = () => async (dispatch) => {
     dispatch({

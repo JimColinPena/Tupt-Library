@@ -1,6 +1,7 @@
 const Borrow = require('../models/borrow');
 const Book = require('../models/book');
 const User = require('../models/user');
+const Return = require('../models/return');
 
 exports.borrowBook = async (req, res, next) => {
     console.log(req.body);
@@ -182,5 +183,72 @@ exports.getPendingUsersLength = async (req,res,next) => {
     res.status(200).json({
         success: true,
         pendingUsers
+    })
+}
+
+exports.BorrowedBooksChart = async (req, res, next) => {
+    const borrowedDate = await Return.find({}).select(['returnedDate']);
+    console.log(borrowedDate);
+    res.status(200).json({
+        success: true,
+        borrowedDate
+    })
+}
+
+exports.SectionBorrowedChart = async (req, res, next) => {
+    let sectionArr = []
+    // let obj = {}
+
+    const NumberOfSection = await Return.find({}).populate({
+        path: 'userId',
+        select: 'course -_id',
+    }).select('returnedDate -_id')
+
+    for (let i = 0; i < NumberOfSection.length; i++) {
+        // const section = NumberOfSection[i].userId.course:
+        // let obj = {}
+        // obj.keys = NumberOfSection[i].userId.course
+        // obj.values = NumberOfSection[i].returnedDate
+        sectionArr.push({section: NumberOfSection[i].userId.course, returnedDate: NumberOfSection[i].returnedDate})
+    }
+    // console.log(sectionArr);
+    res.status(200).json({
+        success: true,
+        sectionArr
+    })
+}
+
+exports.BookLeaderboards = async (req, res, next) => {
+    let bookArr = []
+    const distinctBook = await Return.find({}).populate({
+        path: 'bookId',
+        select: 'title -_id'
+    }).select('title -_id')
+
+    //fetching all titles from the returned book and putting them into array
+    for (let i = 0; i < distinctBook.length; i++) {
+        for (let j = 0; j < distinctBook[i].bookId.length; j++) {
+            bookArr.push(
+                {
+                    title: distinctBook[i].bookId[j].title,
+                }
+            )
+
+        }
+    }
+    //reducing data to eliminate duplication and count how many duplicates then putting them into object array
+    const bookGroup = {};
+    bookArr.forEach(({ title }) => {
+        bookGroup[title] = (bookGroup[title] || 0) + 1;
+    });
+    
+    //inserting the two data entries from the bookgroup into object array and sorting the most duplicate
+    const bookCounts = Object.entries(bookGroup)
+    .map(([title, count]) => ({ title, count }))
+    .sort((a, b) => b.count - a.count);
+
+    res.status(200).json({
+        success: true,
+        bookCounts,
     })
 }

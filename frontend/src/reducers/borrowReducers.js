@@ -35,6 +35,17 @@ import {
 	USER_PENDING_SUCCESS,
 	USER_PENDING_FAIL,
 
+	GET_BORROWEDBOOKSCHART_REQUEST,
+    GET_BORROWEDBOOKSCHART_SUCCESS,
+    GET_BORROWEDBOOKSCHART_FAIL,
+
+	GET_SECTIONBORROWEDCHART_REQUEST,
+    GET_SECTIONBORROWEDCHART_SUCCESS,
+    GET_SECTIONBORROWEDCHART_FAIL,
+
+	GET_BOOKLEADERBOARDS_REQUEST,
+    GET_BOOKLEADERBOARDS_SUCCESS,
+    GET_BOOKLEADERBOARDS_FAIL,
 
     CLEAR_ERRORS
 } from '../constants/borrowConstants'
@@ -307,5 +318,92 @@ export const pendingUserRequestsReducer = (state = { pendingUsersRequests: [] },
 
         default:
             return state;
+    }
+}
+
+export const borrowedBooksChartReducer = (state = { borrowedDate:[] }, action) => {
+    switch(action.type) {
+        case GET_BORROWEDBOOKSCHART_REQUEST:
+        return {
+            ...state,
+            loading: true,
+            // borrowedDate: []
+        }
+        case GET_BORROWEDBOOKSCHART_SUCCESS:
+        return {
+            ...state,
+            loading: false,
+            borrowedDate: action.payload
+        }
+        case GET_BORROWEDBOOKSCHART_FAIL:
+        return {
+            loading:false,
+            error: action.payload
+        }
+        case CLEAR_ERRORS:
+        return {
+            ...state,
+            error: null
+        }
+        default:
+        return state;
+    }
+}
+
+export const sectionBorrowedChartReducer = (state = { sectionArr:[] }, action) => {
+    switch(action.type) {
+        case GET_SECTIONBORROWEDCHART_REQUEST:
+        return {
+            ...state,
+            loading: true,
+            // borrowedDate: []
+        }
+        case GET_SECTIONBORROWEDCHART_SUCCESS:
+        return {
+            ...state,
+            loading: false,
+            sectionArr: action.payload
+        }
+        case GET_SECTIONBORROWEDCHART_FAIL:
+        return {
+            loading:false,
+            error: action.payload
+        }
+        case CLEAR_ERRORS:
+        return {
+            ...state,
+            error: null
+        }
+        default:
+        return state;
+    }
+}
+
+export const bookLeaderboardsReducer = (state = { bookCounts:[] }, action) => {
+    switch(action.type) {
+        case GET_BOOKLEADERBOARDS_REQUEST:
+        return {
+            ...state,
+            loading: true,
+            // borrowedDate: []
+        }
+        case GET_BOOKLEADERBOARDS_SUCCESS:
+        return {
+            ...state,
+            loading: false,
+            bookCounts: action.payload
+        }
+        case GET_BOOKLEADERBOARDS_FAIL:
+        return {
+            loading:false,
+            error: action.payload
+        }
+        case CLEAR_ERRORS:
+        return {
+            ...state,
+            error: null
+        }
+        default:
+        return state;
     }
 }

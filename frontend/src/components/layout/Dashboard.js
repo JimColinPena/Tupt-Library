@@ -16,18 +16,20 @@ const Dashboard = () => {
 
     return (
         <Fragment>
-            {loading ? <Loader /> : (
+            {/* <Loader /> */}
+            <MetaData title={'Dashboard'} />
+            {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
-                    <MetaData title={'TUP-T Online Library - Admin'} />
+                    
                     {user.role === 'admin' ? (
                         <div>
                             <SideNavbarAdmin />
                             <AdminDashboard />
                         </div>
-                    ) : <div>
+                    ) : (<div>
                         <SideNavbarUser />
                         <UserDashboard />
-                    </div>
+                    </div>)
                     }
                 </Fragment>
             )}

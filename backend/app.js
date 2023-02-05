@@ -1,13 +1,14 @@
+require("dotenv").config();
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser')
 const errorMiddleware = require('./middlewares/errors');
 const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
-require("dotenv").config();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const passportStrategy = require("./passport");
+const cors = require("cors")
 
 const book = require('./routes/book');
 const research = require('./routes/research');
@@ -34,18 +35,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use(
-// 	cors({
-// 		origin: "http://localhost:3000",
-// 		methods: "GET,POST,PUT,DELETE",
-// 		credentials: true,
-// 	})
-// );
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+		methods: "GET,POST,PUT,DELETE",
+		credentials: true,
+	})
+);
 
 app.use('/api/v1', book);
 app.use('/api/v1', research);
 app.use('/api/v1', auth);
-// app.use('/api/v1', auth);
 app.use('/api/v1', personnel);
 app.use('/api/v1', student);
 app.use('/api/v1', borrow);

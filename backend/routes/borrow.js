@@ -11,6 +11,9 @@ const {
 	getBorrowedBooksLength,
 	getPendingRequests,
 	getPendingUsersLength,
+	BorrowedBooksChart,
+	SectionBorrowedChart,
+	BookLeaderboards
 } = require('../controllers/borrowController');
 
 router.route('/book/borrow').post(isAuthenticatedUser, borrowBook);
@@ -21,6 +24,8 @@ router.route('/book/cancel/all').post(isAuthenticatedUser, cancelAllBorrowBook);
 router.route('/bookLength').get(isAuthenticatedUser, getBorrowedBooksLength);
 router.route('/bookRequests').get(isAuthenticatedUser, getPendingRequests);
 router.route('/userRequests').get(isAuthenticatedUser, getPendingUsersLength);
-
+router.route('/borrowedbooksChart').get(isAuthenticatedUser, BorrowedBooksChart);
+router.route('/sectionborrowedChart').get(isAuthenticatedUser, SectionBorrowedChart);
+router.route('/bookLeaderboards').get(isAuthenticatedUser, BookLeaderboards);
 
 module.exports = router;

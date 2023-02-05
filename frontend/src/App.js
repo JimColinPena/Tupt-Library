@@ -73,12 +73,11 @@ function App() {
 
 					<Route path="/historyLog" element={<ProtectedRoute isAdmin={true}><HistoryLog /></ProtectedRoute>} />
 
-					<Route path="/student/books" element={<ProtectedRoute isAdmin={false}><BookSearch /></ProtectedRoute>} />
-					<Route path="/update/student/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />
-					<Route path="/student/book/:id" element={<ProtectedRoute isAdmin={false}><StudentBookDetails /></ProtectedRoute>} />
-					<Route path="/studentbook/borrow" element={<ProtectedRoute isAdmin={false}><BorrowDetails /></ProtectedRoute>} />
-					<Route path="/studentbook/appointment" element={<ProtectedRoute isAdmin={false}><AppointmentDetails /></ProtectedRoute>} />
-
+					<Route path="/books" element={<ProtectedRoute isAdmin={false}><BookSearch /></ProtectedRoute>} />
+					<Route path="/book/:id" element={<ProtectedRoute isAdmin={false}><StudentBookDetails /></ProtectedRoute>} />
+					<Route path="/borrow/request" element={<ProtectedRoute isAdmin={false}><BorrowDetails /></ProtectedRoute>} />
+					<Route path="/borrow/books" element={<ProtectedRoute isAdmin={false}><AppointmentDetails /></ProtectedRoute>} />
+					<Route path="/profile/update/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />
 					
 				</Routes>
 			</div>

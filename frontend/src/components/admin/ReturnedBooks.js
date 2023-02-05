@@ -101,7 +101,7 @@ const BorrowedBooks = () => {
 				borrowedbooks_due: borrowedbook.dueDate,
 				actions:
 					<Fragment>
-						<button type="button" class="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
+						<button type="button" className="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
 							Returned
 						</button>
 
@@ -181,7 +181,7 @@ const BorrowedBooks = () => {
 									<div className="previous-returned">
 										<Link to="/books/borrowed">
 											<span className='span2'>Borrowed Books</span>
-											<span class="material-symbols-outlined borroweed_books">
+											<span className="material-symbols-outlined borroweed_books">
 												navigate_before
 											</span>
 										</Link>

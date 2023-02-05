@@ -31,42 +31,42 @@ body {
 }
 
 /* header */
-.loader h3{
-    /* font-size: large; */
-    font-weight: bolder;
-}
-
-.loader{
-    /* position:fixed; */
-    top: 0;
-    left: 0;
-    /* width: 100vw;
-    height: 100vh; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f7f9fb;
-    transition: opacity 0.75s, visibility 0.75s;
-}
-
 .loader-hidden{
     opacity: 0;
     visibility: hidden;
 }
 
+.loader .loader_image{
+    position: relative;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.75s, visibility 0.75s;
+}
 
-.loader .logo_back{
+.loader .loader_image .logo_back{
     height: 8rem;
     animation: loading 5s ease infinite;
     animation-duration: 5s;
-
     position: relative;
 }
 
-.loader .logo_front{
+.loader .loader_image .logo_front{
     height: 8rem;
     position: absolute;
-    left: 122.5px;
+}
+
+.loader .loader_text {
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.loader .loader_text h3{
+    font-weight: bolder;
 }
 
 @keyframes loading {

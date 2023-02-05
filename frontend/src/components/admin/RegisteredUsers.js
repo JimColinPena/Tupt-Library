@@ -110,21 +110,21 @@ const PersonnelManagement = () => {
                         <i className="fa fa-trash"></i>
                     </button>*/}
 
-                    <div class="modal fade" id="DeletePersonnelModal" tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h3 class="modal-title" id="DeletePersonnelModalLabel">Delete User</h3>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <div className="modal fade" id="DeletePersonnelModal" tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeletePersonnelModalLabel">Delete User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
+                                <div className="modal-body">
                                     Are you sure you want to delete this user?
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" onClick={() => deletePersonnelHandler(personnels._id)} data-dismiss="modal">Delete</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deletePersonnelHandler(personnels._id)} data-dismiss="modal">Delete</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -179,21 +179,21 @@ const PersonnelManagement = () => {
                         <i className="fa fa-trash"></i>
                     </button>
 
-                    <div class="modal fade" id="DeleteActiveModal" tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h3 class="modal-title" id="DeleteActiveModalLabel">Delete User</h3>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <div className="modal fade" id="DeleteActiveModal" tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeleteActiveModalLabel">Delete User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
+                                <div className="modal-body">
                                     Are you sure you want to delete this user?
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" onClick={() => deleteStudentHandler(active_student._id)} data-dismiss="modal">Delete</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deleteStudentHandler(active_student._id)} data-dismiss="modal">Delete</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -248,16 +248,16 @@ const PersonnelManagement = () => {
                 credentials:
                     <Fragment>
                         <a data-toggle="modal" data-target={"#FilesModal" + inactive_student._id}>View Files</a>
-                        <div class="modal fade" id={"FilesModal" + inactive_student._id} tabindex="-1" role="dialog" aria-labelledby="FilesModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h3 class="modal-title" id="FilesModalLabel">Files Uploaded</h3>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <div className="modal fade" id={"FilesModal" + inactive_student._id} tabindex="-1" role="dialog" aria-labelledby="FilesModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="FilesModalLabel">Files Uploaded</h3>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div className="modal-body">
                                         {inactive_student.credentials.map((item, index) => (
                                             <Fragment>
                                                 <img src={item.url}></img>
@@ -279,42 +279,42 @@ const PersonnelManagement = () => {
                         <i className="fa fa-trash"></i>
                     </button>
                     <div>
-                        <div class="modal fade" id="ApproveModal" tabindex="-1" role="dialog" aria-labelledby="ApproveModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h3 class="modal-title" id="ApproveModalLabel">User Approval</h3>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <div className="modal fade" id="ApproveModal" tabindex="-1" role="dialog" aria-labelledby="ApproveModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="ApproveModalLabel">User Approval</h3>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div className="modal-body">
                                         Are you sure you want to approve this user?
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-success" onClick={() => approveStudentHandler(inactive_student._id)} data-dismiss="modal">Approve</button>
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-success" onClick={() => approveStudentHandler(inactive_student._id)} data-dismiss="modal">Approve</button>
+                                        <button type="button" className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
 
-                        <div class="modal fade" id="DeleteInactiveModal" tabindex="-1" role="dialog" aria-labelledby="ApproveModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h3 class="modal-title" id="ApproveModalLabel">Delete User</h3>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <div className="modal fade" id="DeleteInactiveModal" tabindex="-1" role="dialog" aria-labelledby="ApproveModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="ApproveModalLabel">Delete User</h3>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div className="modal-body">
                                         Are you sure you want to delete this user?
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" onClick={() => deleteStudentHandler(inactive_student._id)} data-dismiss="modal">Delete</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-danger" onClick={() => deleteStudentHandler(inactive_student._id)} data-dismiss="modal">Delete</button>
+                                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </div>
                             </div>

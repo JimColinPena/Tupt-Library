@@ -9,23 +9,23 @@ exports.loginUser = async (req, res, next) => {
     
     // Checks if email and password is entered by user
     if (!email || !password) {
-        return next(new ErrorHandler('Please enter email & password', 400))
+        return res.status(401).json({success: false, message: 'Please enter email & password'})
     }
-    const user = await User.findOne({email }).select('+password')
 
+    const user = await User.findOne({email}).select('+password')
     if (!user) {
-        return next(new ErrorHandler('Invalid Credentials', 401));
-    }
-
-    else if (user.status == "deactive" ) {
-        return next(new ErrorHandler('Account is on Hold!', 401));
+        return res.status(401).json({success: false, message: 'Invalid Credentials'})
     }
 
     // Checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
 
     if (!isPasswordMatched) {
-        return next(new ErrorHandler('Invalid Email or Password', 401));
+        return res.status(401).json({success: false, message: 'Invalid Email or Password'})
+    }
+     // Checks if ACCOUNT IS DEACTIVATED
+    if (user.status == "deactivated" ) {   
+        return res.status(401).json({success: false, message: 'Your Account is Deactivated'})
     }
     sendToken(user, 200, res)
 }

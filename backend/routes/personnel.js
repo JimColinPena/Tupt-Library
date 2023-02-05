@@ -26,9 +26,9 @@ const {
 } = require('../controllers/personnelController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
-router.route('/personnel/new').post(isAuthenticatedUser, createPersonnel);
 router.route('/admin/personnels').get(getPersonnel);
 router.route('/personnel/:id').get(getSinglePersonnel);
+router.route('/personnel/new').post(isAuthenticatedUser, createPersonnel);
 router.route('/admin/personnel/:id').put(isAuthenticatedUser, updatePersonnel).delete(isAuthenticatedUser, deletePersonnel);
 
 router.route('/active/student').get(isAuthenticatedUser, getActiveStudent);

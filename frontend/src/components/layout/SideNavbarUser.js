@@ -45,15 +45,15 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/student/books" className="sidenav-links">
+                                    <Link to="/books" className="sidenav-links">
                                         <span className="material-symbols-rounded">
-                                            manage_accounts
+                                            menu_book
                                         </span>
-                                        book search
+                                        books
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/studentbook/borrow" className="sidenav-links">
+                                    <Link to="/borrow/request" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             checklist_rtl
                                         </span>
@@ -61,7 +61,7 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/studentbook/appointment" className="sidenav-links">
+                                    <Link to="/borrow/books" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             edit_calendar
                                         </span>
@@ -70,7 +70,7 @@ const SideNavbarUser = () => {
                                 </li>
 
                                 <li>
-                                    <Link to="/studentbook/appointment" className="sidenav-links">
+                                    <Link to="/" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             book
                                         </span>

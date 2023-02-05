@@ -18,7 +18,8 @@ const UserDashboard = () => {
                 <Fragment>
                     <div className="management-content">
                         {(user.course === undefined | null) ?
-                            (<Modal show={show} centered>
+                            (
+                            <Modal show={show} centered>
                                 <Modal.Header>
                                     <Modal.Title>One Step Closer</Modal.Title>
                                 </Modal.Header>

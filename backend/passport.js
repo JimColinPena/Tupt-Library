@@ -37,21 +37,21 @@ passport.use(new GoogleStrategy({
 
 				user.save(function (err) {
 					if (err) console.log(err);
-					console.log(profile, "Register Successful, 'Access Token: '", accessToken, 'Refresh Token: ', refreshToken);
+					// console.log(profile, "Register Successful, 'Access Token: '", accessToken, 'Refresh Token: ', refreshToken);
 					// return cb(err, user);
 					return cb(err, user);
 
 				});
 			} else {
 
-				if (user.status == "deactivated") {
-					return cb(err);
-				} else {
-					console.log(profile, "Login Successful, 'Access Token: '", accessToken, 'Refresh Token: ', refreshToken);
+				// if (user.status == "deactivated") {
+				// 	return cb(err);
+				// } else {
+					// console.log(profile, "Login Successful, 'Access Token: '", accessToken, 'Refresh Token: ', refreshToken);
 					// sendToken(user, 200, res)z
 					return cb(err, user);
 					// return cb( err, user);
-				}
+				// }
 
 			}
 		});
@@ -88,14 +88,6 @@ passport.use(
 		}
 	)
 );
-
-// passport.serializeUser((user, done) => {
-// 	done(null, user);
-// });
-
-// passport.deserializeUser((user, done) => {
-// 	done(null, user);
-// });
 
 passport.serializeUser(function (user, done) {
 	done(null, user.id);

@@ -23,19 +23,20 @@ router.route('/profile').get(isAuthenticatedUser, getUserProfile);
 // Google Login / Register
 router.route('/user/Google/Login').post(GoogleSignIn);
 router.route('/user/Google/Register').post(GoogleRegisterIn);
-
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
+router.get("/fail", (req, res) => {
+	res.status(401).json({
+	  success: false,
+	  message: "failure",
+	});
+  });
+
 // on frontend login
-router.get("/google/callback",passport.authenticate('google', { failureRedirect: '/', hostedDomain: 'tup.edu.ph' }),
+// router.get("/google/callback",passport.authenticate('google', { failureRedirect: '/fail', hostedDomain: 'tup.edu.ph' }),
+router.get("/google/callback",passport.authenticate('google', { hostedDomain: 'tup.edu.ph' }),
   function( req, res) {
-    // console.log(req.cookies.session)
-	// if(req.user.status == 'deactivated'){
-	// 	res.Redirect('/test');
-	// }else{
 		sendToken(req.user, 200, res)
-	// }
-    
   });
 
 module.exports = router;

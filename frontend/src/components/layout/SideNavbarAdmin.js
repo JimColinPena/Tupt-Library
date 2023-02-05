@@ -51,7 +51,7 @@ const SideNavbarAdmin = () => {
                                         <span className="material-symbols-rounded">
                                             edit_calendar
                                         </span>
-                                        appointments
+                                        book requests
                                     </Link>
                                 </li>
                                 <li>

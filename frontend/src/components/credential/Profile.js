@@ -36,7 +36,7 @@ const Profile = () => {
                             <br />
                             <br />
                             <img alt="" src={user.avatar.url} className="rounded-circle" />
-                            <h1>{user.name} {(user.gender === 'Male') ? <i id="editprofile"  className="fa fa-mars text-primary" /> : <i id="editprofile" className="fa fa-venus text-error"/>} <Link to={"/update/student/"+user._id}><i id="editprofile" className="fa fa-pencil text-warning"></i></Link></h1>
+                            <h1>{user.name} {(user.gender === 'Male') ? <i id="editprofile"  className="fa fa-mars text-primary" /> : <i id="editprofile" className="fa fa-venus text-error"/>} <Link to={"/profile/update/"+user._id}><i id="editprofile" className="fa fa-pencil text-warning"></i></Link></h1>
                             <div className="col-md-6">
                                 <hr />
                                 <h5>

@@ -15,7 +15,7 @@ import Login from '../components/credential/Login'
 const Home = () => {
     return (
         <Fragment>
-            <MetaData title={'TUP-T Online Library'} />
+            <MetaData title='' />
             <body className='home-body'>
                 <Header />
                 <Login/>

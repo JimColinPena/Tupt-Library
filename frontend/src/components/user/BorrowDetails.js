@@ -103,14 +103,15 @@ const BorrowDetails = () => {
 
     return (
         <Fragment>
-            {loading ? <Loader /> : (
+            <MetaData title={'Books Requests'} />
+            <SideNavbarUser />
+            {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
                     {studentborrowbooks ? (
                         <Fragment>
-                            <MetaData title={'TUP-T Online Library - Student'} />
-                            <SideNavbarUser />
+
                             <div className="management-content">
-                                <h1>Books Requests</h1>
+                                <h1>Book Requests</h1>
                                 <hr />
                                 {/* </div> */}
                                 <div className="management-body">
@@ -210,7 +211,7 @@ const BorrowDetails = () => {
                                 <h1>Books Requests</h1>
                                 <hr />
                                 <div className="management-body ">
-                                    <h1>No Books Requests</h1>
+                                    <h1>No Book Requests</h1>
                                 </div>
                             </div>
                         </Fragment>
