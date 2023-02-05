@@ -100,15 +100,17 @@ const BookManagement = () => {
                 out: books.out,
                 yearPub: books.yearPub,
                 actions: <Fragment>
-                    <Link to={`/admin/book/${books._id}`} className="btn btn-primary py-1 px-2">
-                        <i className="fa fa-pencil"></i>
-                    </Link>
-                    {/* <button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deleteBookHandler(books._id)}>
-                        <i className="fa fa-trash"></i>
-                    </button> */}
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteBookModal" + books._id}>
-                        <i className="fa fa-trash"></i>
-                    </button>
+                    <div className="icon-buttons">
+                        <Link to={`/admin/book/${books._id}`} className="btn btn-primary py-1 px-2">
+                            <i className="fa fa-pencil"></i>
+                        </Link>
+                        {/* <button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deleteBookHandler(books._id)}>
+                            <i className="fa fa-trash"></i>
+                        </button> */}
+                        <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteBookModal" + books._id}>
+                            <i className="fa fa-trash"></i>
+                        </button>
+                    </div>
 
                     <div className="modal fade" data-backdrop="false" id={"DeleteBookModal" + books._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">

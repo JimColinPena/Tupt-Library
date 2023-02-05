@@ -178,7 +178,7 @@ const BorrowedBooks = () => {
 						<div className="management-body">
 							<div className="row">
 								<div className="col-md-12">
-									<div className="previous-returned">
+									<div className="previous">
 										<Link to="/books/borrowed">
 											<span className='span2'>Borrowed Books</span>
 											<span className="material-symbols-outlined borroweed_books">

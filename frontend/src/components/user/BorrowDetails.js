@@ -49,7 +49,7 @@ const BorrowDetails = () => {
         }
     }, [dispatch, alert, error, isConfirm, isCancelAll])
 
-    const [startDate, setStartDate] = useState();
+    const [startDate, setStartDate] = useState(new Date());
     const isWeekday = (date) => {
         const day = date.getDay();
         return day !== 0 && day !== 6;
@@ -61,18 +61,18 @@ const BorrowDetails = () => {
         e.preventDefault();
         const dueDate = new Date();
 
-        startDate.setDate(startDate.getDate() + 1)
+        startDate.setDate(startDate.getDate())
         startDate.setMonth(startDate.getMonth())
         startDate.setFullYear(startDate.getFullYear())
 
-        if ((startDate.getDay() === 6)) {
-            dueDate.setDate(startDate.getDate() + 2)
+        if ((startDate.getDay() === 5)) {
+            dueDate.setDate(startDate.getDate() + 3)
             dueDate.setMonth(startDate.getMonth())
             dueDate.setFullYear(startDate.getFullYear())
 
         }
         else {
-            dueDate.setDate(startDate.getDate())
+            dueDate.setDate(startDate.getDate()+1)
             dueDate.setMonth(startDate.getMonth())
             dueDate.setFullYear(startDate.getFullYear())
         }
@@ -135,6 +135,7 @@ const BorrowDetails = () => {
                                     {/* {studentborrowbooks.appointmentDate} */}
 
                                     <hr />
+                                    <h2>Schedule: {(studentborrowbooks.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.appointmentDate, "mmmm dd, yyyy")}</h2>
                                     <h2>Duedate: {(studentborrowbooks.dueDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.dueDate, "mmmm dd, yyyy")}</h2>
                                     <h2>Status: {studentborrowbooks.status}</h2>
                                     {studentborrowbooks.status === "To Confirm" ? (

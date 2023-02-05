@@ -65,6 +65,7 @@ const AppointmentDetails = () => {
                                         ))}
                                     </div>
                                     <hr />
+                                    <h2>Schedule: {(studentappointmentbook.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.appointmentDate, "mmmm dd, yyyy")}</h2>
                                     <h2>Duedate: {(studentappointmentbook.dueDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.dueDate, "mmmm dd, yyyy")}</h2>
                                     <h2>Status: {studentappointmentbook.status}</h2>
                                 </div>

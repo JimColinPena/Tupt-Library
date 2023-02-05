@@ -44,7 +44,7 @@ const HistoryLog = () => {
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
                 <div className="management-content">
-                    <h1>History Log</h1>
+                    <h1 className='history-log-header'>History Log</h1>
                     {history.map((h) => (
                         <div style={{ "border-style": "solid", "margin-bottom": "5px", "padding": "10px" }}>
                             <button onClick={() => deleteHistoryLogHandler(h._id)} style={{ "float": "right" }}>&#10006;</button>
