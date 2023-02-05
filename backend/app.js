@@ -19,6 +19,7 @@ const personnel = require('./routes/personnel');
 const student = require('./routes/student');
 const borrow = require('./routes/borrow');
 const user = require('./routes/user');
+const notification = require('./routes/notification');
 
 app.use(express.json());
 app.use(express.urlencoded({limit: "50mb", extended: true }));
@@ -52,6 +53,7 @@ app.use('/api/v1', personnel);
 app.use('/api/v1', student);
 app.use('/api/v1', borrow);
 app.use('/api/v1', user);
+app.use('/api/v1', notification);
 
 app.use(errorMiddleware);
 module.exports = app

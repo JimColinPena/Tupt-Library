@@ -17,6 +17,7 @@ function (accessToken, refreshToken, profile, cb) {
 	const googleEmail = profile._json.email;
 	const googlePassword = profile._json.family_name;
 
+	console.log(profile);
 	User.findOne({
 		'google.google_id': profile.id 
 	}, function(err, user) {

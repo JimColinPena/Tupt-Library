@@ -17,24 +17,24 @@ exports.getStudentDetails = async (req, res, next) => {
 
 exports.updateStudentDetails = async (req, res, next) => {
     // console.log(req.body.birthday)
-    const birthdate = new Date(req.body.birthday)
-    console.log(birthdate)
+    // const birthdate = new Date(req.body.birthday)
+    // console.log(birthdate)
     const data = {
         id_number: req.body.id_number,
         name: req.body.name,
         course: req.body.course,
         section: req.body.section,
-        birthday: birthdate,
-        gender: req.body.gender,
-        contact: req.body.contact,
-        address: req.body.address,
+    //     birthday: birthdate,
+    //     gender: req.body.gender,
+    //     contact: req.body.contact,
+    //     address: req.body.address,
     }
-    // console.log(data)
-    // const student = await User.findByIdAndUpdate(req.params.id, data);
-    res.status(200).json({
-        success: true,
-        student
-    })
+    // // console.log(data)
+    // // const student = await User.findByIdAndUpdate(req.params.id, data);
+    // res.status(200).json({
+    //     success: true,
+    //     student
+    // })
 }
 
 

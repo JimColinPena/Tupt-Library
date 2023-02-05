@@ -16,6 +16,9 @@ const notificationSchema = new mongoose.Schema({
             message: 'There is error on proccessing this input'
         }
     },
+    notificationTitle:{
+        type: String,
+    },
     notificationText: {
         type: String,
         maxLength: [250, 'Status cannot exceed 100 characters']
