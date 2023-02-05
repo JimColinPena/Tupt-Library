@@ -103,9 +103,32 @@ const BookManagement = () => {
                     <Link to={`/admin/book/${books._id}`} className="btn btn-primary py-1 px-2">
                         <i className="fa fa-pencil"></i>
                     </Link>
-                    <button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deleteBookHandler(books._id)}>
+                    {/* <button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deleteBookHandler(books._id)}>
+                        <i className="fa fa-trash"></i>
+                    </button> */}
+                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteBookModal" + books._id}>
                         <i className="fa fa-trash"></i>
                     </button>
+
+                    <div class="modal fade" data-backdrop="false" id={"DeleteBookModal" + books._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title" id="DeleteActiveModalLabel">Delete User</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this book?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" onClick={() => deleteBookHandler(books._id)} data-dismiss="modal">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </Fragment>
             })
@@ -116,33 +139,30 @@ const BookManagement = () => {
 
     return (
         <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            {/*<div className="row">*/}
+            <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <Fragment>
-                    <MetaData title={'TUP-T Online Library - Admin'} />
-                    {/*<div className="row">*/}
-                    <SideNavbarAdmin />
-
-                    <div className="management-content">
-                        {/* <div className="management-header"> */}
-                            <h1>Books <span></span>
-                                <Link to={"/book/new"}>
-                                    <i className="fa-solid fa-circle-plus"></i>
-                                </Link>
-                            </h1>
-                        {/* </div> */}
-                        <div className="management-body">
-                            {loading ? <Loader /> : (
-                                <MDBDataTable
-                                    data={setBooks()}
-                                    className="px-3"
-                                    bordered
-                                    striped
-                                    hover
-                                />
-                            )}
-                        </div>
+                <div className="management-content">
+                    {/* <div className="management-header"> */}
+                    <h1>Books <span></span>
+                        <Link to={"/book/new"}>
+                            <i className="fa-solid fa-circle-plus"></i>
+                        </Link>
+                    </h1>
+                    {/* </div> */}
+                    <div className="management-body">
+                        {loading ? <Loader /> : (
+                            <MDBDataTable
+                                data={setBooks()}
+                                className="px-3"
+                                bordered
+                                striped
+                                hover
+                            />
+                        )}
                     </div>
-                </Fragment>
+                </div>
             )}
         </Fragment>
     )

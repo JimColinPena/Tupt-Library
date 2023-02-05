@@ -4,6 +4,7 @@ import { allHistoryLog, deleteHistoryLog, clearErrors } from '../../actions/pers
 import { DELETE_HISTORYLOG_RESET } from '../../constants/personnelConstants'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAlert } from 'react-alert'
+import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarAdmin from '../layout/SideNavbarAdmin'
 const HistoryLog = () => {
@@ -39,21 +40,21 @@ const HistoryLog = () => {
 
     return (
         <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <Fragment>
-                    <SideNavbarAdmin />
-                    <div className="management-content">
-                        <h1>History Log</h1>
+                <div className="management-content">
+                    <h1>History Log</h1>
                     {history.map((h) => (
-                        <div style={{"border-style": "solid", "margin-bottom": "5px", "padding": "10px"}}>
-                            <button onClick={() => deleteHistoryLogHandler(h._id)} style={{"float": "right"}}>&#10006;</button>
+                        <div style={{ "border-style": "solid", "margin-bottom": "5px", "padding": "10px" }}>
+                            <button onClick={() => deleteHistoryLogHandler(h._id)} style={{ "float": "right" }}>&#10006;</button>
                             <h5>{h.historylogText}</h5>
                             <h6>{h.historylogType}</h6>
                             <p>{h.historylogDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
                         </div>
                     ))}
-                    </div>
-                </Fragment>
+                </div>
+
             )}
         </Fragment>
     )

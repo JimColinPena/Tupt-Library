@@ -57,7 +57,7 @@ const SideNavbarUser = () => {
                                         <span className="material-symbols-rounded">
                                             checklist_rtl
                                         </span>
-                                        borrowed books
+                                        book requests
                                     </Link>
                                 </li>
                                 <li>
@@ -65,7 +65,16 @@ const SideNavbarUser = () => {
                                         <span className="material-symbols-rounded">
                                             edit_calendar
                                         </span>
-                                        appointments
+                                        borrowed books
+                                    </Link>
+                                </li>
+
+                                <li>
+                                    <Link to="/studentbook/appointment" className="sidenav-links">
+                                        <span className="material-symbols-rounded">
+                                            book
+                                        </span>
+                                        Returned Books
                                     </Link>
                                 </li>
 
@@ -77,14 +86,6 @@ const SideNavbarUser = () => {
                                         Penalties
                                     </Link>
                                 </li>
-                                {/* <li>
-                                    <Link to="/" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            restore
-                                        </span>
-                                        backup/restore
-                                    </Link>
-                                </li> */}
                             </ul>
                         </div>
                         <div className="profile">

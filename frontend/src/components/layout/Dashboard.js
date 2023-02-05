@@ -19,7 +19,6 @@ const Dashboard = () => {
             {loading ? <Loader /> : (
                 <Fragment>
                     <MetaData title={'TUP-T Online Library - Admin'} />
-
                     {user.role === 'admin' ? (
                         <div>
                             <SideNavbarAdmin />

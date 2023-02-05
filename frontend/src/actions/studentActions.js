@@ -20,9 +20,9 @@ import {
     BORROWBOOK_SUCCESS,
     BORROWBOOK_FAIL,
 
-    APPOINTENTBOOK_REQUEST,
-    APPOINTENTBOOK_SUCCESS,
-    APPOINTENTBOOK_FAIL,
+    APPOINTMENTBOOK_REQUEST,
+    APPOINTMENTBOOK_SUCCESS,
+    APPOINTMENTBOOK_FAIL,
 
     CLEAR_ERRORS 
 } from '../constants/studentConstants'
@@ -129,18 +129,18 @@ export const allStudentBorrowBook = () => async (dispatch) => {
 export const allStudentAppointmentBook = () => async (dispatch) => {
     try {
 
-        dispatch({ type: APPOINTENTBOOK_REQUEST })
+        dispatch({ type: APPOINTMENTBOOK_REQUEST })
 
         const { data } = await axios.get('/api/v1/studentbook/appointment')
 
         dispatch({
-            type: APPOINTENTBOOK_SUCCESS,
+            type: APPOINTMENTBOOK_SUCCESS,
             payload: data.studentappointmentbook
         })
 
     } catch (error) {
         dispatch({
-            type: APPOINTENTBOOK_FAIL,
+            type: APPOINTMENTBOOK_FAIL,
             payload: error.response.data.message
         })
     }

@@ -15,7 +15,6 @@ exports.getBooks = async (req, res, next) => {
 }
 
 exports.createBook = async (req, res, next) => {
-    // console.log(req.body);
     const newBookData = {
         title: req.body.title,
         responsibility: req.body.responsibility,
@@ -32,15 +31,13 @@ exports.createBook = async (req, res, next) => {
         pages: req.body.pages,
         other_details: req.body.other_details,
         dimension: req.body.dimension,
-        acc_materials: req.body.acc_materials,
         series: req.body.series,
         gen_notes: req.body.gen_notes,
         isbn: req.body.isbn,
-        call_number: req.body.call_number[0] + " " + req.body.call_number[1],
+        call_number: req.body.call_number,
         accession: req.body.accession,
         languange: req.body.languange,
         location: req.body.location,
-        electronic_access: req.body.electronic_access,
         entered_by: req.body.entered_by,
         updated_by: req.body.updated_by,
         date_entered: req.body.date_entered,
@@ -49,19 +46,16 @@ exports.createBook = async (req, res, next) => {
         on_shelf: req.body.on_shelf,
         out: req.body.out,
         times_out: req.body.times_out,
-        // bookId: req.body.bookId,
-        subject: req.body.subject,
+        subject: req.body.subjects,
         content_notes: req.body.content_notes,
         abstract: req.body.abstract,
         reviews: req.body.reviews
     }
-    // console.log(newBookData)
     const book = await Book.create(newBookData);
-
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
-
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
@@ -71,8 +65,6 @@ exports.createBook = async (req, res, next) => {
             historylogType: 'Create'
         }
     );
-
-    console.log(history);
     res.status(201).json({
         success: true,
         book,
@@ -82,7 +74,6 @@ exports.createBook = async (req, res, next) => {
 
 exports.getSingleBook = async (req, res, next) => {
     const book = await Book.findById(req.params.id);
-
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
     }
@@ -92,8 +83,12 @@ exports.getSingleBook = async (req, res, next) => {
     })
 }
 
-exports.updateBook = async(req,res,next) => {
+exports.updateBook = async (req, res, next) => {
     let book = await Book.findById(req.params.id);
+    if (!book) {
+        return next(new ErrorHandler('Book not found', 404));
+    }
+
     const newBookData = {
         title: req.body.title,
         responsibility: req.body.responsibility,
@@ -114,7 +109,7 @@ exports.updateBook = async(req,res,next) => {
         series: req.body.series,
         gen_notes: req.body.gen_notes,
         isbn: req.body.isbn,
-        call_number: req.body.call_number[0]+" "+req.body.call_number[1],
+        call_number: req.body.call_number,
         accession: req.body.accession,
         languange: req.body.languange,
         location: req.body.location,
@@ -127,68 +122,59 @@ exports.updateBook = async(req,res,next) => {
         on_shelf: req.body.on_shelf,
         out: req.body.out,
         times_out: req.body.times_out,
-        // bookId: req.body.bookId,
-        subject: req.body.subject,
+        subject: req.body.subjects,
         content_notes: req.body.content_notes,
         abstract: req.body.abstract,
         reviews: req.body.reviews
     }
-    if(!book) {
-        return next(new ErrorHandler('Book not found',404));
-    }
-
-    book = await Book.findByIdAndUpdate(req.params.id, newBookData,{
+    book = await Book.findByIdAndUpdate(req.params.id, newBookData, {
         new: true,
-        runValidators:true,
-        // useFindandModify:false
+        runValidators: true,
     })
-
+    //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" updated a Book titled: "+ book.title+ ", on "+ newDate,
+            historylogText: user.name + " updated a Book titled: " + book.title + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Update'
         }
     );
-    
-    console.log(history);
+
     res.status(200).json({
-        success:true,
+        success: true,
         book,
         history
     })
 }
 
-exports.deleteBook = async(req,res,next) =>{
+exports.deleteBook = async (req, res, next) => {
     const book = await Book.findById(req.params.id);
-    if(!book) {
-            return next(new ErrorHandler('Book not found',404));
-     }
-     await book.remove();
-
-     const nowDate = new Date();
-     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
-     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
+    if (!book) {
+        return next(new ErrorHandler('Book not found', 404));
+    }
+    await book.remove();
+    //create history Log
+    const nowDate = new Date();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
+    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const user = await User.findById(req.user._id);
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" deleted a Book titled: "+ book.title+ ", on "+ newDate,
+            historylogText: user.name + " deleted a Book titled: " + book.title + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Delete'
         }
     );
-    
-    console.log(history);
 
-     res.status(200).json({
+    res.status(200).json({
         success: true,
         message: 'Book deleted',
         history
-     })
+    })
 }

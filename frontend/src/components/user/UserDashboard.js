@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
 import Loader from '../layout/Loader'
@@ -19,30 +18,25 @@ const UserDashboard = () => {
                 <Fragment>
                     <div className="management-content">
                         {(user.course === undefined | null) ?
-                            (
-                                <Modal show={show} centered>
-                                    {/* <h1>sda</h1> */}
-                                    <Modal.Header>
-                                        <Modal.Title>One Step Closer</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        Before proceeding on using the application.
-                                        We encourage you to edit your profile first and fill up your
-                                        Course and Section in order to avoid uneccesarry errors.
-                                        Thank you for your pantience TUPTians!
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="primary" onClick={handleClose} href="/profile">
-                                            {/* <Link to="/profile"> */}
-                                                EDIT PROFILE NOW
-                                            {/* </Link> */}
-                                        </Button>
-                                    </Modal.Footer>
-                                </Modal>
-                            ) : (
-                                <div></div>
-                            )}
-                            <h1>Dashboard</h1>
+                            (<Modal show={show} centered>
+                                <Modal.Header>
+                                    <Modal.Title>One Step Closer</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    Before proceeding on using the application.
+                                    We encourage you to edit your profile first and fill up your
+                                    Course and Section in order to avoid uneccesarry errors.
+                                    Thank you for your pantience TUPTians!
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="primary" onClick={handleClose} href="/profile">
+                                            EDIT PROFILE NOW
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                            ) : (<div></div>)
+                        }
+                        <h1>Dashboard</h1>
                     </div>
                 </Fragment>
             )}

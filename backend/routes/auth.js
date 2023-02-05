@@ -5,7 +5,6 @@ const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
 const sendToken = require('../utils/googleToken');
 const { 
-	registerUser,
 	loginUser,
 	logout,
 	getUserProfile,
@@ -16,7 +15,6 @@ const {
     GoogleRegisterIn
 } = require('../controllers/authController');
 
-router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
 router.route('/logout').get(logout);
 router.route('/me').get(isAuthenticatedUser, getUserProfile);
@@ -32,7 +30,12 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 router.get("/google/callback",passport.authenticate('google', { failureRedirect: '/', hostedDomain: 'tup.edu.ph' }),
   function( req, res) {
     // console.log(req.cookies.session)
-    sendToken(req.user, 200, res)
+	// if(req.user.status == 'deactivated'){
+	// 	res.Redirect('/test');
+	// }else{
+		sendToken(req.user, 200, res)
+	// }
+    
   });
 
 module.exports = router;

@@ -4,16 +4,13 @@ const cookieParser = require('cookie-parser')
 const errorMiddleware = require('./middlewares/errors');
 const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
-// const dotenv = require('dotenv');
 require("dotenv").config();
-// const cors = require("cors");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const passportStrategy = require("./passport");
 
 const book = require('./routes/book');
 const research = require('./routes/research');
-const article = require('./routes/article');
 const auth = require('./routes/auth');
 const personnel = require('./routes/personnel');
 const student = require('./routes/student');
@@ -47,8 +44,8 @@ app.use(passport.session());
 
 app.use('/api/v1', book);
 app.use('/api/v1', research);
-app.use('/api/v1', article);
 app.use('/api/v1', auth);
+// app.use('/api/v1', auth);
 app.use('/api/v1', personnel);
 app.use('/api/v1', student);
 app.use('/api/v1', borrow);

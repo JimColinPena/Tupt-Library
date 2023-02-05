@@ -15,11 +15,69 @@ body {
     font-family: 'Overpass', sans-serif;
 }
 
+.card-header{
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-header img {
+    width: 8rem;
+}
+
 .home-body {
     background-color: #ff8e8e;
 }
 
 /* header */
+.loader h3{
+    /* font-size: large; */
+    font-weight: bolder;
+}
+
+.loader{
+    /* position:fixed; */
+    top: 0;
+    left: 0;
+    /* width: 100vw;
+    height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f7f9fb;
+    transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader-hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+.loader .logo_back{
+    height: 8rem;
+    animation: loading 5s ease infinite;
+    animation-duration: 5s;
+
+    position: relative;
+}
+
+.loader .logo_front{
+    height: 8rem;
+    position: absolute;
+    left: 122.5px;
+}
+
+@keyframes loading {
+    from{
+        transform: rotate(0turn);
+    }
+    to{
+        transform: rotate(1turn);
+    }
+}
+
 
 .google_button {
     text-align: center
@@ -859,31 +917,29 @@ ul.form-stepper li a .form-stepper-circle {
     margin-right: 20px;
 }
 
-.returned_books {
-    position: absolute;
-    right: 100px;
-    top: -50px;
-    display: flex;
-    align-items: center;
-}
-
-.borroweed_books {
-    position: absolute;
-    left: 50px;
-    top: 27.5px;
-    display: flex;
-    align-items: center;
-}
-
 .span1 {
     position: absolute;
     right: 150px;
-    top: -28px;
+    top: 15px;
+}
+.returned_books {
+    position: absolute;
+    right: 100px;
+    top: -5px;
+    display: flex;
+    align-items: center;
 }
 
 .span2 {
     position: absolute;
-    left: 100px;
+    left: 150px;
     /* top: -20px; */
-    top: 50px;
+    top: 15px;
+}
+.borroweed_books {
+    position: absolute;
+    left: 100px;
+    top: -5px;
+    display: flex;
+    align-items: center;
 }

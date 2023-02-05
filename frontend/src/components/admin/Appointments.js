@@ -108,30 +108,27 @@ const Appointments = () => {
 
 	return (
 		<Fragment>
+			<MetaData title={'TUP-T Online Library - Appointment'} />
+			<SideNavbarAdmin />
 			{loading ? <Loader /> : (
-				<Fragment>
-					<MetaData title={'TUP-T Online Library - Appointment'} />
-					<SideNavbarAdmin />
+				<div className="management-content">
+					{/* <div className="management-header"> */}
+					<h1>Appointments <span></span>
+					</h1>
+					<hr />
+					{/* </div> */}
+					<div className="management-body">
 
-					<div className="management-content">
-						{/* <div className="management-header"> */}
-							<h1>Appointments <span></span>
-							</h1>
-							<hr/>
-						{/* </div> */}
-						<div className="management-body">
+						<MDBDataTable
+							data={setBorrower()}
+							className="px-3"
+							bordered
+							striped
+							hover
+						/>
 
-							<MDBDataTable
-								data={setBorrower()}
-								className="px-3"
-								bordered
-								striped
-								hover
-							/>
-
-						</div>
 					</div>
-				</Fragment>
+				</div>
 			)}
 		</Fragment>
 	)

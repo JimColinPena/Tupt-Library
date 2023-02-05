@@ -20,9 +20,9 @@ import {
     BORROWBOOK_SUCCESS,
     BORROWBOOK_FAIL,
 
-    APPOINTENTBOOK_REQUEST,
-    APPOINTENTBOOK_SUCCESS,
-    APPOINTENTBOOK_FAIL,
+    APPOINTMENTBOOK_REQUEST,
+    APPOINTMENTBOOK_SUCCESS,
+    APPOINTMENTBOOK_FAIL,
 
     CLEAR_ERRORS
 } from '../constants/studentConstants'
@@ -190,20 +190,20 @@ export const allStudentBorrowBookReducer = (state = { studentborrowbooks: {} }, 
 export const allStudentAppointmentBookReducer = (state = { studentappointmentbook: {} }, action) => {
     switch (action.type) {
 
-        case APPOINTENTBOOK_REQUEST:
+        case APPOINTMENTBOOK_REQUEST:
             return {
                 ...state,
                 loading: true,
             }
 
-        case APPOINTENTBOOK_SUCCESS:
+        case APPOINTMENTBOOK_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 studentappointmentbook: action.payload
             }
 
-        case APPOINTENTBOOK_FAIL:
+        case APPOINTMENTBOOK_FAIL:
             return {
                 ...state,
                 loading: false,

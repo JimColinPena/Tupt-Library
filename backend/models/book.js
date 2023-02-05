@@ -110,23 +110,12 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
-    accession: {
-        //barcode must be array
-        type: String,
-        trim: true,
-        maxLength: [100, 'Cannot exceed 100 characters']
-    },
     languange: {
         type: String,
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
     location: {
-        type: String,
-        trim: true,
-        maxLength: [100, 'Cannot exceed 100 characters']
-    },
-    electronic_access: {
         type: String,
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
@@ -174,11 +163,10 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
-    subject: {
-        type: Number,
-        trim: true,
+    subject: [{
+        type: String,
         max: [100, 'Cannot exceed 100 characters']
-    },
+    }],
     content_notes: {
         type: String,
         trim: true,

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { allPersonnels, deletePersonnel, getAllActiveStudents, getAllInactiveStudents, approveStudent, deleteStudent, clearErrors } from '../../actions/personnelActions'
 
-import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET , UPDATE_PERSONNEL_RESET} from '../../constants/personnelConstants'
+import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET, UPDATE_PERSONNEL_RESET } from '../../constants/personnelConstants'
 
 // import { loadUser} from '../../actions/userActions'
 const PersonnelManagement = () => {
@@ -33,7 +33,7 @@ const PersonnelManagement = () => {
         dispatch(allPersonnels());
         dispatch(getAllActiveStudents());
         dispatch(getAllInactiveStudents());
-        
+
 
         // dispatch(loadUser())
         if (error) {
@@ -109,14 +109,14 @@ const PersonnelManagement = () => {
                     <Link to={`/admin/personnel/${personnels._id}`} className="btn btn-primary py-1 px-2">
                         <i className="fa fa-pencil"></i>
                     </Link>
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeletePersonnelModal"+personnels._id}>
+                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeletePersonnelModal" + personnels._id}>
                         <i className="fa fa-trash"></i>
                     </button>
                     {/*<button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deletePersonnelHandler(personnels._id)}>
                         <i className="fa fa-trash"></i>
                     </button>*/}
 
-                    <div class="modal fade" id={"DeletePersonnelModal"+personnels._id} tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
+                    <div class="modal fade" data-backdrop="false" id={"DeletePersonnelModal" + personnels._id} tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -126,7 +126,7 @@ const PersonnelManagement = () => {
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure you want to delete this user?
+                                    Are you sure you want to delete this personnel?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" onClick={() => deletePersonnelHandler(personnels._id)} data-dismiss="modal">Delete</button>
@@ -181,11 +181,11 @@ const PersonnelManagement = () => {
                 contact: active_student.contact,
                 // yearPub: active_students.yearPub,
                 actions: <Fragment>
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal"+active_student._id}>
+                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal" + active_student._id}>
                         <i className="fa fa-trash"></i>
                     </button>
 
-                    <div class="modal fade" id={"DeleteActiveModal"+active_student._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                    <div class="modal fade" data-backdrop="false" id={"DeleteActiveModal" + active_student._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -216,58 +216,46 @@ const PersonnelManagement = () => {
 
     return (
         <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <Fragment>
-
-                    <MetaData title={'TUP-T Online Library - Admin'} />
-                    {/*<div className="row">*/}
-                    <SideNavbarAdmin />
-
-                    <div className="management-content">
-                        {/*<div className="management-header">
-                        <h1>Personnels <span></span>
-                            <Link to={"/personnel/new"}>
-                                <i className="fa-solid fa-circle-plus"></i>
-                            </Link> 
-                        </h1>
-                    </div>*/}
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="">
-                                    <h1 className="text-center">
-                                        <Link to={"/personnel/new"}>
-                                            <i className="fa-solid fa-circle-plus"></i>
-                                        </Link>
-                                        Personnel
-                                    </h1>
-                                    {loading ? <Loader /> : (
-                                        <MDBDataTable
-                                            data={setPersonnels()}
-                                            className="px-3"
-                                            bordered
-                                            striped
-                                            hover
-                                        />
-                                    )}
-                                </div>
+                <div className="management-content">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="">
+                                <h1 className="text-center">
+                                    <Link to={"/personnel/new"}>
+                                        <i className="fa-solid fa-circle-plus"></i>
+                                    </Link>
+                                    Personnel
+                                </h1>
+                                {loading ? <Loader /> : (
+                                    <MDBDataTable
+                                        data={setPersonnels()}
+                                        className="px-3"
+                                        bordered
+                                        striped
+                                        hover
+                                    />
+                                )}
                             </div>
-                            <div className="col-md-6">
-                                <div className="">
-                                    <h1 className="text-center">Registered Users</h1>
-                                    {loading ? <Loader /> : (
-                                        <MDBDataTable
-                                            data={setActiveStudents()}
-                                            className="px-3"
-                                            bordered
-                                            striped
-                                            hover
-                                        />
-                                    )}
-                                </div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="">
+                                <h1 className="text-center">Registered Users</h1>
+                                {loading ? <Loader /> : (
+                                    <MDBDataTable
+                                        data={setActiveStudents()}
+                                        className="px-3"
+                                        bordered
+                                        striped
+                                        hover
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
-                </Fragment>
+                </div>
             )}
         </Fragment>
     )

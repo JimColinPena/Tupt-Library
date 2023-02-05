@@ -90,40 +90,40 @@ const StudentBookDetails = () => {
                             {studentbook.title}{" / "}{studentbook.main_author}{" "}{studentbook.publisher}{" "}{studentbook.yearPub}</h2></div>
                     </div>
                     <div align="center">
-                        { studentbook.on_shelf <= 0 || studentbook.on_shelf == null  ? 
-                            (//no available copies
-                                <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailable
+                    {
+                        checkbook.approve === true ? 
+                        (
+                            checkbook.check === true ? 
+                            (// check if book is in the user's borrow
+                                <Link to={`/studentbook/appointment`} id="cancel_btn" className="btn btn-warning py-1 px-2 ml-2">Check Due Date
+                                </Link>
+                            ) : (
+                                <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailables
                                 </button>
-                            ) : ( 
-                            //has available copes
-                                checkbook.approve === true ? 
-                                (//status is approve
-                                     checkbook.check === true ? 
-                                    (// check if book is in the user's borrow
-                                        <button id="cancel_btn" className="btn btn-warning py-1 px-2 ml-2">Check Due Date
-                                        </button>
-                                    ) : (
-                                        <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailables
-                                        </button>
-                                    )
-                                ): ( 
-                                //status pending
-                                    checkbook.check === true ? 
-                                    (     
-                                        <button id="cancel_btn" className="btn btn-danger py-1 px-2 ml-2" onClick={() => cancelBookHandler()}>Cancel
-                                        </button>
-                                    ) : ( checkbook.pendinglimit === true ? 
-                                        (
+                            )
+                        ):(
+                            checkbook.check === true ? 
+                            (     
+                                <button id="cancel_btn" className="btn btn-danger py-1 px-2 ml-2" onClick={() => cancelBookHandler()}>Cancel
+                                </button>
+                            ) : (
+                                checkbook.pendinglimit === true ? 
+                                (//status pending
+                                    <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailables
+                                    </button>
+                                ) : (
+                                    studentbook.on_shelf <= 0 || studentbook.on_shelf == null ?
+                                        (//no available copies
                                             <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailable
                                             </button>
                                         ) : ( 
                                             <button id="request_btn" className="btn btn-primary py-1 px-2 ml-2" onClick={handleShow}>Borrow Schedule
                                             </button>
                                         )
-                                    )
                                 )
                             )
-                        }
+                        )
+                    }
                     </div>
                 </div>
 

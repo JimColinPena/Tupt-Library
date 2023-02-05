@@ -1,6 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import { MDBDataTable } from 'mdbreact'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -18,6 +20,10 @@ const BookSearch = () => {
     let navigate = useNavigate();
 
     const { loading, error, studentbooks } = useSelector(state => state.allStudentBooks);
+    const { user } = useSelector(state => state.auth)
+    const [show, setShow] = useState(true);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         dispatch(allStudentBooks());
@@ -74,31 +80,48 @@ const BookSearch = () => {
 
     return (
         <Fragment>
-            {/* {loading ? <Loader /> : (
+            {loading ? <Loader /> : (
                 <Fragment>
-                    {console.log(studentbooks)}
+                    <MetaData title={'TUP-T Online Library - Student'} />
+                    <SideNavbarUser />
+                    <div className="management-content">
+                        {(user.course === undefined | null) ?
+                            (<Modal show={show} centered>
+                                <Modal.Header>
+                                    <Modal.Title>One Step Closer</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    Before proceeding on using the application.
+                                    We encourage you to edit your profile first and fill up your
+                                    Course and Section in order to avoid uneccesarry errors.
+                                    Thank you for your pantience TUPTians!
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="primary" onClick={handleClose} href="/profile">
+                                            EDIT PROFILE NOW
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                            ) : (<div></div>)
+                        }
+                        <h1>Books <span></span>
+                        </h1>
+                        <hr />
+                        {/* </div> */}
+                        <div className="management-body">
+                            {loading ? <Loader /> : (
+                                <MDBDataTable
+                                    data={setBooks()}
+                                    className="px-3"
+                                    bordered
+                                    striped
+                                    hover
+                                />
+                            )}
+                        </div>
+                    </div>
                 </Fragment>
-            )} */}
-            <MetaData title={'TUP-T Online Library - Student'} />
-            <SideNavbarUser />
-            <div className="management-content">
-                {/* <div className="management-header"> */}
-                    <h1>Books <span></span>
-                    </h1>
-                    <hr/>
-                {/* </div> */}
-                <div className="management-body">
-                    {loading ? <Loader /> : (
-                        <MDBDataTable
-                            data={setBooks()}
-                            className="px-3"
-                            bordered
-                            striped
-                            hover
-                        />
-                    )}
-                </div>
-            </div>
+            )}
         </Fragment>
     )
 }

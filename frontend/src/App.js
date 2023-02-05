@@ -33,12 +33,10 @@ import HistoryLog from './components/admin/HistoryLog'
 
 
 import Home from './components/Home'
-import Register from './components/credential/Register'
 import Login from './components/credential/Login'
 import Profile from './components/credential/Profile'
 
 import ProtectedRoute from './components/route/ProtectedRoute'
-// import logo from './logo.svg';
 import './App.css';
 
 import store from "./store"
@@ -52,7 +50,6 @@ function App() {
 				<Routes>
 					<Route path="/" element={<Home />} exact="true" />
 					<Route path="/login" element={<Login />} exact="true" />
-					<Route path="/register" element={<Register />} exact="true" />
 					<Route path="/profile" element={<ProtectedRoute isAdmin={false}><Profile /></ProtectedRoute>} exact="true" />
 					<Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 

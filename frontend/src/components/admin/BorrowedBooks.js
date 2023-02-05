@@ -173,7 +173,7 @@ const BorrowedBooks = () => {
 										<form>
 											<div >
 												<label htmlFor="dueDate_field" className="col-sm-6 col-form-label">Enter new due date:
-													<DatePicker filterDate={isWeekday} minDate={new Date()} value={dueDate} onChange={setDueDate} />
+													<DatePicker filterDate={isWeekday} minDate={new Date()} value={dateFormat(dueDate, "dd-mm-yyyy")} onChange={setDueDate} />
 												</label>
 											</div>
 											<div>
@@ -256,82 +256,15 @@ const BorrowedBooks = () => {
 		return data;
 	}
 
-	// const setReturnedBooks = () => {
-	// 	const data = {
-	// 		columns: [
-	// 			{
-	// 				label: 'TUPT-ID',
-	// 				field: 'returnedbooks_id',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'Name',
-	// 				field: 'returnedbooks_name',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'E-mail',
-	// 				field: 'returnedbooks_email',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'Contact',
-	// 				field: 'returnedbooks_contact',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'Book',
-	// 				field: 'returnedbooks_book',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'Due Date',
-	// 				field: 'returnedbooks_due',
-	// 				sort: 'asc'
-	// 			},
-	// 			{
-	// 				label: 'Returned to',
-	// 				field: 'returnedbooks_to',
-	// 				sort: 'asc'
-	// 			},
-	// 		],
-	// 		rows: []
-	// 	}
-
-	// 	returnedbooks.forEach(returnedBook => {
-	// 		data.rows.push({
-	// 			returnedbooks_id: returnedBook.userId.id_number,
-	// 			returnedbooks_name: returnedBook.userId.name,
-	// 			returnedbooks_email: returnedBook.userId.email,
-	// 			returnedbooks_contact: returnedBook.userId.contact,
-	// 			returnedbooks_book: returnedBook.bookId.map((item, index) => (<p>{item.title}</p>)),
-	// 			returnedbooks_due: returnedBook.returnedDate,
-	// 			returnedbooks_to: returnedBook.returnedTo.name,
-	// 		})
-	// 	})
-	// 	return data;
-	// }
-
 	return (
 		<Fragment>
+			<MetaData title={'TUP-T Online Library - Books Borrowed'} />
+			<SideNavbarAdmin />
 			{loading ? <Loader /> : (
-				<Fragment>
-					<MetaData title={'TUP-T Online Library - Books Borrowed'} />
-					<SideNavbarAdmin />
-					<div className="management-content">
-						<div className="management-body">
-							<div className="row">
-								<div className="col-sm-10 table-section2">
-									<h1 className="text-center">Borrowed</h1>
-									{loading ? <Loader /> : (
-										<MDBDataTable
-											data={setBorrowedBooks()}
-											className="px-3"
-											bordered
-											noBottomColumns
-										/>
-									)}
-								</div>
+				<div className="management-content">
+					<div className="management-body">
+						<div className="row">
+							<div className="col-md-12">
 								<div className="next-returned">
 									<Link to="/returned/books">
 										<span className='span1'>Returned Books</span>
@@ -340,10 +273,21 @@ const BorrowedBooks = () => {
 										</span>
 									</Link>
 								</div>
+								<h1 className="text-center">Borrowed</h1>
+
+								{loading ? <Loader /> : (
+									<MDBDataTable
+										data={setBorrowedBooks()}
+										className="px-3"
+										bordered
+										noBottomColumns
+									/>
+								)}
+
 							</div>
 						</div>
 					</div>
-				</Fragment>
+				</div>
 			)}
 		</Fragment>
 	)

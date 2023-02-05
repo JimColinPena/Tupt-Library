@@ -1,7 +1,3 @@
-const ErrorHandler = require('../utils/errorhand');
-const APIFeatures = require('../utils/apiFeatures');
-const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
-
 const Borrow = require('../models/borrow');
 const Book = require('../models/book');
 const User = require('../models/user');
@@ -10,14 +6,9 @@ exports.borrowBook = async (req, res, next) => {
     console.log(req.body);
     const checkAvailability = await Borrow.find({ userId: req.body.userId});
 
-    // console.log(checkAvailability);
-
     if (checkAvailability.length == 0) {
-
-        // console.log('no items');
-        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { copy: -1, on_shelf: -1, out: 1 } })
-
-
+        //if user has no book request, create borrow object and decrement on_shelf value while increment out value
+        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { on_shelf: -1, out: 1 } })
         const newBorrowData = {
             userId: req.body.userId,
             bookId: req.body.bookId,
@@ -32,10 +23,8 @@ exports.borrowBook = async (req, res, next) => {
         });
     }
     else {
-        // console.log(checkAvailability._id);
-
-        // update borroow object and append bookId
-        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { copy: -1, on_shelf: -1, out: 1 } })
+        // update borrow object and append bookId and decrement on_shelf value while increment out value
+        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { on_shelf: -1, out: 1 } })
         const borrowbook = await Borrow.updateOne(
             { userId: req.body.userId },
             { $push: { bookId: req.body.bookId } },
@@ -61,7 +50,7 @@ exports.checkBorrowBook = async (req, res, next) => {
     const approveBook = await Borrow.find({ userId: currentUserId, status: "Accepted" });
     const pendingBook = await Borrow.find({ userId: currentUserId }, 'bookId');
 
-    // query to check is the book is currently requested or in possession of the user
+    // query to check if the book is currently requested or in possession of the user
     if (borrow.length == 0) {
         checkvar = false;
     }
@@ -81,17 +70,13 @@ exports.checkBorrowBook = async (req, res, next) => {
     // console.log(pendingBook.length)
     if (pendingBook.length > 0) {
         if (pendingBook[0].bookId.length < 3) {
-            // console.log(pendingBook[0].bookId.length)
-            // console.log(pendingBook[0].bookId.length)
             pendingvar = false;
         }
         else {
-            // console.log(pendingBook[0].bookId.length)
             pendingvar = true;
         }
     }
     else {
-        // console.log('null ito')
     }
 
 
@@ -109,17 +94,12 @@ exports.checkBorrowBook = async (req, res, next) => {
 };
 
 exports.cancelBorrowBook = async (req, res, next) => {
-
-
-    const currentUserId = req.body.userId;
-    const currrentBookId = req.body.bookId;
-    console.log(currentUserId)
-    console.log(currrentBookId)
     const borrow = await Borrow.findOne({ userId: req.body.userId });
     const borrowcount = borrow.bookId.length
-    // console.log(borrowcount)
+    
     if (borrowcount <= 1) {
-        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { copy: 1, on_shelf: 1, out: -1 } })
+        //if book in user borrow is only one, and increment on_shelf value while decrement out value
+        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { on_shelf: 1, out: -1 } })
         const cancelbook = await Borrow.findOneAndDelete({ userId: req.body.userId })
         res.status(201).json({
             success: true,
@@ -127,7 +107,8 @@ exports.cancelBorrowBook = async (req, res, next) => {
         });
     }
     else {
-        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { copy: 1, on_shelf: 1, out: -1 } })
+        //if book in user borrow has more than one, pull the current book from the array and increment on_shelf value while decrement out value
+        await Book.findByIdAndUpdate(req.body.bookId, { $inc: { on_shelf: 1, out: -1 } })
         const cancelbook = await Borrow.findOneAndUpdate(
             { userId: req.body.userId },
             { $pull: { bookId: req.body.bookId } }
@@ -141,7 +122,6 @@ exports.cancelBorrowBook = async (req, res, next) => {
 };
 
 exports.confirmBorrowBook = async (req, res, next) => {
-    // console.log(req.body.appointmentDate, req.body.dueDate)
 
     const borrowbook = await Borrow.updateOne(
         { userId: req.body.userId },
@@ -157,22 +137,13 @@ exports.confirmBorrowBook = async (req, res, next) => {
 
 exports.cancelAllBorrowBook = async (req, res, next) => {
 
-
-    const currentUserId = req.body.userId;
-    console.log(currentUserId)
     const copyCount = await Borrow.findOne({ userId: req.body.userId }).select('bookId')
-    console.log(copyCount.bookId)
-
+    //loop all book from the borrow bookId array and restore on_shelf value while decrementing out value
     for (let i = 0; i < copyCount.bookId.length; i++) {
-        // console.log(copyCount.bookId[i])
-        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { copy: 1, on_shelf: 1, out: -1 } })
-        // console.log(test)
+        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { on_shelf: 1, out: -1 } })
     }
 
-    //fetch array of booki id and lopp for each book Id to increment copy count
-    // await Book.findByIdAndUpdate(req.body.bookId, {$inc: {copy: 1}})
-    // also remove 1 to onsgelf and add 1 to out
-
+    //delete the borrow object from the database to free user's accessibillity to borrow book again
     const cancelbook = await Borrow.findOneAndDelete(
         { userId: req.body.userId }
 
@@ -187,7 +158,6 @@ exports.cancelAllBorrowBook = async (req, res, next) => {
 exports.getBorrowedBooksLength = async (req,res,next) => {
     const test = await Borrow.find({status: 'Accepted'});
     const borrowedbooksLength = test.length;
-    console.log(borrowedbooksLength)
 
     res.status(200).json({
         success: true,
@@ -198,7 +168,7 @@ exports.getBorrowedBooksLength = async (req,res,next) => {
 exports.getPendingRequests = async (req,res,next) => {
     const test = await Borrow.find({status: 'Pending'});
 	const pendingRequests = test.length;
-    console.log(pendingRequests)
+
     res.status(200).json({
         success: true,
         pendingRequests
@@ -208,7 +178,7 @@ exports.getPendingRequests = async (req,res,next) => {
 exports.getPendingUsersLength = async (req,res,next) => {
     const test = await User.find({status: 'inactive'});
 	const pendingUsers = test.length;
-    console.log(pendingUsers)
+
     res.status(200).json({
         success: true,
         pendingUsers

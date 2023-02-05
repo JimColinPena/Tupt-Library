@@ -2,16 +2,12 @@ const ErrorHandler = require('../utils/errorhand');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 
-const Personnel = require('../models/personnel');
 const User = require('../models/user');
 const Borrow = require('../models/borrow');
 const Book = require('../models/book');
 const Return = require('../models/return');
 const HistoryLog = require('../models/historylog');
 const Notification = require('../models/notification');
-
-const { constants } = require('crypto');
-const borrow = require('../models/borrow');
 
 exports.getPersonnel = async (req, res, next) => {
     const personnel = await User.find({ $or: [{ role: 'admin' }, { role: 'personnel' }] });
@@ -22,7 +18,6 @@ exports.getPersonnel = async (req, res, next) => {
 }
 
 exports.createPersonnel = async (req, res, next) => {
-    // console.log(req.body);
     const newPersonnelData = {
         id_number: req.body.id_number,
         name: req.body.name,
@@ -33,8 +28,8 @@ exports.createPersonnel = async (req, res, next) => {
         email: req.body.email,
         password: req.body.password,
     }
-    // console.log(newPersonnelData)
     const personnel = await User.create(newPersonnelData);
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -48,7 +43,6 @@ exports.createPersonnel = async (req, res, next) => {
         }
     );
     
-    console.log(history);
     res.status(201).json({
         success: true,
         personnel,
@@ -70,7 +64,9 @@ exports.getSinglePersonnel = async (req, res, next) => {
 
 exports.updatePersonnel = async (req, res, next) => {
     let personnel = await User.findById(req.params.id);
-
+    if (!personnel) {
+        return next(new ErrorHandler('Personnel not found', 404));
+    }
     const newPersonnelData = {
         id_number: req.body.id_number,
         name: req.body.name,
@@ -80,15 +76,12 @@ exports.updatePersonnel = async (req, res, next) => {
         address: req.body.address,
         email: req.body.email
     }
-    if (!personnel) {
-        return next(new ErrorHandler('Personnel not found', 404));
-    }
-
     personnel = await User.findByIdAndUpdate(req.params.id, newPersonnelData, {
         new: true,
         runValidators: true,
     })
-    
+
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -101,8 +94,7 @@ exports.updatePersonnel = async (req, res, next) => {
             historylogType: 'Update'
         }
     );
-    
-    console.log(history);
+
     res.status(200).json({
         success: true,
         personnel,
@@ -111,9 +103,7 @@ exports.updatePersonnel = async (req, res, next) => {
 }
 
 exports.deletePersonnel = async (req, res, next) => {
-    // const personnel = await User.findById(req.params.id);
-    // console.log(personnel)
-
+    //creation of history log is executed first because deleting the object will remove all necessary for history log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -126,8 +116,6 @@ exports.deletePersonnel = async (req, res, next) => {
             historylogType: 'Delete'
         }
     );
-    
-    console.log(history);
 
     const personnel = await User.findById(req.params.id);
     if (!personnel) {
@@ -171,6 +159,9 @@ exports.getSingleStudent = async (req, res, next) => {
 
 exports.updateStudent = async (req, res, next) => {
     let student = await User.findById(req.params.id);
+    if (!student) {
+        return next(new ErrorHandler('Student not found', 404));
+    }
     const newStudentData = {
         id_number: req.body.id_number,
         name: req.body.name,
@@ -180,37 +171,24 @@ exports.updateStudent = async (req, res, next) => {
         address: req.body.address,
         email: req.body.email
     }
-    if (!student) {
-        return next(new ErrorHandler('Student not found', 404));
-    }
-
     student = await User.findByIdAndUpdate(req.params.id, newStudentData, {
         new: true,
         runValidators: true,
-        // useFindandModify:false
     })
-    res.status(200).json({
-        success: true,
-        student
-    })
-}
+    //create history Log
+    const nowDate = new Date();
+    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const user = await User.findById(req.user._id);
+    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
+    const history = await HistoryLog.create(
+        {
+            userId: user._id,
+            historylogText: user.name +" updated a student named: "+ req.body.name+ ", on "+ newDate,
+            historylogDate: formatDate,
+            historylogType: 'Update'
+        }
+    );
 
-exports.approveStudent = async (req, res, next) => {
-    let student = await User.findById(req.params.id);
-    
-    // const newStudentData = {
-    //     status: 'active'
-    // }
-    if (!student) {
-        return next(new ErrorHandler('Student not found', 404));
-    }
-
-    student = await User.findByIdAndUpdate(req.params.id, { status: 'active' }, {
-        new: true,
-        runValidators: true,
-        // useFindandModify:false
-    })
-    
     res.status(200).json({
         success: true,
         student
@@ -218,14 +196,11 @@ exports.approveStudent = async (req, res, next) => {
 }
 
 exports.deleteStudent = async (req, res, next) => {
-    // const test = await History.deleteMany({});
-    // console.log(req.params.id)
     const student = await User.findById(req.params.id);
-    console.log(student)
     if (!student) {
         return next(new ErrorHandler('Student not found', 404));
     }
-    await student.remove();
+    //creation of history log is executed first because deleting the object will remove all necessary for history log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -238,8 +213,8 @@ exports.deleteStudent = async (req, res, next) => {
             historylogType: 'Delete'
         }
     );
-    
-    console.log(history);
+
+    await student.remove();
 
     res.status(200).json({
         success: true,
@@ -261,7 +236,6 @@ exports.getBorrowers = async (req, res, next) => {
             },
         ]
     );
-    // console.log(borrower)
     res.status(200).json({
         success: true,
         borrower
@@ -269,13 +243,10 @@ exports.getBorrowers = async (req, res, next) => {
 }
 
 exports.acceptAppointment = async (req, res, next) => {
-    const date = new Date().getDate();
     let borrower = await Borrow.findById(req.params.id);
-
     if (!borrower) {
         return next(new ErrorHandler('Borrower not found', 404));
     }
-
     const statusData = {
         status: 'Accepted'
     }
@@ -283,7 +254,7 @@ exports.acceptAppointment = async (req, res, next) => {
 
     const userId = borrower.userId;
     const newBorrower = await User.findById(userId)
-
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -297,7 +268,6 @@ exports.acceptAppointment = async (req, res, next) => {
         }
     );
     
-    console.log(history);
 
     res.status(200).json({
         success: true,
@@ -307,20 +277,15 @@ exports.acceptAppointment = async (req, res, next) => {
 }
 
 exports.declineAppointment = async (req, res, next) => {
-    const date = new Date().getDate();
     let borrower = await Borrow.findById(req.params.id);
-
     if (!borrower) {
         return next(new ErrorHandler('Borrower not found', 404));
     }
-
-    // const statusData = {
-    //     status: 'Declined'
-    // }
     borrower = await Borrow.findByIdAndDelete(req.params.id)
+
     const userId = borrower.userId;
     const newBorrower = await User.findById(userId)
-
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -333,8 +298,6 @@ exports.declineAppointment = async (req, res, next) => {
             historylogType: 'Decline'
         }
     );
-    
-    console.log(history);
 
     res.status(200).json({
         success: true,
@@ -367,7 +330,6 @@ exports.getReturnedBooks = async (req, res, next) => {
             {
                 path: 'userId',
                 select: ['name', 'email', 'contact', 'id_number'],
-                // select: 'title',
             },
             {
                 path: 'bookId',
@@ -379,7 +341,7 @@ exports.getReturnedBooks = async (req, res, next) => {
             },
         ]
     );
-    // console.log(returnedbooks)
+
     res.status(200).json({
         success: true,
         returnedbooks
@@ -388,44 +350,31 @@ exports.getReturnedBooks = async (req, res, next) => {
 
 exports.returnBook = async (req, res, next) => {
     let borrower = await Borrow.findById(req.params.id);
-    const date = new Date().getDate();
     if (!borrower) {
         return next(new ErrorHandler('Borrowed books not found', 404));
     }
-
     const userdata = await Borrow.findById(req.params.id)
     const userId = userdata.userId
     const bookId = userdata.bookId
-    
     const borrow = await Borrow.findById(req.params.id).select('bookId')
     const bookArray = borrow.bookId
     const returnedDate = new Date();
-
     const returndata = {
         userId: userId,
         bookId: bookArray,
         returnedDate: returnedDate,
         returnedTo: req.user.id
-
     }
-    // console.log(returndata)
     await Return.create(returndata)
-
     const copyCount = await Borrow.findById(req.params.id).select('bookId')
-    // console.log(copyCount.bookId)
-
     for (let i = 0; i < copyCount.bookId.length; i++) {
-        // console.log(copyCount.bookId[i])
-        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { copy: 1, on_shelf: 1, out: -1 } })
-        // console.log(test)
+        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { on_shelf: 1, out: -1 } })
     }
-
     await Borrow.findByIdAndDelete(req.params.id);
 
     const newBorrower = await User.findById(userId)
     const bookBorrowed = await Book.findById(bookId)
-    // console.log(newBorrower);
-
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -438,8 +387,6 @@ exports.returnBook = async (req, res, next) => {
             historylogType: 'Return'
         }
     );
-    
-    console.log(history);
 
     res.status(200).json({
         success: true,
@@ -453,21 +400,16 @@ exports.declineBook = async (req, res, next) => {
     if (!borrower) {
         return next(new ErrorHandler('Borrowed books not found', 404));
     }
-
     const userdata = await Borrow.findById(req.params.id)
     const userId = userdata.userId
-    const bookId = userdata.bookId
-
     const copyCount = await Borrow.findById(req.params.id).select('bookId')
-
     for (let i = 0; i < copyCount.bookId.length; i++) {
-        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { copy: 1, on_shelf: 1, out: -1 } })
+        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { on_shelf: 1, out: -1 } })
     }
-
     await Borrow.findByIdAndDelete(req.params.id);
 
     const newBorrower = await User.findById(userId)
-
+    //create history Log
     const nowDate = new Date();
     const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -480,8 +422,6 @@ exports.declineBook = async (req, res, next) => {
             historylogType: 'Decline'
         }
     );
-    
-    console.log(history);
 
     res.status(200).json({
         success: true,
@@ -492,9 +432,6 @@ exports.declineBook = async (req, res, next) => {
 
 
 exports.getUserDetails = async (req, res, next) => {
-    // console.log(req.params.id)
-    // const userdetail = await Return.findOne({userId: req.params.id})
-    // let returnedBooks = ""
     const getUserInfo = await User.findById(req.params.id)
     const getReturnedBooks = await Return.find({ userId: req.params.id }).populate(
         {
@@ -502,9 +439,6 @@ exports.getUserDetails = async (req, res, next) => {
             select: 'title',
              }
     );
-    // if (!getUserInfo) {
-    //     getUserInfo = null;
-    // }
 
     if (!getReturnedBooks) {
         getReturnedBooks ==  null;
@@ -536,8 +470,6 @@ exports.deleteHistoryLog = async (req,res,next) => {
     }
     await history.remove();
 
-    console.log('Successfully Deleted');
-    
     res.status(200).json({
         success: true,
         message: 'History Log deleted'
@@ -549,23 +481,27 @@ exports.changeDueDate = async (req, res, next) => {
     const borrowerId = await Borrow.findById(req.body.borrowId)
     const personnel = await User.findById(req.user.id)
 
-    // console.log(req.body)
-    console.log(req.body.dueDate)
-    const borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, {dueDate: req.body.dueDate, accession: req.body.accession})
-
-    console.log(borrow)
-    const notification = await Notification.create({
-        sender: req.user.id,
-        receiver: borrowerId.userId,
-        notificationType: 'Others',
-        notificationText: 'Personnel:'+personnel.name+' has changed your duedate to '+req.body.dueDate+' with a reason of: '+req.body.reason,
-        notificationDate: date,
-        deliveryStatus: 'Delivered',
-
-    })
+    let borrow = {}
+    // since this function is being used by two different button in which it is used for
+    // changeing duedate and inserting accession number(s) this function will determine if the personnel changed the
+    //duedate only so that it will create notification for the user that their duedate is change
+    //due to unforseen/ special circumstances
+    if(req.body.accession == ""){
+        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, {dueDate: req.body.dueDate})
+        await Notification.create({
+            sender: req.user.id,
+            receiver: borrowerId.userId,
+            notificationType: 'Others',
+            notificationText: 'Personnel:'+personnel.name+' has changed your duedate to '+req.body.dueDate+' with a reason of: '+req.body.reason,
+            notificationDate: date,
+            deliveryStatus: 'Delivered',
+        })
+    }else{
+        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, { accession: req.body.accession})
+    }
 
     res.status(200).json({
         success: true,
-        notification
+        borrow,
     })
 }

@@ -1,9 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react'
-
-import { useNavigate, Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from 'react-datepicker';
+import dateFormat from 'dateformat';
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -27,6 +26,10 @@ const BorrowDetails = () => {
     const { isConfirm } = useSelector(state => state.confirmBorrowBook);
     const { isCancelAll } = useSelector(state => state.cancelAllBorrowBook);
 
+    const [show, setShow] = useState(true);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     useEffect(() => {
         dispatch(allStudentBorrowBook());
         if (error) {
@@ -46,11 +49,11 @@ const BorrowDetails = () => {
         }
     }, [dispatch, alert, error, isConfirm, isCancelAll])
 
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState();
     const isWeekday = (date) => {
         const day = date.getDay();
         return day !== 0 && day !== 6;
-      };
+    };
 
 
 
@@ -61,23 +64,18 @@ const BorrowDetails = () => {
         startDate.setDate(startDate.getDate() + 1)
         startDate.setMonth(startDate.getMonth())
         startDate.setFullYear(startDate.getFullYear())
-        
-        if ((startDate.getDay() === 6)) 
-        {
-            // console.log("pumunta dito sa weekdnds")
+
+        if ((startDate.getDay() === 6)) {
             dueDate.setDate(startDate.getDate() + 2)
             dueDate.setMonth(startDate.getMonth())
             dueDate.setFullYear(startDate.getFullYear())
 
         }
-        else { 
-            // console.log("pumunta dito sa weekdays")
-            dueDate.setDate(startDate.getDate() )
+        else {
+            dueDate.setDate(startDate.getDate())
             dueDate.setMonth(startDate.getMonth())
             dueDate.setFullYear(startDate.getFullYear())
         }
-
-        // console.log(startDate,dueDate)
 
         const formData = new FormData();
         formData.set('userId', user._id);
@@ -112,17 +110,31 @@ const BorrowDetails = () => {
                             <MetaData title={'TUP-T Online Library - Student'} />
                             <SideNavbarUser />
                             <div className="management-content">
-                                {/* <div className="management-header"> */}
-                                    <h1>List of Borrowed Books</h1>
-                                    <hr/>
+                                <h1>Books Requests</h1>
+                                <hr />
                                 {/* </div> */}
                                 <div className="management-body">
-                                    {studentborrowbooks.bookId && studentborrowbooks.bookId.map(data => (
-                                        <h1>{data.title}</h1>
-                                    ))}
+                                    <div className='row'>
+                                        {studentborrowbooks.bookId && studentborrowbooks.bookId.map(data => (
+                                            <div className='col-md-4'>
+                                                <div className='card-header'>
+                                                    {/* {console.log(data.book_image.url)} */}
+                                                    {(data.book_image.url == null || undefined) ?
+                                                        <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
+                                                        :
+                                                        <img alt="" src={data.book_image.url} />
+                                                    }
+                                                </div>
+                                                <div className='card-body'>
+                                                    <h3>{data.title}</h3>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                     {/* {studentborrowbooks.appointmentDate} */}
 
                                     <hr />
+                                    <h2>Duedate: {(studentborrowbooks.dueDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.dueDate, "mmmm dd, yyyy")}</h2>
                                     <h2>Status: {studentborrowbooks.status}</h2>
                                     {studentborrowbooks.status === "To Confirm" ? (
                                         <div>
@@ -136,7 +148,6 @@ const BorrowDetails = () => {
                                         </button>
                                     )
                                     }
-
                                 </div>
                             </div>
                             <Modal className="Modal-Confirm" show={show1} onHide={handleClose1}>
@@ -146,7 +157,7 @@ const BorrowDetails = () => {
                                     <Button onClick={handleClose1}><i className="fa fa-times-circle"></i></Button>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <DatePicker minDate={new Date()} filterDate={isWeekday} value={startDate} onChange={(date) => setStartDate(date)} />
+                                    <DatePicker minDate={new Date()} filterDate={isWeekday} value={dateFormat(startDate, "dd-mm-yyyy")} onChange={(date) => setStartDate(date)} />
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="warning" onClick={handleClose1}>CANCEL
@@ -159,11 +170,9 @@ const BorrowDetails = () => {
                             <Modal className="Modal-Cancel" show={show2} onHide={handleClose2}>
                                 <Modal.Header>
                                     <Modal.Title><h2>Confirm Cancelation</h2></Modal.Title>
-
                                     <Button onClick={handleClose2}><i className="fa fa-times-circle"></i></Button>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    {/* <DatePicker value={startDate} onChange={setStartDate} /> */}
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="warning" onClick={handleClose2}>CANCEL
@@ -178,11 +187,30 @@ const BorrowDetails = () => {
                             <MetaData title={'TUP-T Online Library - Student'} />
                             <SideNavbarUser />
                             <div className="management-content">
-                                <div className="management-header">
-                                    <h1>List of Borrowed Books</h1>
-                                </div>
-                                <div className="management-body">
-                                    <h1>No Borrowed Books</h1>
+                                {(user.course === undefined | null) ?
+                                    (<Modal className="Modal-Prompt" show={show} centered>
+                                        {console.log('pumunta')}
+                                        <Modal.Header>
+                                            <Modal.Title>One Step Closer</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            Before proceeding on using the application.
+                                            We encourage you to edit your profile first and fill up your
+                                            Course and Section in order to avoid uneccesarry errors.
+                                            Thank you for your pantience TUPTians!
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="primary" onClick={handleClose} href="/profile">
+                                                EDIT PROFILE NOW
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
+                                    ) : (<div></div>)
+                                }
+                                <h1>Books Requests</h1>
+                                <hr />
+                                <div className="management-body ">
+                                    <h1>No Books Requests</h1>
                                 </div>
                             </div>
                         </Fragment>

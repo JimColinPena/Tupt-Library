@@ -104,7 +104,7 @@ const BorrowedBooks = () => {
 						<button type="button" class="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
 							Returned
 						</button>
-						
+
 					</Fragment>
 			})
 		})
@@ -169,44 +169,41 @@ const BorrowedBooks = () => {
 
 	return (
 		<Fragment>
-            {loading ? <Loader /> : (
-		<Fragment>
-			<MetaData title={'TUP-T Online Library - Books Borrowed'} />
-			<SideNavbarAdmin />
+			{loading ? <Loader /> : (
+				<Fragment>
+					<MetaData title={'TUP-T Online Library - Books Borrowed'} />
+					<SideNavbarAdmin />
 
-			<div className="management-content">
-				<div className="management-body">
-					<div className="row">
-						{/* <div className="management-header">
-	    				<h1>Borrowed Books <span></span>
-	    				</h1>
-	    			</div> */}
-						<div className="col-md-12">
-							<h1 className="text-center">Returned</h1>
-							{loading ? <Loader /> : (
-								<MDBDataTable
-									data={setReturnedBooks()}
-									className="px-3"
-									bordered
-									noBottomColumns
-								/>
-							)}
+					<div className="management-content">
+						<div className="management-body">
+							<div className="row">
+								<div className="col-md-12">
+									<div className="previous-returned">
+										<Link to="/books/borrowed">
+											<span className='span2'>Borrowed Books</span>
+											<span class="material-symbols-outlined borroweed_books">
+												navigate_before
+											</span>
+										</Link>
+									</div>
+									<h1 className="text-center">Returned</h1>
+									{loading ? <Loader /> : (
+										<MDBDataTable
+											data={setReturnedBooks()}
+											className="px-3"
+											bordered
+											noBottomColumns
+										/>
+									)}
+								</div>
+							</div>
 						</div>
+
+
 					</div>
-				</div>
-	<div className="previous-returned">
-							<Link to="/books/borrowed">
-							<span className='span2'>Borrowed Books</span>
-							<span class="material-symbols-outlined borroweed_books">
-								navigate_before
-							</span>
-							</Link>
-						</div>
-
-			</div>
+				</Fragment>
+			)}
 		</Fragment>
-		)}
-        </Fragment>
 	)
 }
 export default BorrowedBooks

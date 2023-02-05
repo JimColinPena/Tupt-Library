@@ -3,26 +3,10 @@ const User = require('../models/user');
 const ErrorHandler = require('../utils/errorhand');
 const sendToken = require('../utils/jwtToken');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
-const cloudinary = require('cloudinary');
-
-exports.registerUser = async (req, res, next) => {
-
-    
-	const { fname, lname, contact, email, password} = req.body;
-
-    req.body.name = fname +" "+ lname;
-
-    const user = await User.create(req.body);
-
-    res.status(201).json({
-        success: true,
-        user
-    })
-};
 
 exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
-
+    
     // Checks if email and password is entered by user
     if (!email || !password) {
         return next(new ErrorHandler('Please enter email & password', 400))
@@ -82,7 +66,7 @@ exports.GoogleSignIn = async (req, res, next) => {
             }
             if (!user) {
                 res.send({success: false, message: 'Invalid Credentials'});
-            } else if (user.status == "deactive" ) {
+            } else if (user.status == "deactivated" ) {
                 res.send({success: false, message: 'Account is on Hold!'});
             } else if (user) {
                 sendToken(user, 200, res);

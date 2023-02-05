@@ -41,7 +41,8 @@ const Profile = () => {
                                 <hr />
                                 <h5>
                                     <i className="fa fa-phone"></i> (+63) {user.contact} |{' '}
-                                    <i className="fa fa-envelope"></i> {user.email} |{' '}
+                                    <i className="fa fa-envelope"></i> {user.email}
+                                    <br/>
                                     <i className="fa fa-home"></i> {user.address}
                                 </h5>
                                 <hr />

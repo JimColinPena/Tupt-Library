@@ -11,7 +11,6 @@ const {
 	getInactiveStudent,
 	getSingleStudent,
 	updateStudent,
-	approveStudent,
 	deleteStudent,
 	getBorrowers,
 	acceptAppointment,
@@ -36,7 +35,6 @@ router.route('/active/student').get(isAuthenticatedUser, getActiveStudent);
 router.route('/inactive/student').get(isAuthenticatedUser, getInactiveStudent);
 router.route('/single/student/:id').get(isAuthenticatedUser, getSingleStudent);
 router.route('/admin/student/:id').put(isAuthenticatedUser, updateStudent).delete(isAuthenticatedUser, deleteStudent);
-router.route('/approve/student/:id').put(isAuthenticatedUser, approveStudent);
 
 router.route('/borrowers').get(getBorrowers);
 router.route('/borrowers/appointment/:id').put(isAuthenticatedUser, acceptAppointment).delete(isAuthenticatedUser, declineAppointment);
