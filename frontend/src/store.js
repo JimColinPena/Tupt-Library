@@ -67,6 +67,11 @@ import {
 	profileReducer,
 } from './reducers/userReducers'
 
+import {
+	allEvaluationsReducer,
+	newEvaluationReducer,
+} from './reducers/evaluationReducers'
+
 const reducer = combineReducers({
 	auth: authReducer,
 	profile:profileReducer,
@@ -113,7 +118,9 @@ const reducer = combineReducers({
 	userDetail: userDetailReducer,
 	historyLogs: allHistoryLogReducer,
 	deletehistoryLogs: historylogReducer,
-	changeDueDate: changeDueDateReducer
+	changeDueDate: changeDueDateReducer,
+	allevaluation: allEvaluationsReducer,
+	newevaluation: newEvaluationReducer,
 })
 
 

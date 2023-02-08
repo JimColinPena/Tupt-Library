@@ -86,6 +86,15 @@ const SideNavbarUser = () => {
                                         Penalties
                                     </Link>
                                 </li>
+
+                                <li>
+                                    <Link to="/student/evaluation" className="sidenav-links">
+                                        <span className="material-symbols-rounded">
+                                            account_balance_wallet
+                                        </span>
+                                        Evaluation
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                         <div className="profile">

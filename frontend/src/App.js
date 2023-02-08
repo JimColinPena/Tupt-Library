@@ -31,6 +31,7 @@ import Appointments from './components/admin/Appointments'
 
 import HistoryLog from './components/admin/HistoryLog'
 
+import StudentEvaluation  from './components/user/StudentEvaluation'
 
 import Home from './components/Home'
 import Login from './components/credential/Login'
@@ -79,6 +80,7 @@ function App() {
 					<Route path="/borrow/books" element={<ProtectedRoute isAdmin={false}><AppointmentDetails /></ProtectedRoute>} />
 					<Route path="/profile/update/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />
 					
+					<Route path="/student/evaluation" element={<StudentEvaluation />} />
 				</Routes>
 			</div>
 		</Router>
