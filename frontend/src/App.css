@@ -543,10 +543,10 @@ footer {
     color: var(--text-color);
     font-size: 13.6px;
     font-weight: 300;
-    padding: 6px 4px;
+    padding: 2px 4px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     text-transform: capitalize;
 }
 
@@ -554,7 +554,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 12px;
     background-color: #b726267c;
     height: 12%;
     width: 100%;

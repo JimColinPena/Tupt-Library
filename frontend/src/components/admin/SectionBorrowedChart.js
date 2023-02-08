@@ -138,12 +138,12 @@ const SectionBorrowedCharts = () => {
             return reduced_arr;
         }, {});
         //geting the key and value counts for the datasets
-        const filter1_datasets = Object.keys(reduced_arr)
-        const filter1_datacounts = Object.values(reduced_arr).map((data) => {
+        const filter2_datasets = Object.keys(reduced_arr)
+        const filter2_datacounts = Object.values(reduced_arr).map((data) => {
             return data.length
         })
-        setSectionData(filter1_datasets)
-        setSectionDataPoints(filter1_datacounts)
+        setSectionData(filter2_datasets)
+        setSectionDataPoints(filter2_datacounts)
     };
 
     //Setting up datas to Bar chart

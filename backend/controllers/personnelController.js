@@ -27,6 +27,7 @@ exports.createPersonnel = async (req, res, next) => {
         address: req.body.address,
         email: req.body.email,
         password: req.body.password,
+        role: 'personnel'
     }
     const personnel = await User.create(newPersonnelData);
     //create history Log
@@ -277,6 +278,14 @@ exports.acceptAppointment = async (req, res, next) => {
 }
 
 exports.declineAppointment = async (req, res, next) => {
+    // const test = req.params.id ;
+    const copyCount = await Borrow.findOne({ _id: req.params.id }).select('bookId')
+    // console.log(test, copyCount)
+    // loop all book from the borrow bookId array and restore on_shelf value while decrementing out value
+    for (let i = 0; i < copyCount.bookId.length; i++) {
+        test = await Book.findByIdAndUpdate(copyCount.bookId[i], { $inc: { on_shelf: 1, out: -1 } })
+    }
+
     let borrower = await Borrow.findById(req.params.id);
     if (!borrower) {
         return next(new ErrorHandler('Borrower not found', 404));
@@ -456,7 +465,8 @@ exports.getUserDetails = async (req, res, next) => {
 }
 
 exports.getHistoryLog = async (req,res,next) => {
-    const history = await HistoryLog.find();
+    // const history = await HistoryLog.find();
+    const history = await HistoryLog.find().sort({createdAt: 'descending'});
     res.status(200).json({
         success: true,
         history

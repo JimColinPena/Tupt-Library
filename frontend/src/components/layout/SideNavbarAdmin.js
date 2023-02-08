@@ -84,7 +84,7 @@ const SideNavbarAdmin = () => {
                                         <span className="material-symbols-rounded">
                                             payment
                                         </span>
-                                        Penalties
+                                        Penalty clearance
                                     </Link>
                                 </li>
                             </ul>

@@ -32,6 +32,7 @@ const AdminDashboard = () => {
 
     return (
         <Fragment>
+            {/* <Loader /> */}
             {loading ? <Loader /> : (
                 <Fragment>
                     <div className="dashboard_header"><h1 className="overview">Dashboard</h1></div>
@@ -64,7 +65,7 @@ const AdminDashboard = () => {
                                     how_to_reg
                                 </span>
                             </div>
-                            <Link to="/admin/personnels"><h3 href="/">pending user approval</h3></Link>
+                            <Link to="/admin/personnels"><h3 href="/">Penalties</h3></Link>
                         </div>
 
 

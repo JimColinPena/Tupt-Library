@@ -23,6 +23,14 @@ const Appointments = () => {
 
 	const { loading, error, borrowers } = useSelector(state => state.allBorrow);
 
+	const declinedHandler = (id) => {
+		dispatch(declineBorrow(id))
+	}
+
+	const acceptedHandler = (id) => {
+		dispatch(acceptBorrow(id))
+	}
+
 	useEffect(() => {
 		dispatch(allBorrow());
 
@@ -43,13 +51,7 @@ const Appointments = () => {
 
 	}, [dispatch, alert, error, navigate, isDeclined, isAccepted])
 
-	const declinedHandler = (id) => {
-		dispatch(declineBorrow(id))
-	}
-
-	const acceptedHandler = (id) => {
-		dispatch(acceptBorrow(id))
-	}
+	
 
 	const setBorrower = () => {
 		const data = {

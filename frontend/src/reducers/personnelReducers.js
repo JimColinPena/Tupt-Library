@@ -534,7 +534,7 @@ export const declineBorrowReducer = (state = {}, action) => {
             return {
                 ...state,
                 loading: false,
-                borrowerDeclined: action.payload,
+                isDeclined: action.payload,
                 history: action.payload.history
             }
 
@@ -547,6 +547,7 @@ export const declineBorrowReducer = (state = {}, action) => {
         case DECLINE_BORROW_RESET:
             return {
                 ...state,
+                loading: false,
                 isDeclined: false
             }
 

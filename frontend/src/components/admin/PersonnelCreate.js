@@ -58,7 +58,7 @@ const PersonnelCreate = () => {
 	 	<Fragment>
 			<MetaData title={'TUP-T Online Library - Admin'} />
 			<SideNavbarAdmin/>
-			<div className="dashboard-content">
+			<div className="management-content">
 				<div className="dashboard-page">
 					<div className="add-body">
 						<div id="multi-step-form-container">

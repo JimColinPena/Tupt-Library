@@ -18,6 +18,11 @@ const historylogSchema = new mongoose.Schema({
             values: ['Approve', 'Decline', 'Create', 'Update', 'Delete', 'Return'],
             message: 'There is error on proccessing this input'
         }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+
 })
 module.exports = mongoose.model('Historylog', historylogSchema);
