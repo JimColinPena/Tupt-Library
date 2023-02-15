@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { 
+import {
     ALL_BOOKS_REQUEST,
     ALL_BOOKS_SUCCESS,
     ALL_BOOKS_FAIL,
@@ -19,8 +19,12 @@ import {
     DELETE_BOOK_REQUEST,
     DELETE_BOOK_SUCCESS,
     DELETE_BOOK_FAIL,
-    
-	CLEAR_ERRORS 
+
+    ADD_BOOK_ACCESSION_REQUEST,
+    ADD_BOOK_ACCESSION_SUCCESS,
+    ADD_BOOK_ACCESSION_FAIL,
+
+    CLEAR_ERRORS
 } from '../constants/bookConstants'
 
 export const allBooks = () => async (dispatch) => {
@@ -51,13 +55,9 @@ export const newBooks = (bookData) => async (dispatch) => {
 
         const config = {
             headers: {
-                 "Content-Type": "multipart/form-data"
-                 // "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         }
-        // for(var pair of bookData.entries()) {
-        //    console.log(pair[0]+ ', '+ pair[1]); 
-        // }
 
         const { data } = await axios.post('/api/v1/book/new', bookData, config)
 
@@ -136,7 +136,33 @@ export const deleteBook = (id) => async (dispatch) => {
     }
 }
 
-export const clearErrors = () => async (dispatch) =>{
+export const addBookAccession = (bookData) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ADD_BOOK_ACCESSION_REQUEST })
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+
+        const { data } = await axios.post('/api/v1/book/accession', bookData, config)
+
+        dispatch({
+            type: ADD_BOOK_ACCESSION_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ADD_BOOK_ACCESSION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const clearErrors = () => async (dispatch) => {
     dispatch({
         type: CLEAR_ERRORS
     })

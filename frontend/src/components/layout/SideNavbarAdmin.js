@@ -29,6 +29,14 @@ const SideNavbarAdmin = () => {
                             <span className='sidenav__sub_header'>Learning Resource Center</span>
                         </header>
                         <div className="flex-container">
+                            {/* <br />
+                            <div className="nav-icons">
+                                <div className='row'>
+                                    <div className='col-md-8'>
+
+                                    </div>
+                                </div>
+                            </div> */}
                             <ul className="sidenav-items">
                                 <li>
                                     <Link to="/dashboard" className="sidenav-links">

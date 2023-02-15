@@ -332,17 +332,8 @@ const PersonnelManagement = () => {
     return (
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
-            {/*<div className="row">*/}
             <SideNavbarAdmin />
-
             <div className="management-content">
-                {/*<div className="management-header">
-                        <h1>Personnels <span></span>
-                            <Link to={"/personnel/new"}>
-                                <i className="fa-solid fa-circle-plus"></i>
-                            </Link> 
-                        </h1>
-                    </div>*/}
                 <div className="row">
                     <div className="col-10 table-section">
                         <div className="">

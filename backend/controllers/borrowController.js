@@ -67,10 +67,10 @@ exports.checkBorrowBook = async (req, res, next) => {
         approvevar = true;
     }
 
-    // query to check if the user have more than 3 books
+    // query to check if the user have more than 2 books
     // console.log(pendingBook.length)
     if (pendingBook.length > 0) {
-        if (pendingBook[0].bookId.length < 3) {
+        if (pendingBook[0].bookId.length < 2) {
             pendingvar = false;
         }
         else {

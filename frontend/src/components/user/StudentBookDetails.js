@@ -16,9 +16,6 @@ import { BORROW_BOOK_RESET, CANCELBORROW_BOOK_RESET } from '../../constants/borr
 
 const StudentBookDetails = () => {
 
-    const [startDate, setStartDate] = useState(new Date());
-    const [bookCheck, setBookCheck] = useState(false);
-
     const alert = useAlert();
     const dispatch = useDispatch();
     let { id } = useParams();
@@ -62,9 +59,7 @@ const StudentBookDetails = () => {
 
     const handleBorrow = (e) => {
         e.preventDefault();
-        // const dueDate = new Date();
-        // dueDate.setDate(startDate.getDate() + 2)
-
+        
         const formData = new FormData();
         formData.set('userId', user._id);
         formData.set('bookId', studentbook._id);

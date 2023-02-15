@@ -8,6 +8,7 @@ import {
 	newBookReducer,
 	bookDetailsReducer,
 	bookReducer,
+	addBookAccessionReducer,
 } from './reducers/bookReducers'
 
 import { 
@@ -79,6 +80,7 @@ const reducer = combineReducers({
 	bookDetails: bookDetailsReducer,
 	newBook: newBookReducer,
 	book: bookReducer,
+	addBookAccession: addBookAccessionReducer,
 	allResearches: allResearchesReducer,
 	researchDetails: researchDetailsReducer,
 	newResearch: newResearchReducer,

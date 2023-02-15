@@ -110,6 +110,10 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
+    accession_number: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Accession'
+    }],
     languange: {
         type: String,
         trim: true,

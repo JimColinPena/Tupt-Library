@@ -3,6 +3,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 
 const Book = require('../models/book');
+const Accession = require('../models/accession');
 const HistoryLog = require('../models/historylog')
 const User = require('../models/user');
 
@@ -15,6 +16,22 @@ exports.getBooks = async (req, res, next) => {
 }
 
 exports.createBook = async (req, res, next) => {
+    const all_accession = []
+
+    const accession = req.body.accession
+    console.log(accession)
+    const accession_count = accession.length
+    console.log(accession_count)
+
+    for (let i = 0; accession_count > i; i++) {
+        accessions = await Accession.create({
+            accession_number: accession[i],
+            on_shelf: 1,
+            out: 0
+        })
+        all_accession.push(accessions._id)
+    }
+
     const newBookData = {
         title: req.body.title,
         responsibility: req.body.responsibility,
@@ -35,7 +52,6 @@ exports.createBook = async (req, res, next) => {
         gen_notes: req.body.gen_notes,
         isbn: req.body.isbn,
         call_number: req.body.call_number,
-        accession: req.body.accession,
         languange: req.body.languange,
         location: req.body.location,
         entered_by: req.body.entered_by,
@@ -51,8 +67,29 @@ exports.createBook = async (req, res, next) => {
         abstract: req.body.abstract,
         reviews: req.body.reviews
     }
+
+
+    const callNumberPrefix = req.body.callNumberPrefix
+
+    if (callNumberPrefix == "Fil") {
+        newBookData.Fil = 1
+    } else if (callNumberPrefix == "Ref") {
+        newBookData.Ref = 1
+    } else if (callNumberPrefix == "Bio") {
+        newBookData.Bio = 1
+    } else if (callNumberPrefix == "Fic") {
+        newBookData.Fic = 1
+    } else if (callNumberPrefix == "Res") {
+        newBookData.Res = 1
+    }
+
     const book = await Book.create(newBookData);
-    //create history Log
+
+    for (let i = 0; all_accession > i; i++) {
+        await Book.findByIdAndUpdate(book._id, { $push: { accession_number: all_accession[i] } })
+    }
+
+    await Book.findByIdAndUpdate(book._id, { $push: { accession_number: all_accession } })
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -84,6 +121,7 @@ exports.getSingleBook = async (req, res, next) => {
 }
 
 exports.updateBook = async (req, res, next) => {
+
     let book = await Book.findById(req.params.id);
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
@@ -127,6 +165,42 @@ exports.updateBook = async (req, res, next) => {
         abstract: req.body.abstract,
         reviews: req.body.reviews
     }
+
+
+    const callNumberPrefix = req.body.callNumberPrefix
+    if (callNumberPrefix == "Fil") {
+        newBookData.Fil = 1
+        newBookData.Ref = 0
+        newBookData.Bio = 0
+        newBookData.Fic = 0
+        newBookData.Res = 0
+    } else if (callNumberPrefix == "Ref") {
+        newBookData.Fil = 0
+        newBookData.Ref = 1
+        newBookData.Bio = 0
+        newBookData.Fic = 0
+        newBookData.Res = 0
+    }
+    else if (callNumberPrefix == "Bio") {
+        newBookData.Fil = 0
+        newBookData.Ref = 0
+        newBookData.Bio = 1
+        newBookData.Fic = 0
+        newBookData.Res = 0
+    } else if (callNumberPrefix == "Fic") {
+        newBookData.Fil = 0
+        newBookData.Ref = 0
+        newBookData.Bio = 0
+        newBookData.Fic = 1
+        newBookData.Res = 0
+    } else if (callNumberPrefix == "Res") {
+        newBookData.Fil = 0
+        newBookData.Ref = 0
+        newBookData.Bio = 0
+        newBookData.Fic = 0
+        newBookData.Res = 1
+    }
+
     book = await Book.findByIdAndUpdate(req.params.id, newBookData, {
         new: true,
         runValidators: true,
@@ -176,5 +250,27 @@ exports.deleteBook = async (req, res, next) => {
         success: true,
         message: 'Book deleted',
         history
+    })
+}
+
+exports.createBookAccession = async (req, res, next) => {
+    const all_accession = []
+    const accession = req.body.accession
+    const accession_count = accession.length
+    for (let i = 0; accession_count > i; i++) {
+        accessions = await Accession.create({
+            accession_number: accession[i],
+            on_shelf: 1,
+            out: 0
+        })
+        all_accession.push(accessions._id)
+    }
+
+    const book = await Book.updateOne({ _id: req.body.bookId }, { $push: { accession_number: all_accession } })
+
+    res.status(200).json({
+        success: true,
+        message: 'Accession Added',
+        book
     })
 }

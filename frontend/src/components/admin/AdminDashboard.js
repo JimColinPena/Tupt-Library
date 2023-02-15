@@ -36,7 +36,6 @@ const AdminDashboard = () => {
             {loading ? <Loader /> : (
                 <Fragment>
                     <div className="dashboard_header"><h1 className="overview">Dashboard</h1></div>
-                    {/* <hr className='dashboard_hr'/> */}
                     <div className="dashboard_container">
                         <div className="dashboard_borrowedbook dash-item">
                             <div className="icon">

@@ -2,7 +2,12 @@ import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
-import Pagination from 'react-js-pagination'
+import {
+	Chip,
+	FormControl,
+	Input,
+	makeStyles,
+} from "@material-ui/core";
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -33,6 +38,8 @@ const BookCreate = () => {
 	const [gen_notes, setGen_notes] = useState('')
 	const [isbn, setIsbn] = useState('')
 	const [call_number, setCall_number] = useState('')
+	const [accessions, setAccessions] = useState([]);
+	const [currValue, setCurrValue] = useState("");
 	const [entered_by, setEntered_by] = useState('')
 	const [updated_by, setUpdated_by] = useState('')
 	const [date_entered, setDate_entered] = useState('')
@@ -51,7 +58,6 @@ const BookCreate = () => {
 	let navigate = useNavigate();
 	const { loading, error, success } = useSelector(state => state.newBook);
 
-	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
 		if (error) {
@@ -67,19 +73,36 @@ const BookCreate = () => {
 
 	}, [dispatch, alert, error, success, navigate])
 
+	const handleKeyUp = (e) => {
+		console.log(e.keyCode);
+		if (e.keyCode == 32) {
+			setAccessions((oldState) => [...oldState, e.target.value]);
+			setCurrValue("");
+		}
+	};
+
+	const handleChange = (e) => {
+		setCurrValue(e.target.value);
+	};
+
+	const handleDelete = (item, index) => {
+		let arr = [...accessions]
+		arr.splice(index, 1)
+		setAccessions(arr)
+	}
+
 	const submitHandler = (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
-		// console.log(subjects)
 		subjects.forEach(subject =>
 			formData.append('subjects', subject)
+		)
+		accessions.forEach(accession =>
+			formData.append('accession', accession)
 		)
 		dispatch(newBooks(formData));
 	};
 
-	function setCurrentPageNo(pageNumber) {
-		setCurrentPage(pageNumber)
-	}
 	const navigateToFormStep = (stepNumber) => {
 
 		document.querySelectorAll(".form-step").forEach((formStepElement) => {
@@ -449,11 +472,18 @@ const BookCreate = () => {
 
 									<section id="step-3" className="form-step d-none">
 										<h2 className="font-normal text-center">Local & Other Information</h2>
-
 										<div className="mt-3">
-
 											<div className="form-group row">
 												<label htmlFor="callNumber_field" className="col-sm-2 col-form-label">Call Number</label>
+												<div className="col-sm-2">
+													<select id="callNumberPrefix" name="callNumberPrefix" className="form-control">
+														<option value="Fil">FIL</option>
+														<option value="Ref">REF</option>
+														<option value="Bio">BIO</option>
+														<option value="Fic">Fic</option>
+														<option value="Res">RES</option>
+													</select>
+												</div>
 												<div className="col-sm-8">
 													<input
 														type="text"
@@ -465,8 +495,24 @@ const BookCreate = () => {
 													/>
 												</div>
 											</div>
-
-
+											<div className="form-group row">
+												<label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
+												<div className="col-sm-8">
+													<FormControl className="formControlRoot">
+														<div className="container">
+															{accessions.map((item, index) => (
+																<Chip size="small" onDelete={() => handleDelete(item, index)} label={item} />
+															))}
+														</div>
+														<Input
+															id="accessions"
+															value={currValue}
+															onChange={handleChange}
+															onKeyDown={handleKeyUp}
+														/>
+													</FormControl>
+												</div>
+											</div>
 											<div className="form-group row">
 												<label htmlFor="language_field" className="col-sm-2 col-form-label">Language</label>
 												<div className="col-sm-10">
@@ -593,41 +639,41 @@ const BookCreate = () => {
 											<div className="form-group row">
 												<label htmlFor="subjects_field" className="col-sm-2 col-form-label">Subjects</label>
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="General Circulation" onChange={e => setSubjects([...subjects, "General Circulation"])}/> General Circulation
+													<input type="checkbox" id="checkbox" name="checkbox" value="General Circulation" onChange={e => setSubjects([...subjects, "General Circulation"])} /> General Circulation
 												</div>
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Circulation" onChange={e => setSubjects([...subjects, "Circulation"])}/> Circulation
+													<input type="checkbox" id="checkbox" name="checkbox" value="Circulation" onChange={e => setSubjects([...subjects, "Circulation"])} /> Circulation
 												</div>
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Special Collection" onChange={e => setSubjects([...subjects, "Special Collection"])}/> Special Collection
+													<input type="checkbox" id="checkbox" name="checkbox" value="Special Collection" onChange={e => setSubjects([...subjects, "Special Collection"])} /> Special Collection
 												</div>
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Essay" onChange={e => setSubjects([...subjects, "Essay"])}/> Essay
+													<input type="checkbox" id="checkbox" name="checkbox" value="Essay" onChange={e => setSubjects([...subjects, "Essay"])} /> Essay
 												</div>
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Teachers Reference" onChange={e => setSubjects([...subjects, "Teachers Reference"])}/> Teacher Reference
+													<input type="checkbox" id="checkbox" name="checkbox" value="Teachers Reference" onChange={e => setSubjects([...subjects, "Teachers Reference"])} /> Teacher Reference
 												</div>
 
 												<label htmlFor="subject_field" className="col-sm-2 col-form-label"> </label>
 
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Reference" onChange={e => setSubjects([...subjects, "Reference"])}/> Reference
+													<input type="checkbox" id="checkbox" name="checkbox" value="Reference" onChange={e => setSubjects([...subjects, "Reference"])} /> Reference
 												</div>
 
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Biography" onChange={e => setSubjects([...subjects, "Biography"])}/> Biography
+													<input type="checkbox" id="checkbox" name="checkbox" value="Biography" onChange={e => setSubjects([...subjects, "Biography"])} /> Biography
 												</div>
 
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Fiction" onChange={e => setSubjects([...subjects, "Fiction"])}/> Fiction
+													<input type="checkbox" id="checkbox" name="checkbox" value="Fiction" onChange={e => setSubjects([...subjects, "Fiction"])} /> Fiction
 												</div>
 
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Filipiniana" onChange={e => setSubjects([...subjects, "Filipiniana"])}/> Filipiniana
+													<input type="checkbox" id="checkbox" name="checkbox" value="Filipiniana" onChange={e => setSubjects([...subjects, "Filipiniana"])} /> Filipiniana
 												</div>
 
 												<div className="col-sm-2">
-													<input type="checkbox" id="checkbox" name="checkbox" value="Reserve" onChange={e => setSubjects([...subjects, "Reserve"])}/> Reserve
+													<input type="checkbox" id="checkbox" name="checkbox" value="Reserve" onChange={e => setSubjects([...subjects, "Reserve"])} /> Reserve
 												</div>
 											</div>
 
@@ -704,4 +750,5 @@ const BookCreate = () => {
 		</Fragment >
 	)
 }
+
 export default BookCreate

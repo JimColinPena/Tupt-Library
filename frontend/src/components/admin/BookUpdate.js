@@ -33,9 +33,15 @@ const BookUpdate = () => {
 	const [gen_notes, setGen_notes] = useState('')
 	const [isbn, setIsbn] = useState('')
 	const [call_number, setCall_number] = useState('')
-	const [accession, setAccession] = useState('')
-	const [languange, setLanguange] = useState('')
-	const [location, setLocation] = useState('')
+	const [fil, setFil] = useState('')
+	const [ref, setRef] = useState('')
+	const [bio, setBio] = useState('')
+	const [res, setRes] = useState('')
+	const [fic, setFic] = useState('')
+
+	// const [accession, setAccession] = useState('')
+	// const [languange, setLanguange] = useState('')
+	// const [location, setLocation] = useState('')
 	const [entered_by, setEntered_by] = useState('')
 	const [updated_by, setUpdated_by] = useState('')
 	const [date_entered, setDate_entered] = useState('')
@@ -83,9 +89,14 @@ const BookUpdate = () => {
 			setGen_notes(book.gen_notes)
 			setIsbn(book.isbn)
 			setCall_number(book.call_number)
-			setAccession(book.accession)
-			setLanguange(book.languange)
-			setLocation(book.location)
+			setFil(book.Fil)
+			setRef(book.Ref)
+			setBio(book.Bio)
+			setFic(book.Fic)
+			setRes(book.Res)
+			// setAccession(book.accession)
+			// setLanguange(book.languange)
+			// setLocation(book.location)
 			setEntered_by(book.entered_by)
 			setUpdated_by(book.updated_by)
 			setDate_entered(book.date_entered)
@@ -121,11 +132,11 @@ const BookUpdate = () => {
 	const submitHandler = (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
-		console.log(subjects)
+		// console.log(subjects)
 		subjects.forEach(subject =>
 			formData.append('subjects', subject)
 		)
-		console.log(subjects)
+		// console.log(subjects)
 		dispatch(updateBook(book._id, formData));
 	};
 
@@ -508,6 +519,15 @@ const BookUpdate = () => {
 
 													<div className="form-group row">
 														<label htmlFor="callNumber_field" className="col-sm-2 col-form-label">Call Number</label>
+														<div className="col-sm-2">
+															<select id="callNumberPrefix" name="callNumberPrefix" className="form-control">
+																<option value="Fil" selected={fil}>FIL</option>
+																<option value="Ref" selected={ref}>REF</option>
+																<option value="Bio" selected={bio}>BIO</option>
+																<option value="Fic" selected={fic}>Fic</option>
+																<option value="Res" selected={res}>RES</option>
+															</select>
+														</div>
 														<div className="col-sm-8">
 															<input
 																type="text"
@@ -646,7 +666,7 @@ const BookUpdate = () => {
 													<div className="form-group row">
 														<label htmlFor="subject_field" className="col-sm-2 col-form-label">Subjects</label>
 														<div className="col-sm-2">
-															{console.log(subjects.indexOf("Circulation"))}
+															{/* {console.log(subjects.indexOf("Circulation"))} */}
 															<input type="checkbox" id="checkbox" name="checkbox" value="General Circulation" checked={subjects.indexOf("General Circulation") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "General Circulation"])} /> General Circulation
 														</div>
 

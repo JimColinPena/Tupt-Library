@@ -59,30 +59,37 @@ const BorrowDetails = () => {
 
     const handleConfirm = (e) => {
         e.preventDefault();
+
         const dueDate = new Date();
 
-        startDate.setDate(startDate.getDate())
-        startDate.setMonth(startDate.getMonth())
-        startDate.setFullYear(startDate.getFullYear())
+        if (startDate.getDay() === 6 || startDate.getDay() === 0) {
+            console.group(startDate.getDay())
+            setShow1(false);
+            alert.error('Weekend is not a valid appointment date');
+        } else {
+            startDate.setDate(startDate.getDate())
+            startDate.setMonth(startDate.getMonth())
+            startDate.setFullYear(startDate.getFullYear())
 
-        if ((startDate.getDay() === 5)) {
-            dueDate.setDate(startDate.getDate() + 3)
-            dueDate.setMonth(startDate.getMonth())
-            dueDate.setFullYear(startDate.getFullYear())
+            if ((startDate.getDay() === 5)) {
+                dueDate.setDate(startDate.getDate() + 3)
+                dueDate.setMonth(startDate.getMonth())
+                dueDate.setFullYear(startDate.getFullYear())
 
+            }
+            else {
+                dueDate.setDate(startDate.getDate() + 1)
+                dueDate.setMonth(startDate.getMonth())
+                dueDate.setFullYear(startDate.getFullYear())
+            }
+
+            const formData = new FormData();
+            formData.set('userId', user._id);
+            formData.set('appointmentDate', startDate);
+            formData.set('dueDate', dueDate);
+
+            dispatch(confirmBorrowBooks(formData));
         }
-        else {
-            dueDate.setDate(startDate.getDate()+1)
-            dueDate.setMonth(startDate.getMonth())
-            dueDate.setFullYear(startDate.getFullYear())
-        }
-
-        const formData = new FormData();
-        formData.set('userId', user._id);
-        formData.set('appointmentDate', startDate);
-        formData.set('dueDate', dueDate);
-
-        dispatch(confirmBorrowBooks(formData));
     }
 
     const handleCancel = (e) => {

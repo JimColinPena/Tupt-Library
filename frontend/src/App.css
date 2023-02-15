@@ -16,12 +16,12 @@ body {
 }
 
 /* Loader */
-.loader-hidden{
+.loader-hidden {
     opacity: 0;
     visibility: hidden;
 }
 
-.loader .loader_image{
+.loader .loader_image {
     position: relative;
     top: 0;
     left: 0;
@@ -31,14 +31,14 @@ body {
     transition: opacity 0.75s, visibility 0.75s;
 }
 
-.loader .loader_image .logo_back{
+.loader .loader_image .logo_back {
     height: 8rem;
     animation: loading 5s ease infinite;
     animation-duration: 5s;
     position: relative;
 }
 
-.loader .loader_image .logo_front{
+.loader .loader_image .logo_front {
     height: 8rem;
     position: absolute;
 }
@@ -50,15 +50,16 @@ body {
     justify-content: center;
 }
 
-.loader .loader_text h3{
+.loader .loader_text h3 {
     font-weight: bolder;
 }
 
 @keyframes loading {
-    from{
+    from {
         transform: rotate(0turn);
     }
-    to{
+
+    to {
         transform: rotate(1turn);
     }
 }
@@ -734,7 +735,7 @@ footer {
 
 ul.form-stepper {
     counter-reset: section;
-    margin-bottom: 3rem;
+    /* margin-bottom: 3rem; */
 }
 
 ul.form-stepper .form-stepper-circle {
@@ -1002,6 +1003,7 @@ ul.form-stepper li a .form-stepper-circle {
     right: 150px;
     top: 15px;
 }
+
 .returned_books {
     position: absolute;
     right: 100px;
@@ -1016,6 +1018,7 @@ ul.form-stepper li a .form-stepper-circle {
     /* top: -20px; */
     top: 15px;
 }
+
 .borroweed_books {
     position: absolute;
     left: 100px;
@@ -1023,3 +1026,57 @@ ul.form-stepper li a .form-stepper-circle {
     display: flex;
     align-items: center;
 }
+
+.formControlRoot {
+    display: "flex";
+    align-items: "center";
+    gap: "8px";
+    width: "300px";
+    flex-wrap: "wrap";
+    flex-direction: "row";
+    border: '2px solid lightgray';
+    padding: 4;
+    border-radius: '4px';
+}
+
+.formControlRoot .container {
+    gap: "6px";
+    display: "flex";
+    flex-direction: "row";
+    flex-wrap: "wrap";
+}
+
+.formControlRoot .container span {
+    background-color: "gray";
+    padding: "1px 3px";
+    border-radius: "4px";
+}
+
+/* .icon-large h4{
+    margin: 0;
+} */
+/* .icon-large .material-symbols-rounded {
+    font-size: 28px;
+    border: solid;
+    border-radius: 5px;
+}
+
+.icon-dashboard {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 13.6px;
+    font-weight: 300;
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-transform: capitalize;
+}
+
+.icon-dashboard:hover {
+    text-decoration: none;
+    color: #800000;
+    background-color: white;
+    width: fit-content;
+    border-radius: 5px;
+} */

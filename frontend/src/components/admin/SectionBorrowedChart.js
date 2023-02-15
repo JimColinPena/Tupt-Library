@@ -73,10 +73,10 @@ const SectionBorrowedCharts = () => {
             return Dategroups;
         }, {}
     )
-    console.log(Dategroups);
+    // console.log(Dategroups);
 
     const arrGroups = Object.entries(Dategroups)
-    console.log(arrGroups);
+    // console.log(arrGroups);
     //----------------------------------------------------------------------
     function filterData1() {
         let valueStart = refStart.current.value;
