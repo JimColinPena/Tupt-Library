@@ -13,7 +13,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { allPersonnels, deletePersonnel, getAllActiveStudents, getAllInactiveStudents, approveStudent, deleteStudent, clearErrors } from '../../actions/personnelActions'
 
+import { allUsers, activateUsers, deactivatedUsers } from '../../actions/userActions'
+
 import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET, UPDATE_PERSONNEL_RESET } from '../../constants/personnelConstants'
+
+import { ACTIVATE_USER_RESET, DEACTIVATED_USER_RESET } from '../../constants/userConstants'
 
 // import { loadUser} from '../../actions/userActions'
 const PersonnelManagement = () => {
@@ -27,13 +31,16 @@ const PersonnelManagement = () => {
     const { active_students } = useSelector(state => state.allActiveStudents);
     const { PersonnelDeleted } = useSelector(state => state.personnel);
     const { StudentDeleted, isUpdated } = useSelector(state => state.student);
+    const { users } = useSelector(state => state.allUsers)
+    const { isActivated } = useSelector(state => state.activateUser);
+    const { isDeactivated } = useSelector(state => state.deactivateUser);
     // const { user } = useSelector(state => state.auth)
 
     useEffect(() => {
         dispatch(allPersonnels());
         dispatch(getAllActiveStudents());
         dispatch(getAllInactiveStudents());
-
+        dispatch(allUsers());
 
         // dispatch(loadUser())
         if (error) {
@@ -59,7 +66,7 @@ const PersonnelManagement = () => {
             dispatch({ type: DELETE_STUDENT_RESET })
         }
 
-    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted, navigate])
+    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted,  isActivated, isDeactivated, navigate])
 
     const deletePersonnelHandler = (id) => {
         dispatch(deletePersonnel(id))
@@ -67,6 +74,14 @@ const PersonnelManagement = () => {
 
     const deleteStudentHandler = (id) => {
         dispatch(deleteStudent(id))
+    }
+
+    const acvateUserHandler = (id) => {
+        dispatch(activateUsers(id))
+    }
+
+    const deacvateUserHandler = (id) => {
+        dispatch(deactivatedUsers(id))
     }
 
     // const approveStudentHandler = (id) => {
@@ -214,6 +229,98 @@ const PersonnelManagement = () => {
         // console.log(data);
     }
 
+    const setUsers = () => {
+        const data = {
+            columns: [
+                {
+                    label: 'ID',
+                    field: 'id_number',
+                    sort: 'asc'
+                },
+                {
+                    label: 'Name',
+                    field: 'name',
+                    sort: 'asc'
+                },
+                {
+                    label: 'Contact',
+                    field: 'contact',
+                    // sort: 'asc'
+                },
+                {
+                    label: 'Account Status',
+                    field: 'status',
+                    // sort: 'asc'
+                },
+                {
+                    label: 'Actions',
+                    field: 'actions',
+                },
+            ],
+            rows: []
+        }
+
+        users.forEach(user => {
+            data.rows.push({
+                id_number: user.id_number,
+                name: user.name,
+                contact: user.contact,
+                status: user.status,
+                actions : 
+                <Fragment>
+                    {user.status == 'active' ?
+                        <button className="btn btn-danger py-1 px-2" data-toggle="modal" data-target={"#DeactivateModal"+user._id}>Deactivate
+                        </button>
+
+                    : <button className="btn btn-primary py-1 px-2" data-toggle="modal" data-target={"#ActivateModal"+user._id}>Activate
+                        </button>
+
+                    }
+
+                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal"+user._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeactivateModalLabel">Deactivate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to deactivate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deacvateUserHandler(user._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal fade" data-backdrop="false" id={"ActivateModal"+user._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeactivateModalLabel">Activate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to activate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={() => acvateUserHandler(user._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </Fragment>
+            })
+        })
+        return data;
+    }
+
     return (
         <Fragment>
             <MetaData title={'User Management'} />
@@ -246,6 +353,21 @@ const PersonnelManagement = () => {
                                 {loading ? <Loader /> : (
                                     <MDBDataTable
                                         data={setActiveStudents()}
+                                        className="px-3"
+                                        bordered
+                                        striped
+                                        hover
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        <div className="col-12">
+                            <div className="">
+                                <h1 className="text-center">User Management
+                                </h1>
+                                {loading ? <Loader /> : (
+                                    <MDBDataTable
+                                        data={setUsers()}
                                         className="px-3"
                                         bordered
                                         striped

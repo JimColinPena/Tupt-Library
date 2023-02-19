@@ -9,6 +9,9 @@ const {
 	updateBook,
 	deleteBook,
 	createBookAccession,
+	singleBookAccession,
+	editBookAccession,
+	deleteBookAccession
 } = require('../controllers/bookController');
 
 router.route('/book/new').post(isAuthenticatedUser, createBook);
@@ -16,4 +19,6 @@ router.route('/admin/books').get(isAuthenticatedUser, getBooks);
 router.route('/admin/single/book/:id').get(getSingleBook);
 router.route('/admin/book/:id').put(isAuthenticatedUser, updateBook).delete(isAuthenticatedUser, deleteBook);
 router.route('/book/accession').post(isAuthenticatedUser, createBookAccession);
+router.route('/accession/detail/:id').get(isAuthenticatedUser, singleBookAccession);
+router.route('/book/accession/:id').put(isAuthenticatedUser, editBookAccession).delete(isAuthenticatedUser, deleteBookAccession);
 module.exports = router;

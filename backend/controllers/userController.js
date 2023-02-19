@@ -25,6 +25,14 @@ exports.updatepasswordUser = async (req,res,next) => {
     }
 }
 
+exports.allUsers = async (req, res, next) => {
+    const users = await Users.find({role: "student"});
+    res.status(200).json({
+        success: true,
+        users
+    })
+}
+
 exports.deactivateUser = async (req,res,next) => {
     try{
         Users.findOneAndUpdate({

@@ -19,7 +19,18 @@ import {
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
 
-        
+    ALL_USERS_REQUEST,
+    ALL_USERS_SUCCESS,
+    ALL_USERS_FAIL,
+
+    ACTIVATE_USER_REQUEST,
+    ACTIVATE_USER_SUCCESS,
+    ACTIVATE_USER_FAIL,
+
+    DEACTIVATED_USER_REQUEST,
+    DEACTIVATED_USER_SUCCESS,
+    DEACTIVATED_USER_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/userConstants'
 
@@ -129,6 +140,66 @@ export const logout = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: LOGOUT_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const allUsers = () => async (dispatch) => {
+    try {
+        
+        dispatch({ type: ALL_USERS_REQUEST })
+
+        const { data } = await axios.get('/api/v1/users')
+
+        dispatch({
+            type: ALL_USERS_SUCCESS,
+            payload: data.users
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ALL_USERS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const activateUsers = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ACTIVATE_USER_REQUEST })
+
+        const { data } = await axios.put(`/api/v1/user/activate/${id}`)
+
+        dispatch({
+            type: ACTIVATE_USER_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ACTIVATE_USER_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const deactivatedUsers = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: DEACTIVATED_USER_REQUEST })
+
+        const { data } = await axios.put(`/api/v1/user/deactivate/${id}`)
+
+        dispatch({
+            type: DEACTIVATED_USER_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DEACTIVATED_USER_FAIL,
             payload: error.response.data.message
         })
     }

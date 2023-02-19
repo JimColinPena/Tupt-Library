@@ -94,6 +94,11 @@ import {
     DELETE_HISTORYLOG_FAIL,
     DELETE_HISTORYLOG_RESET,
 
+    DELETE_ALL_HISTORYLOG_REQUEST,
+    DELETE_ALL_HISTORYLOG_SUCCESS,
+    DELETE_ALL_HISTORYLOG_RESET,
+    DELETE_ALL_HISTORYLOG_FAIL,
+
     UPDATE_DUE_DATE_REQUEST,
     UPDATE_DUE_DATE_SUCCESS,
     UPDATE_DUE_DATE_RESET,
@@ -767,6 +772,41 @@ export const historylogReducer = (state = {}, action) => {
                 ...state,
                 historyLogDeleted: false
             }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+        default:
+            return state
+    }
+}
+
+export const historylogAllDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+        
+        case DELETE_ALL_HISTORYLOG_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case DELETE_ALL_HISTORYLOG_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                historylogAllDeleted: action.payload
+            }
+        case DELETE_ALL_HISTORYLOG_RESET:
+            return {
+                ...state,
+                historylogAllDeleted: false
+            }
+        case DELETE_ALL_HISTORYLOG_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        
         case CLEAR_ERRORS:
             return {
                 ...state,

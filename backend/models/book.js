@@ -105,12 +105,32 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
+    Fil: {
+        type: Boolean,
+        default: false
+    },
+    Ref: {
+        type: Boolean,
+        default: false
+    },
+    Bio: {
+        type: Boolean,
+        default: false
+    },
+    Fic: {
+        type: Boolean,
+        default: false
+    },
+    Res: {
+        type: Boolean,
+        default: false
+    },
     call_number: {
         type: String,
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
-    accession_number: [{
+    accession_numbers: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Accession'
     }],

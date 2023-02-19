@@ -4,7 +4,7 @@ const User = require('../models/user');
 const Return = require('../models/return');
 
 exports.borrowBook = async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     const checkAvailability = await Borrow.find({ userId: req.body.userId});
 
     if (checkAvailability.length == 0) {
@@ -15,7 +15,7 @@ exports.borrowBook = async (req, res, next) => {
             bookId: req.body.bookId,
             status: "To Confirm"
         }
-        console.log(newBorrowData)
+        // console.log(newBorrowData)
         const borrowbook = await Borrow.create(newBorrowData);
 
         res.status(201).json({
@@ -114,7 +114,7 @@ exports.cancelBorrowBook = async (req, res, next) => {
             { userId: req.body.userId },
             { $pull: { bookId: req.body.bookId } }
         )
-        console.log(cancelbook)
+        // console.log(cancelbook)
         res.status(201).json({
             success: true,
             cancelbook
@@ -188,7 +188,7 @@ exports.getPendingUsersLength = async (req,res,next) => {
 
 exports.BorrowedBooksChart = async (req, res, next) => {
     const borrowedDate = await Return.find({}).select(['returnedDate']);
-    console.log(borrowedDate);
+    // console.log(borrowedDate);
     res.status(200).json({
         success: true,
         borrowedDate

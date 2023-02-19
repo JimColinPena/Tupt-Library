@@ -130,7 +130,7 @@ exports.sendnotification = async(req,res,next) => {
 
 exports.recievednotification = async(req,res,next) => {
     const notifications = await notification.findByIdAndUpdate(req.body.id,{'deliveryStatus':'seen'});
-    console.log(notifications);
+    // console.log(notifications);
     res.status(200).json({
         success: true,
         notifications

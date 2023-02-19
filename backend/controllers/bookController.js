@@ -8,7 +8,7 @@ const HistoryLog = require('../models/historylog')
 const User = require('../models/user');
 
 exports.getBooks = async (req, res, next) => {
-    const book = await Book.find();
+    const book = await Book.find().populate('accession_numbers');
     res.status(200).json({
         success: true,
         book
@@ -16,22 +16,6 @@ exports.getBooks = async (req, res, next) => {
 }
 
 exports.createBook = async (req, res, next) => {
-    const all_accession = []
-
-    const accession = req.body.accession
-    console.log(accession)
-    const accession_count = accession.length
-    console.log(accession_count)
-
-    for (let i = 0; accession_count > i; i++) {
-        accessions = await Accession.create({
-            accession_number: accession[i],
-            on_shelf: 1,
-            out: 0
-        })
-        all_accession.push(accessions._id)
-    }
-
     const newBookData = {
         title: req.body.title,
         responsibility: req.body.responsibility,
@@ -85,11 +69,6 @@ exports.createBook = async (req, res, next) => {
 
     const book = await Book.create(newBookData);
 
-    for (let i = 0; all_accession > i; i++) {
-        await Book.findByIdAndUpdate(book._id, { $push: { accession_number: all_accession[i] } })
-    }
-
-    await Book.findByIdAndUpdate(book._id, { $push: { accession_number: all_accession } })
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
@@ -254,23 +233,73 @@ exports.deleteBook = async (req, res, next) => {
 }
 
 exports.createBookAccession = async (req, res, next) => {
-    const all_accession = []
-    const accession = req.body.accession
-    const accession_count = accession.length
-    for (let i = 0; accession_count > i; i++) {
-        accessions = await Accession.create({
-            accession_number: accession[i],
-            on_shelf: 1,
-            out: 0
-        })
-        all_accession.push(accessions._id)
-    }
+    // const all_accession = []
+    const accession_number = req.body.accession
 
-    const book = await Book.updateOne({ _id: req.body.bookId }, { $push: { accession_number: all_accession } })
+    const accession = await Accession.create({
+        accession_number: accession_number,
+        on_shelf: 1,
+        out: 0
+    })
+
+    console.log(accession)
+    console.log(accession._id)
+
+    const book = await Book.updateOne({ _id: req.body.bookId }, { $push: { accession_numbers: accession._id } })
+
+    // console.log(accession)
+    // console.log(book)
 
     res.status(200).json({
         success: true,
         message: 'Accession Added',
-        book
+        accession
+    })
+}
+
+exports.singleBookAccession = async (req, res, next) => {
+    const getbook_accessions = await Book.findById(req.params.id).populate({
+        path: 'accession_numbers',
+    }).select('accession_number -_id')
+
+    const bookAccessions = getbook_accessions.accession_numbers
+
+
+    res.status(200).json({
+        success: true,
+        bookAccessions
+    })
+}
+
+exports.editBookAccession = async (req, res, next) => {
+
+}
+
+exports.deleteBookAccession = async (req,res,next) => {
+    const accession = await Accession.findById(req.params.id);
+    if (!accession) {
+        return next(new ErrorHandler('History Log not found', 404));
+    }
+    await accession.remove();
+
+    const book = await Book.updateOne({ _id: req.body.bookId }, { $pull: { accession_numbers: accession._id } })
+
+    const nowDate = new Date();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
+    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
+    const user = await User.findById(req.user._id);
+    const history = await HistoryLog.create(
+        {
+            userId: user._id,
+            historylogText: user.name + " deleted a Book accession from " + book.title + ", on " + newDate,
+            historylogDate: formatDate,
+            historylogType: 'Delete'
+        }
+    );
+
+    res.status(200).json({
+        success: true,
+        message: 'Book deleted',
+        history
     })
 }

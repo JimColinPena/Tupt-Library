@@ -38,8 +38,6 @@ const BookCreate = () => {
 	const [gen_notes, setGen_notes] = useState('')
 	const [isbn, setIsbn] = useState('')
 	const [call_number, setCall_number] = useState('')
-	const [accessions, setAccessions] = useState([]);
-	const [currValue, setCurrValue] = useState("");
 	const [entered_by, setEntered_by] = useState('')
 	const [updated_by, setUpdated_by] = useState('')
 	const [date_entered, setDate_entered] = useState('')
@@ -73,32 +71,11 @@ const BookCreate = () => {
 
 	}, [dispatch, alert, error, success, navigate])
 
-	const handleKeyUp = (e) => {
-		console.log(e.keyCode);
-		if (e.keyCode == 32) {
-			setAccessions((oldState) => [...oldState, e.target.value]);
-			setCurrValue("");
-		}
-	};
-
-	const handleChange = (e) => {
-		setCurrValue(e.target.value);
-	};
-
-	const handleDelete = (item, index) => {
-		let arr = [...accessions]
-		arr.splice(index, 1)
-		setAccessions(arr)
-	}
-
 	const submitHandler = (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		subjects.forEach(subject =>
 			formData.append('subjects', subject)
-		)
-		accessions.forEach(accession =>
-			formData.append('accession', accession)
 		)
 		dispatch(newBooks(formData));
 	};
@@ -493,24 +470,6 @@ const BookCreate = () => {
 														value={call_number}
 														onChange={(e) => setCall_number(e.target.value)}
 													/>
-												</div>
-											</div>
-											<div className="form-group row">
-												<label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
-												<div className="col-sm-8">
-													<FormControl className="formControlRoot">
-														<div className="container">
-															{accessions.map((item, index) => (
-																<Chip size="small" onDelete={() => handleDelete(item, index)} label={item} />
-															))}
-														</div>
-														<Input
-															id="accessions"
-															value={currValue}
-															onChange={handleChange}
-															onKeyDown={handleKeyUp}
-														/>
-													</FormControl>
 												</div>
 											</div>
 											<div className="form-group row">

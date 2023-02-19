@@ -27,6 +27,15 @@ import {
     ADD_BOOK_ACCESSION_RESET,
     ADD_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_DETAILS_REQUEST,
+    ACCESSION_DETAILS_SUCCESS,
+    ACCESSION_DETAILS_FAIL,
+
+    DELETE_BOOK_ACCESSION_REQUEST,
+    DELETE_BOOK_ACCESSION_SUCCESS,
+    DELETE_BOOK_ACCESSION_RESET,
+    DELETE_BOOK_ACCESSION_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 export const allBooksReducer = (state = { books: [] }, action) => {
@@ -184,7 +193,7 @@ export const bookReducer = (state = {}, action) => {
     }
 }
 
-export const addBookAccessionReducer = (state = {}, action) => {
+export const addBookAccessionReducer = (state = { accession: {}}, action) => {
     switch (action.type) {
 
         case ADD_BOOK_ACCESSION_REQUEST:
@@ -195,9 +204,9 @@ export const addBookAccessionReducer = (state = {}, action) => {
 
         case ADD_BOOK_ACCESSION_SUCCESS:
             return {
-                ...state,
                 loading: false,
-                isAdded: action.payload
+                success: action.payload.success,
+                accession: action.payload.accession
             }
 
         case ADD_BOOK_ACCESSION_FAIL:
@@ -209,7 +218,7 @@ export const addBookAccessionReducer = (state = {}, action) => {
         case ADD_BOOK_ACCESSION_RESET:
             return {
                 ...state,
-                isAdded: false
+                success: false
             }
 
         case CLEAR_ERRORS:
@@ -218,6 +227,69 @@ export const addBookAccessionReducer = (state = {}, action) => {
                 error: null
             }
 
+        default:
+            return state
+    }
+}
+
+export const accessionDetailsReducer = (state = { bookAccessions: {} }, action) => {
+    switch (action.type) {
+        case ACCESSION_DETAILS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+        case ACCESSION_DETAILS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                bookAccessions: action.payload,
+
+            }
+        case ACCESSION_DETAILS_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+        default:
+            return state;
+    }
+}
+
+export const accessionDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case DELETE_BOOK_ACCESSION_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case DELETE_BOOK_ACCESSION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                accessionDeleted: action.payload
+            }
+        case DELETE_BOOK_ACCESSION_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case DELETE_BOOK_ACCESSION_RESET:
+            return {
+                ...state,
+                accessionDeleted: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
         default:
             return state
     }

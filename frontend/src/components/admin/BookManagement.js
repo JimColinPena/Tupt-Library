@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import { MDBDataTable } from 'mdbreact'
-import { Chip, FormControl, Input, } from "@material-ui/core";
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -10,9 +9,8 @@ import SideNavbarAdmin from '../layout/SideNavbarAdmin'
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { allBooks, deleteBook, addBookAccession, clearErrors } from '../../actions/bookActions'
-import { DELETE_BOOK_RESET, ADD_BOOK_ACCESSION_RESET } from '../../constants/bookConstants'
-import { acceptBorrowReducer } from '../../reducers/personnelReducers';
+import { allBooks, deleteBook, clearErrors } from '../../actions/bookActions'
+import { DELETE_BOOK_RESET } from '../../constants/bookConstants'
 
 const BookManagement = () => {
 
@@ -22,10 +20,6 @@ const BookManagement = () => {
 
     const { loading, error, books } = useSelector(state => state.allBooks);
     const { isDeleted } = useSelector(state => state.book)
-    const { isAdded } = useSelector(state => state.addBookAccession)
-
-    const [accessions, setAccessions] = useState([]);
-    const [currValue, setCurrValue] = useState("");
 
     useEffect(() => {
         dispatch(allBooks());
@@ -41,57 +35,11 @@ const BookManagement = () => {
             dispatch({ type: DELETE_BOOK_RESET })
         }
 
-        if (isAdded) {
-            alert.success('Book Accession added successfully');
-            dispatch({ type: ADD_BOOK_ACCESSION_RESET })
-        }
-
-    }, [dispatch, alert, error, isDeleted, isAdded, navigate])
+    }, [dispatch, alert, error, isDeleted, navigate])
 
     const deleteBookHandler = (id) => {
         dispatch(deleteBook(id))
     }
-
-    const handleKeyUp = (e) => {
-        console.log(e.keyCode);
-        if (e.keyCode == 32) {
-            setAccessions((oldState) => [...oldState, e.target.value]);
-            setCurrValue("");
-        }
-    };
-
-    const handleChange = (e) => {
-        setCurrValue(e.target.value);
-    };
-
-    const handleDelete = (item, index) => {
-        let arr = [...accessions]
-        arr.splice(index, 1)
-        setAccessions(arr)
-    }
-
-    const addAccessionHandler = (id) => {
-
-        if (accessions.length === 0 ) {
-            alert.error('Accession number is empty ');
-        }
-        else {
-            const formData = new FormData();
-            formData.set('bookId', id)
-            console.log(accessions)
-            console.log(id)
-            accessions.forEach(accession =>
-                formData.append('accession', accession)
-            )
-            dispatch(addBookAccession(formData))
-            setAccessions([])
-        }
-
-    }
-
-
-
-
 
     const setBooks = () => {
         const data = {
@@ -168,51 +116,83 @@ const BookManagement = () => {
                 on_shelf: books.on_shelf,
                 out: books.out,
                 yearPub: books.yearPub,
-                accession: <Fragment>
-                    <div className="icon-buttons">
-                        <button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#AddBookAccessionModal" + books._id}>
-                            <i class="fa fa-book-medical"></i>
-                        </button>
-                        <div className="modal fade" id={"AddBookAccessionModal" + books._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-                            <div className="modal-dialog modal-dialog-centered" role="document">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h3 className="modal-title" id="DeleteActiveModalLabel">Add Accession Number(s)</h3>
-                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div className="modal-body">
-                                        <h6 className="">Book Tilte:{books.title}</h6>
-                                        <FormControl className="formControlRoot">
-                                            <div className="container">
-                                                {accessions.map((item, index) => (
-                                                    <Chip size="small" onDelete={() => handleDelete(item, index)} label={item} />
-                                                ))}
+                accession:
+                    <Fragment>
+                        {books.accession_numbers.map((accession) => (
+                            <div>
+                                <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#ViewBookAccessionModal" + accession._id}>
+                                    <i className="fa fa-eye"></i>
+                                </button>
+                                <div className="modal fade" id={"ViewBookAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                                    <div className="modal-dialog" role="document">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h3 className="modal-title" id="DeleteAccessionModalLabel">Edit Accession Number</h3>
+                                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
-                                            <Input
-                                                id="accessions"
-                                                value={currValue}
-                                                onChange={handleChange}
-                                                onKeyDown={handleKeyUp}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-primary" onClick={() => addAccessionHandler(books._id)} data-dismiss="modal">Submit</button>
-                                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <div>
+                                                <form>
+                                                    <div className="modal-body">
+                                                        <div className='row'>
+                                                            <div className='col-md-12'>
+                                                                <label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
+                                                                <div className="col-sm-8">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="accession_field"
+                                                                        className="form-control"
+                                                                        name='accession_edit'
+                                                                        value={accession.accession_number}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-6'>
+                                                                <label htmlFor="on_shelf_field" className="col-sm-2 col-form-label">Accession Number</label>
+                                                                <div className="col-sm-10">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="on_shelf_field"
+                                                                        className="form-control"
+                                                                        name='on_shelf'
+                                                                        value={accession.on_shelf}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-6'>
+                                                                <label htmlFor="out_field" className="col-sm-2 col-form-label">Accession Number</label>
+                                                                <div className="col-sm-10">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="out_field"
+                                                                        className="form-control"
+                                                                        name='out'
+                                                                        value={accession.out}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <Link to={`/accession/detail/${accession._id}`} className="btn btn-info py-1 px-2">
+                                    <i className="fa fa-pencil"></i>
+                                </Link>
                             </div>
-                        </div>
-                        <button className="btn btn-info py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditBookAccessionModal" + books._id}>
-                            <i className="fa fa-pencil"></i>
-                        </button>
-                        <button className="btn btn-dark py-1 px-2 ml-2" data-toggle="modal" data-target={"#ViewBookAccessionModal" + books._id}>
-                            <i className="fa fa-eye"></i>
-                        </button>
-                    </div>
-                </Fragment>,
+                        )
+                        )}
+                        <br />
+
+                    </Fragment>,
+
+
                 actions: <Fragment>
                     <div className="icon-buttons">
                         <Link to={`/admin/book/${books._id}`} className="btn btn-warning py-1 px-2">

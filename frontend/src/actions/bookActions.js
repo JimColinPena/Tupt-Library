@@ -24,6 +24,14 @@ import {
     ADD_BOOK_ACCESSION_SUCCESS,
     ADD_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_DETAILS_REQUEST,
+    ACCESSION_DETAILS_SUCCESS,
+    ACCESSION_DETAILS_FAIL,
+
+    DELETE_BOOK_ACCESSION_REQUEST,
+    DELETE_BOOK_ACCESSION_SUCCESS,
+    DELETE_BOOK_ACCESSION_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 
@@ -157,6 +165,42 @@ export const addBookAccession = (bookData) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: ADD_BOOK_ACCESSION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const getBookAccession = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: ACCESSION_DETAILS_REQUEST })
+        const { data } = await axios.get(`/api/v1/accession/detail/${id}`)
+        dispatch({
+            type: ACCESSION_DETAILS_SUCCESS,
+            payload: data.bookAccessions
+        })
+    } catch (error) {
+        dispatch({
+            type: ACCESSION_DETAILS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const deleteBookAccession = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: DELETE_BOOK_ACCESSION_REQUEST })
+
+        const { data } = await axios.delete(`/api/v1/book/accession/${id}`)
+
+        dispatch({
+            type: DELETE_BOOK_ACCESSION_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_BOOK_ACCESSION_FAIL,
             payload: error.response.data.message
         })
     }

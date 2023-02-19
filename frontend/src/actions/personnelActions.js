@@ -84,6 +84,10 @@ import {
     DELETE_HISTORYLOG_SUCCESS,
     DELETE_HISTORYLOG_FAIL,
 
+    DELETE_ALL_HISTORYLOG_REQUEST,
+    DELETE_ALL_HISTORYLOG_SUCCESS,
+    DELETE_ALL_HISTORYLOG_FAIL,
+
     UPDATE_DUE_DATE_REQUEST,
     UPDATE_DUE_DATE_SUCCESS,
     UPDATE_DUE_DATE_FAIL,
@@ -520,6 +524,27 @@ export const deleteHistoryLog = (id) => async (dispatch) => {
             payload: error.response.data.message
         })
     }
+}
+
+export const deleteAllHistoryLog = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: DELETE_ALL_HISTORYLOG_REQUEST})
+
+        const { data } = await axios.delete(`/api/v1/admin/delete/historylog`)
+
+        dispatch({
+            type: DELETE_ALL_HISTORYLOG_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_ALL_HISTORYLOG_FAIL,
+            payload: error.response.data.message
+        })
+    }
+            
 }
 
 export const updateDueDate = ( borrowData) => async (dispatch) => {

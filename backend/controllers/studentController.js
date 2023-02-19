@@ -95,8 +95,8 @@ exports.getStudentAppointmentBook = async (req, res, next) => {
 exports.checkPenalty = async (req, res, next) => {
     let penalty = {}
     const borrow = await Borrow.findOne({ userId: req.user.id })
-    console.log(borrow)
-    console.log(borrow.dueDate)
+    // console.log(borrow)
+    // console.log(borrow.dueDate)
 
     if (!borrow) {
         return next(new ErrorHandler('Book not found', 404));
@@ -110,13 +110,13 @@ exports.checkPenalty = async (req, res, next) => {
             const time_due = today - dueDate
             var Difference_In_Days = Math.round(time_due / (1000 * 3600 * 24));
 
-            console.log(Difference_In_Days)
+            // console.log(Difference_In_Days)
             if (Difference_In_Days <= 0) {
                 console.log("no penalty")
             }
             else {
                 total_Penalty = Difference_In_Days * 10
-                console.log(total_Penalty)
+                // console.log(total_Penalty)
                 penalty = await Penalty.create({
                     userId: req.user.id,
                     penalty: total_Penalty

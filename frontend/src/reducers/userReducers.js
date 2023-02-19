@@ -18,6 +18,20 @@ import {
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
 
+    ALL_USERS_REQUEST,
+    ALL_USERS_SUCCESS,
+    ALL_USERS_FAIL,
+
+    ACTIVATE_USER_REQUEST,
+    ACTIVATE_USER_SUCCESS,
+    ACTIVATE_USER_RESET,
+    ACTIVATE_USER_FAIL,
+
+    DEACTIVATED_USER_REQUEST,
+    DEACTIVATED_USER_SUCCESS,
+    DEACTIVATED_USER_RESET,
+    DEACTIVATED_USER_FAIL,
+
      CLEAR_ERRORS 
     } from '../constants/userConstants'
 
@@ -113,3 +127,116 @@ export const profileReducer = (state = { user: {} },
                 return state;
         }
     }
+
+export const allUsersReducer = (state = { users: [] }, action) => {
+    switch (action.type) {
+
+        case ALL_USERS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case ALL_USERS_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                users: action.payload
+            }
+
+        case ALL_USERS_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+    
+export const activateUserReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ACTIVATE_USER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                isActivated: false
+            }
+
+        case ACTIVATE_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isActivated: action.payload
+            }
+
+        case ACTIVATE_USER_RESET:
+            return {
+                ...state,
+                isActivated: false
+            }
+
+        case ACTIVATE_USER_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+    
+export const deactivatedUserReducer = (state = {}, action) => {
+    switch (action.type) {
+        case DEACTIVATED_USER_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                isDeactivated: false
+            }
+
+        case DEACTIVATED_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isDeactivated: action.payload
+            }
+
+        case DEACTIVATED_USER_RESET:
+            return {
+                ...state,
+                isDeactivated: false
+            }
+
+        case DEACTIVATED_USER_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}

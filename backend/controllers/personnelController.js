@@ -486,6 +486,15 @@ exports.deleteHistoryLog = async (req,res,next) => {
     })
 }
 
+exports.deleteAllHistoryLog = async (req, res, next) => {
+    const history = await HistoryLog.find().deleteMany()
+    
+    res.status(200).json({
+        success: true,
+        message: 'All History Log Deleted'
+    })
+}
+
 exports.changeDueDate = async (req, res, next) => {
     const date = new Date();
     const borrowerId = await Borrow.findById(req.body.borrowId)

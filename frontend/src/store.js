@@ -9,6 +9,8 @@ import {
 	bookDetailsReducer,
 	bookReducer,
 	addBookAccessionReducer,
+	accessionDetailsReducer,
+	accessionDeleteReducer,
 } from './reducers/bookReducers'
 
 import { 
@@ -37,7 +39,8 @@ import {
 	userDetailReducer,
 	allHistoryLogReducer,
 	historylogReducer,
-	changeDueDateReducer
+	changeDueDateReducer,
+	historylogAllDeleteReducer
 } from './reducers/personnelReducers'
 
 import { 
@@ -66,6 +69,9 @@ import {
 import { 
 	authReducer,
 	profileReducer,
+	allUsersReducer,
+	activateUserReducer,
+	deactivatedUserReducer,
 } from './reducers/userReducers'
 
 import {
@@ -81,6 +87,8 @@ const reducer = combineReducers({
 	newBook: newBookReducer,
 	book: bookReducer,
 	addBookAccession: addBookAccessionReducer,
+	accessionDelete: accessionDeleteReducer,
+	accessionDetails: accessionDetailsReducer,
 	allResearches: allResearchesReducer,
 	researchDetails: researchDetailsReducer,
 	newResearch: newResearchReducer,
@@ -123,6 +131,10 @@ const reducer = combineReducers({
 	changeDueDate: changeDueDateReducer,
 	allevaluation: allEvaluationsReducer,
 	newevaluation: newEvaluationReducer,
+	allDeleteHistoryLog: historylogAllDeleteReducer,
+	allUsers: allUsersReducer,
+	activateUser: activateUserReducer,
+	deactivateUser: deactivatedUserReducer,
 })
 
 
