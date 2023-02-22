@@ -111,32 +111,32 @@ export const newBookReducer = (state = { book: {} }, action) => {
     }
 }
 
-export const bookDetailsReducer = (state = { book: {} }, action) => {
-    switch (action.type) {
+export const bookDetailsReducer = (state = { BookDetails: {} }, action) => {
+    switch(action.type) {
         case BOOK_DETAILS_REQUEST:
-            return {
-                ...state,
-                loading: true,
-            }
+        return {
+            ...state,
+            loading: true,
+        }
         case BOOK_DETAILS_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                book: action.payload,
+        return {
+            ...state,
+            loading:false,
+            BookDetails: action.payload,
 
-            }
+        }
         case BOOK_DETAILS_FAIL:
-            return {
-                ...state,
-                error: action.payload
-            }
+        return {
+            ...state,
+            error: action.payload
+        }
         case CLEAR_ERRORS:
-            return {
-                ...state,
-                error: null
-            }
+        return {
+            ...state,
+            error: null
+        }
         default:
-            return state;
+        return state;
     }
 }
 

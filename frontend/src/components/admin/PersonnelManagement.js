@@ -13,11 +13,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { allPersonnels, deletePersonnel, getAllActiveStudents, getAllInactiveStudents, approveStudent, deleteStudent, clearErrors } from '../../actions/personnelActions'
 
-import { allUsers, activateUsers, deactivatedUsers } from '../../actions/userActions'
+import { allUsers, activateUsers, deactivatedUsers, endterm } from '../../actions/userActions'
 
 import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET, UPDATE_PERSONNEL_RESET } from '../../constants/personnelConstants'
 
-import { ACTIVATE_USER_RESET, DEACTIVATED_USER_RESET } from '../../constants/userConstants'
+import { ACTIVATE_USER_RESET, DEACTIVATED_USER_RESET, END_TERM_USER_RESET } from '../../constants/userConstants'
 
 // import { loadUser} from '../../actions/userActions'
 const PersonnelManagement = () => {
@@ -34,6 +34,7 @@ const PersonnelManagement = () => {
     const { users } = useSelector(state => state.allUsers)
     const { isActivated } = useSelector(state => state.activateUser);
     const { isDeactivated } = useSelector(state => state.deactivateUser);
+    const { isEndterm } = useSelector(state => state.endtermuser)
     // const { user } = useSelector(state => state.auth)
 
     useEffect(() => {
@@ -66,7 +67,13 @@ const PersonnelManagement = () => {
             dispatch({ type: DELETE_STUDENT_RESET })
         }
 
-    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted,  isActivated, isDeactivated, navigate])
+        if (isEndterm) {
+            alert.error('All student account has been deactivated');
+            navigate('/admin/personnels');
+            dispatch({ type: END_TERM_USER_RESET })
+        }
+
+    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted,  isActivated, isDeactivated, isEndterm, navigate])
 
     const deletePersonnelHandler = (id) => {
         dispatch(deletePersonnel(id))
@@ -82,6 +89,10 @@ const PersonnelManagement = () => {
 
     const deacvateUserHandler = (id) => {
         dispatch(deactivatedUsers(id))
+    }
+
+    const endtermhandler = () => {
+        dispatch(endterm())
     }
 
     // const approveStudentHandler = (id) => {
@@ -327,6 +338,32 @@ const PersonnelManagement = () => {
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
                 <div className="management-content">
+
+                    <div className='endterm'>
+                        <button className='btn btn-danger' data-toggle="modal" data-target={"#EndTermModal"}><i class="fa-solid fa-triangle-exclamation"></i> End Term <i class="fa-solid fa-triangle-exclamation"></i></button>
+                    </div>
+
+                    <div className="modal fade" data-backdrop="false" id={"EndTermModal"} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeleteActiveModalLabel">End Term</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    By clicking this button you are ending the term and DEACTIVATING the students Account!
+                                    Are you sure you want continue?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => endtermhandler()} data-dismiss="modal">Confirm</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col-md-6">
                             <div className="">

@@ -8,6 +8,7 @@ import Dashboard from './components/layout/Dashboard'
 import BookManagement from './components/admin/BookManagement'
 import BookCreate from './components/admin/BookCreate'
 import BookUpdate from './components/admin/BookUpdate'
+import BookDetails from './components/admin/bookDetails'
 import BookAccession from './components/admin/BookAccession'
 
 import ResearchManagement from './components/admin/ResearchManagement'
@@ -58,6 +59,7 @@ function App() {
 					<Route path="/admin/books" element={<ProtectedRoute isAdmin={true}><BookManagement /></ProtectedRoute>} />
 					<Route path="/book/new" element={<ProtectedRoute isAdmin={true}> <BookCreate /> </ProtectedRoute>} />
 					<Route path="/admin/book/:id" element={<ProtectedRoute isAdmin={true}> <BookUpdate /></ProtectedRoute>} />
+					<Route path="/admin/single/book/:id" element={<ProtectedRoute isAdmin={true}> <BookDetails /> </ProtectedRoute>} />
 					<Route path="/accession/detail/:id" element={<ProtectedRoute isAdmin={true}> <BookAccession /></ProtectedRoute>} />
 
 					<Route path="/admin/research" element={<ProtectedRoute isAdmin={true}><ResearchManagement /> </ProtectedRoute>} />

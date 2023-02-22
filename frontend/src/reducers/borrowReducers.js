@@ -47,6 +47,10 @@ import {
     GET_BOOKLEADERBOARDS_SUCCESS,
     GET_BOOKLEADERBOARDS_FAIL,
 
+	GET_BORROWERLEADERBOARDS_REQUEST,
+    GET_BORROWERLEADERBOARDS_SUCCESS,
+    GET_BORROWERLEADERBOARDS_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/borrowConstants'
 
@@ -394,6 +398,36 @@ export const bookLeaderboardsReducer = (state = { bookCounts:[] }, action) => {
             bookCounts: action.payload
         }
         case GET_BOOKLEADERBOARDS_FAIL:
+        return {
+            loading:false,
+            error: action.payload
+        }
+        case CLEAR_ERRORS:
+        return {
+            ...state,
+            error: null
+        }
+        default:
+        return state;
+    }
+}
+
+export const borrowerLeaderboardsReducer = (state = { borrowerRanking:[] }, action) => {
+    switch(action.type) {
+        case GET_BORROWERLEADERBOARDS_REQUEST:
+        return {
+            ...state,
+            loading: true,
+            // borrowedDate: []
+        }
+        case GET_BORROWERLEADERBOARDS_SUCCESS:
+        return {
+            ...state,
+            loading: false,
+            borrowerRanking: action.payload,
+			// borrowerCourseCounts: action.payload
+        }
+        case GET_BORROWERLEADERBOARDS_FAIL:
         return {
             loading:false,
             error: action.payload

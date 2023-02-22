@@ -72,3 +72,15 @@ exports.activateUser = async (req,res,next) => {
         return next(new ErrorHandler(err,404));
     }
 }
+
+exports.endTerm = async (req, res, next) => {
+    const users = await Users.updateMany(
+        { 'role':'student' },
+        {$set:{status: 'deactivated'}}
+        )
+    
+    res.status(200).json({
+        success: true,
+        users
+    })    
+}

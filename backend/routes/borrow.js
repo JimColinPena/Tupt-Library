@@ -13,7 +13,8 @@ const {
 	getPendingUsersLength,
 	BorrowedBooksChart,
 	SectionBorrowedChart,
-	BookLeaderboards
+	BookLeaderboards,
+	BorrowerLeaderboards
 } = require('../controllers/borrowController');
 
 router.route('/book/borrow').post(isAuthenticatedUser, borrowBook);
@@ -27,5 +28,6 @@ router.route('/userRequests').get(isAuthenticatedUser, getPendingUsersLength);
 router.route('/borrowedbooksChart').get(isAuthenticatedUser, BorrowedBooksChart);
 router.route('/sectionborrowedChart').get(isAuthenticatedUser, SectionBorrowedChart);
 router.route('/bookLeaderboards').get(isAuthenticatedUser, BookLeaderboards);
+router.route('/borrowerLeaderboards').get(isAuthenticatedUser, BorrowerLeaderboards);
 
 module.exports = router;

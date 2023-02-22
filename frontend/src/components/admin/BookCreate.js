@@ -17,7 +17,8 @@ import { newBooks, clearErrors } from '../../actions/bookActions'
 import { NEW_BOOK_RESET } from '../../constants/bookConstants'
 
 const BookCreate = () => {
-
+	const [imageFiles, setImageFiles] = useState('');
+	const [bookImage, setImages] = useState('');
 	const [title, setTitle] = useState('')
 	const [responsibility, setResponsibility] = useState('')
 	const [uniform_title, setUniform_title] = useState('')
@@ -77,8 +78,34 @@ const BookCreate = () => {
 		subjects.forEach(subject =>
 			formData.append('subjects', subject)
 		)
+		formData.set('bookImage', bookImage);
 		dispatch(newBooks(formData));
 	};
+
+	const imageHandler = (e) => {
+		if (e.target.name === 'bookImage') {
+
+            const reader = new FileReader();
+			
+            reader.onload = () => {
+				console.log(reader.readyState)
+                if (reader.readyState === 2) {
+                    setImageFiles(reader.result)
+                    setImages(reader.result)
+                }
+            }
+			// console.log(reader.readyState)
+			// console.log(e.target.files)
+			
+            reader.readAsDataURL(e.target.files[0])
+
+        } 
+}
+
+const clearImage = (e) => {
+	setImageFiles('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+	setImages('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+};
 
 	const navigateToFormStep = (stepNumber) => {
 
@@ -124,6 +151,7 @@ const BookCreate = () => {
 		<Fragment>
 			<MetaData title={'TUP-T Online Library - Admin'} />
 			<SideNavbarAdmin />
+			{loading ? <Loader /> : (
 			<div className="management-content">
 				<div className="dashboard-page">
 					<div className="add-body">
@@ -169,6 +197,28 @@ const BookCreate = () => {
 									<section id="step-1" className="form-step">
 										<h2 className="font-normal text-center">Title & Statement Responsibility Area</h2>
 										<div className="mt-3">
+										<div className="form-group row">
+												<label htmlFor="image_field" className="col-sm-2 col-form-label">Book Image</label>
+												<div className="col-sm-10">
+												<input 
+													type="file" 
+													id="bookImage" 
+													name="bookImage"
+													// className='custom-file-input' 
+													// multiple
+													accept="image/*"
+													onChange={imageHandler}
+													/>
+													<div>
+															<img
+																src={imageFiles}
+																className='preview_images'
+																alt=''
+															/>
+															<button type="button" class="btn btn-danger" onClick={clearImage}>Clear</button>
+													</div>
+												</div>
+											</div>
 											<div className="form-group row">
 												<label htmlFor="title_field" className="col-sm-2 col-form-label">Title</label>
 												<div className="col-sm-10">
@@ -706,6 +756,7 @@ const BookCreate = () => {
 					</div>
 				</div>
 			</div>
+			)}
 		</Fragment >
 	)
 }

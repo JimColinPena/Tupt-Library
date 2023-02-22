@@ -19,6 +19,7 @@ const BookManagement = () => {
     let navigate = useNavigate();
 
     const { loading, error, books } = useSelector(state => state.allBooks);
+    const { BookDetails } = useSelector(state => state.bookDetails)
     const { isDeleted } = useSelector(state => state.book)
 
     useEffect(() => {
@@ -110,89 +111,20 @@ const BookManagement = () => {
             }
             data.rows.push({
                 call_number: prefix + " " + books.call_number,
-                title: books.title,
+                // title: books.title,
+                title: <Link to={`/admin/single/book/${books._id}`}>{books.title} </Link>,
                 main_author: books.main_author,
                 copy: books.copy,
                 on_shelf: books.on_shelf,
                 out: books.out,
                 yearPub: books.yearPub,
-                accession:
-                    <Fragment>
-                        {books.accession_numbers.map((accession) => (
-                            <div>
-                                <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#ViewBookAccessionModal" + accession._id}>
-                                    <i className="fa fa-eye"></i>
-                                </button>
-                                <div className="modal fade" id={"ViewBookAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-                                    <div className="modal-dialog" role="document">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <h3 className="modal-title" id="DeleteAccessionModalLabel">Edit Accession Number</h3>
-                                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <form>
-                                                    <div className="modal-body">
-                                                        <div className='row'>
-                                                            <div className='col-md-12'>
-                                                                <label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                                <div className="col-sm-8">
-                                                                    <input
-                                                                        type="text"
-                                                                        id="accession_field"
-                                                                        className="form-control"
-                                                                        name='accession_edit'
-                                                                        value={accession.accession_number}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className='col-md-6'>
-                                                                <label htmlFor="on_shelf_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                                <div className="col-sm-10">
-                                                                    <input
-                                                                        type="text"
-                                                                        id="on_shelf_field"
-                                                                        className="form-control"
-                                                                        name='on_shelf'
-                                                                        value={accession.on_shelf}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className='col-md-6'>
-                                                                <label htmlFor="out_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                                <div className="col-sm-10">
-                                                                    <input
-                                                                        type="text"
-                                                                        id="out_field"
-                                                                        className="form-control"
-                                                                        name='out'
-                                                                        value={accession.out}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Link to={`/accession/detail/${accession._id}`} className="btn btn-info py-1 px-2">
-                                    <i className="fa fa-pencil"></i>
-                                </Link>
-                            </div>
-                        )
-                        )}
-                        <br />
-
-                    </Fragment>,
-
-
+                accession: <Fragment>
+                    <div className="icon-buttons">
+                        <Link to={`/book/single/accession/${books._id}`} className="btn btn-info py-1 px-2">
+                            View Details
+                        </Link>
+                    </div>
+                </Fragment>,
                 actions: <Fragment>
                     <div className="icon-buttons">
                         <Link to={`/admin/book/${books._id}`} className="btn btn-warning py-1 px-2">

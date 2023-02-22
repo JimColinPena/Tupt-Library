@@ -18,9 +18,9 @@ ChartJS.register(
     ...registerables
 )
 
-const ReturnedBooksChart = () => {
-    const alert = useAlert();
-    const dispatch = useDispatch();
+const ReturnedBooksChart  = () => {
+	const alert = useAlert();
+	const dispatch = useDispatch();
     const { loading, error, borrowedDate } = useSelector(state => state.borrowedBooksCharts);
 
     useEffect(() => {
@@ -34,57 +34,63 @@ const ReturnedBooksChart = () => {
     }, [dispatch, alert, error])
 
 
-    //----------------------------------------------------------------------
+//----------------------------------------------------------------------
     //this is for filtering data to be regroup into months
     const groups = borrowedDate.reduce(
         (groups, borrow_appointment) => {
             const borroweddate = borrow_appointment.returnedDate;
             if (!groups[borroweddate]) {
-                groups[borroweddate] = []
+                groups[borroweddate]=[]
             }
             groups[borroweddate].push(borrow_appointment);
             return groups;
         }, {}
     )
+    // console.log(groups);
 
     //Fetching Dates from groups
     const appointmentDate = Object.keys(groups)
+    // console.log(appointmentDate);
 
     // Fetching Date Counts from roups -- debug
     const appointmentCount = Object.values(groups)
-    const appointmentCountLength = Object.values(appointmentCount).map((testvariable) => {
+    const appointmentCountLength = Object.values(appointmentCount).map((testvariable)=> {
         return testvariable.length
     })
-    //----------------------------------------------------------------------
+    // console.log(appointmentCountLength);
+//----------------------------------------------------------------------
 
-    //----------------------------------------------------------------------
+//----------------------------------------------------------------------
     // Regrouping Books Borrowed into Month name
 
     const appointmentDateMonth = appointmentDate.reduce(
         (appointmentDateMonth, borrow_appointment) => {
             const appointment_date = dateFormat(borrow_appointment, "mmmm")
             if (!appointmentDateMonth[appointment_date]) {
-                appointmentDateMonth[appointment_date] = []
+                appointmentDateMonth[appointment_date]=[]
             }
             appointmentDateMonth[appointment_date].push(borrow_appointment);
             return appointmentDateMonth;
         }, {}
     )
+    // console.log(appointmentDateMonth);
 
-    const appointmentDateGroup = Object.keys(appointmentDateMonth)
+    const appointmentDateGroup  = Object.keys(appointmentDateMonth)
+    // console.log(appointmentDateGroup);
 
     const appointmentDateCount = Object.values(appointmentDateMonth)
-    const appointmentDateCountLength = Object.values(appointmentDateCount).map((appointment) => {
+    const appointmentDateCountLength = Object.values(appointmentDateCount).map((appointment)=> {
         return appointment.length
     })
-    //----------------------------------------------------------------------
+    // console.log(appointmentDateCountLength);
+//----------------------------------------------------------------------
 
     // Setting States
 
     //Bar Chart Data
     const [appointmentDates, setAppointmentDates] = useState(appointmentDateGroup);
     const [appointmentDataPoints, setAppointmentDataPoints] = useState(appointmentDateCountLength);
-
+    // console.log(appointmentDates, appointmentDataPoints);
 
     //Input Type Date Data
     const [appointmentStart, setAppointmentStart] = useState('2023-01-01');
@@ -96,7 +102,7 @@ const ReturnedBooksChart = () => {
     //converting Obj into Array via Entries (keys and values included)
     const arrGroups = Object.entries(groups);
     // const arrGroups = Object.entries(animalDateMonth);
-    // console.log(arrGroups);
+    console.log(arrGroups);
 
     //Function for changing the state of start date
     function filterData1() {
@@ -111,8 +117,8 @@ const ReturnedBooksChart = () => {
         // console.log(arrGroups);
         // const newgroups = arrGroups.filter(
         const newgroups = arrGroups.filter(
-            (obj) => {
-                return obj >= valueStart && obj <= valueEnd
+            (obj) =>{
+                return  obj >= valueStart &&  obj <= valueEnd
             }
         )
         // console.log(newgroups);
@@ -121,65 +127,14 @@ const ReturnedBooksChart = () => {
         // console.log(newData);
 
 
-        const appointmentDateGroup = Object.keys(newData)
+        const appointmentDateGroup  = Object.keys(newData)
         // const animalDateGroup  = Object.entries(newData)
         // console.log(appointmentDateGroup);
 
-        const newAppointmentDateGroup = appointmentDateGroup.reduce((newAppointmentDateGroup, appointment) => {
+        const newAppointmentDateGroup = appointmentDateGroup.reduce((newAppointmentDateGroup, appointment )=>{
             const appointmentdate = dateFormat(appointment, "mmmm")
             if (!newAppointmentDateGroup[appointmentdate]) {
-                newAppointmentDateGroup[appointmentdate] = []
-            }
-            newAppointmentDateGroup[appointmentdate].push(appointment);
-
-            // return dateFormat(item, "mmmm");
-            return newAppointmentDateGroup;
-            // return item;
-        }, {});
-
-
-
-        const uniqueDates = Object.keys(newAppointmentDateGroup);
-        setAppointmentDates(uniqueDates);
-        const newAppointmentCount = Object.values(newAppointmentDateGroup)
-        const newAppointmentCountLength = Object.values(newAppointmentCount).map((appointment) => {
-            return appointment.length
-        })
-        setAppointmentDataPoints(newAppointmentCountLength);
-
-    };
-
-    //Function for changing the state of end date
-    function filterData2() {
-        let valueEnd = appointmentRefEnd.current.value;
-        let newValueEnd = new Date(valueEnd);
-
-
-        newValueEnd.setDate(newValueEnd.getDate() + 1)
-        newValueEnd.setMonth(newValueEnd.getMonth())
-        newValueEnd.setFullYear(newValueEnd.getFullYear())
-        const convertValueEnd = dateFormat(newValueEnd, "yyyy-mm-dd")
-        setAppointmentEnd(valueEnd);
-        let valueStart = appointmentStart;
-        const newgroups = arrGroups.filter(
-            (obj) => {
-                return obj >= valueStart && obj <= convertValueEnd
-            }
-        )
-        // console.log(newgroups);
-
-        const newData = Object.fromEntries(newgroups);
-        // console.log(newData);
-
-
-        const appointmentDateGroup = Object.keys(newData)
-        // const animalDateGroup  = Object.entries(newData)
-        // console.log(appointmentDateGroup);
-
-        const newAppointmentDateGroup = appointmentDateGroup.reduce((newAppointmentDateGroup, appointment) => {
-            const appointmentdate = dateFormat(appointment, "mmmm")
-            if (!newAppointmentDateGroup[appointmentdate]) {
-                newAppointmentDateGroup[appointmentdate] = []
+                newAppointmentDateGroup[appointmentdate]=[]
             }
             newAppointmentDateGroup[appointmentdate].push(appointment);
 
@@ -195,7 +150,72 @@ const ReturnedBooksChart = () => {
         setAppointmentDates(uniqueDates);
 
         const newAppointmentCount = Object.values(newAppointmentDateGroup)
-        const newAppointmentCountLength = Object.values(newAppointmentCount).map((appointment) => {
+        const newAppointmentCountLength = Object.values(newAppointmentCount).map((appointment)=> {
+            return appointment.length
+        })
+        // console.log(newAppointmentCountLength);
+        setAppointmentDataPoints(newAppointmentCountLength);
+
+    };
+
+    //Function for changing the state of end date
+    function filterData2() {
+
+        let valueEnd = appointmentRefEnd.current.value;
+        // let newValueEnd = valueEnd + 1;
+        let newValueEnd = new Date(valueEnd);
+        // console.log(newValueEnd);
+        
+       newValueEnd.setDate(newValueEnd.getDate() + 1)
+       newValueEnd.setMonth(newValueEnd.getMonth())
+       newValueEnd.setFullYear(newValueEnd.getFullYear())
+    //    console.log(newValueEnd);
+       const convertValueEnd = dateFormat(newValueEnd, "yyyy-mm-dd")
+    //    console.log(convertValueEnd );
+        setAppointmentEnd(valueEnd);
+        // let valueStart = dateFormat(rescuedRefStart.current.value, "mmmm");
+        let valueStart = appointmentStart;
+        // let valueEnd = dateFormat(rescuedEnd, "mmmm");
+        // console.log(valueStart);
+        // console.log(convertedValueEnd );
+
+        // console.log(arrGroups);
+        // const newgroups = arrGroups.filter(
+        const newgroups = arrGroups.filter(
+            (obj) =>{
+                return  obj >= valueStart &&  obj <= convertValueEnd
+            }
+        )
+        // console.log(newgroups);
+
+        const newData = Object.fromEntries(newgroups);
+        // console.log(newData);
+
+
+        const appointmentDateGroup  = Object.keys(newData)
+        // const animalDateGroup  = Object.entries(newData)
+        // console.log(appointmentDateGroup);
+
+        const newAppointmentDateGroup = appointmentDateGroup.reduce((newAppointmentDateGroup, appointment )=>{
+            const appointmentdate = dateFormat(appointment, "mmmm")
+            if (!newAppointmentDateGroup[appointmentdate]) {
+                newAppointmentDateGroup[appointmentdate]=[]
+            }
+            newAppointmentDateGroup[appointmentdate].push(appointment);
+
+            // return dateFormat(item, "mmmm");
+            return newAppointmentDateGroup;
+            // return item;
+        }, {});
+
+        // console.log(newAppointmentDateGroup);
+
+        const uniqueDates = Object.keys(newAppointmentDateGroup);
+        // console.log(uniqueDates);
+        setAppointmentDates(uniqueDates);
+
+        const newAppointmentCount = Object.values(newAppointmentDateGroup)
+        const newAppointmentCountLength = Object.values(newAppointmentCount).map((appointment)=> {
             return appointment.length
         })
         // console.log(newAppointmentCountLength);
@@ -207,39 +227,39 @@ const ReturnedBooksChart = () => {
     const state = {
         labels: appointmentDates,
         datasets: [{
-            label: 'Returned',
-            data: appointmentDataPoints,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)'
-            ],
-            borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)'
-            ],
-            hoverBackgroundColor: [
-                'rgba(255, 99, 132, 0.5)',
-                'rgba(255, 159, 64, 0.5)',
-                'rgba(255, 205, 86, 0.5)',
-                'rgba(75, 192, 192, 0.5)',
-                'rgba(54, 162, 235, 0.5)',
-                'rgba(153, 102, 255, 0.5)',
-                'rgba(201, 203, 207, 0.5)'
-            ],
-            borderWidth: 1
+          label: 'Returned',
+          data: appointmentDataPoints,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)',
+            'rgb(201, 203, 207)'
+          ],
+          hoverBackgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 159, 64, 0.5)',
+            'rgba(255, 205, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(201, 203, 207, 0.5)'
+          ],
+          borderWidth: 1
         }],
         plugins: [ChartDataLabels]
-    };
+      };
 
     const options = {
         // indexAxis: 'x',
@@ -258,7 +278,7 @@ const ReturnedBooksChart = () => {
                         size: 16,
                     },
                     display: false,
-
+                    
                 },
                 // reverse: true
             },
@@ -270,7 +290,7 @@ const ReturnedBooksChart = () => {
                     }
                 }
             },
-        },
+          },
         plugins: {
             legend: {
                 // labels: {
@@ -290,7 +310,7 @@ const ReturnedBooksChart = () => {
                     generateLabels: (chart) => {
                         let visibility = [];
                         for (let i = 0; i < chart.data.labels.length; i++) {
-                            if (chart.getDataVisibility(i) === true) {
+                            if(chart.getDataVisibility(i) === true) {
                                 visibility.push(false)
                             } else {
                                 visibility.push(true)
@@ -306,7 +326,7 @@ const ReturnedBooksChart = () => {
                             })
                         )
                     }
-                }
+                 }
             },
             title: {
                 display: true,
@@ -319,29 +339,29 @@ const ReturnedBooksChart = () => {
                 display: false
             }
         },
-
+        
     };
-
+    
     return (
-        <Fragment>
-            <MetaData title={'Dashboard'} />
-            {loading ? <Loader /> : (
-                <div className="col-md-4">
+    	<Fragment>
+        <MetaData title={'Dashboard'} />
+    	{loading ? <Loader /> : (
+            <div className="col-md-6">
 
-                    <Bar
-                        // labels={appointmentDates}
-                        data={state}
-                        options={options}
-                    />
+                <Bar
+                    // labels={appointmentDates}
+                    data={state}
+                    options={options}
+                />
 
-                    <div className="form-group">
-                        <label >From: </label>
-                        <input type="date" ref={appointmentRefStart} onChange={filterData1} value={appointmentStart} />
-                        <label > To: </label>
-                        <input type="date" ref={appointmentRefEnd} onChange={filterData2} value={appointmentEnd} />
-                    </div>
+                <div className="form-group">
+                    <label >From: </label>
+                    <input type="date" ref={appointmentRefStart} onChange={filterData1} value={appointmentStart}/>
+                    <label > To: </label>
+                    <input type="date" ref={appointmentRefEnd} onChange={filterData2} value={appointmentEnd}/>
                 </div>
-            )}
+            </div>
+        )}
         </Fragment>
     )
 }

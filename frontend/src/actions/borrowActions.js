@@ -44,6 +44,10 @@ import {
     GET_BOOKLEADERBOARDS_SUCCESS,
     GET_BOOKLEADERBOARDS_FAIL,
 
+    GET_BORROWERLEADERBOARDS_REQUEST,
+    GET_BORROWERLEADERBOARDS_SUCCESS,
+    GET_BORROWERLEADERBOARDS_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/borrowConstants'
 
@@ -300,6 +304,27 @@ export const getBookLeaderboards = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: GET_BOOKLEADERBOARDS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const getBorrowerLeaderboards = () => async (dispatch) => {
+    try {
+
+        dispatch({ type:GET_BORROWERLEADERBOARDS_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/borrowerLeaderboards`)
+
+        dispatch({
+            type: GET_BORROWERLEADERBOARDS_SUCCESS,
+            payload: data.borrowerRanking,
+            // payload: data.borrowerCourseCounts
+        })
+
+    } catch (error) {
+        dispatch({
+            type: GET_BORROWERLEADERBOARDS_FAIL,
             payload: error.response.data.message
         })
     }

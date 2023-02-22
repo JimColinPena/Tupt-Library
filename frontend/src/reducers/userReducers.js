@@ -32,6 +32,11 @@ import {
     DEACTIVATED_USER_RESET,
     DEACTIVATED_USER_FAIL,
 
+    END_TERM_USER_REQUEST,
+    END_TERM_USER_SUCCESS,
+    END_TERM_USER_RESET,
+    END_TERM_USER_FAIL,
+
      CLEAR_ERRORS 
     } from '../constants/userConstants'
 
@@ -230,6 +235,42 @@ export const deactivatedUserReducer = (state = {}, action) => {
                 error: action.payload
             }
 
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const endtermReducer = (state = {}, action) => {
+    switch (action.type) {
+        case END_TERM_USER_REQUEST: 
+            return {
+                ...state,
+                loading: true,
+                isEndterm: false
+            }
+        case END_TERM_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isEndterm: action.payload
+            }
+        case END_TERM_USER_RESET:
+            return {
+                ...state,
+                isEndterm: false
+            }
+        case END_TERM_USER_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         case CLEAR_ERRORS:
             return {
                 ...state,

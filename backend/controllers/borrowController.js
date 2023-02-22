@@ -219,36 +219,145 @@ exports.SectionBorrowedChart = async (req, res, next) => {
 }
 
 exports.BookLeaderboards = async (req, res, next) => {
-    let bookArr = []
-    const distinctBook = await Return.find({}).populate({
-        path: 'bookId',
-        select: 'title -_id'
-    }).select('title -_id')
+    // let bookArr = []
+    // const distinctBook = await Return.find({}).populate({
+    //     path: 'bookId',
+    //     select: 'title _id'
+    // }).select('title _id')
 
-    //fetching all titles from the returned book and putting them into array
-    for (let i = 0; i < distinctBook.length; i++) {
-        for (let j = 0; j < distinctBook[i].bookId.length; j++) {
-            bookArr.push(
-                {
-                    title: distinctBook[i].bookId[j].title,
-                }
-            )
+    // // console.log(distinctBook)
+    // //fetching all titles from the returned book and putting them into array
+    // for (let i = 0; i < distinctBook.length; i++) {
+    //     for (let j = 0; j < distinctBook[i].bookId.length; j++) {
+    //         bookArr.push(
+    //             {
+    //                 _id: distinctBook[i].bookId[j]._id,
+    //                 title: distinctBook[i].bookId[j].title,
+    //             }
+    //         )
 
-        }
-    }
-    //reducing data to eliminate duplication and count how many duplicates then putting them into object array
-    const bookGroup = {};
-    bookArr.forEach(({ title }) => {
-        bookGroup[title] = (bookGroup[title] || 0) + 1;
-    });
+    //     }
+    // }
+
+    // // console.log(bookArr)
+    // //reducing data to eliminate duplication and count how many duplicates then putting them into object array
+    // const bookGroup = {};
+    // bookArr.forEach(({title }) => {
+    //     // bookGroup[_id] = bookArr._id;
+    //     bookGroup[title] = (bookGroup[title] || 0) + 1;
+    // });
     
-    //inserting the two data entries from the bookgroup into object array and sorting the most duplicate
-    const bookCounts = Object.entries(bookGroup)
-    .map(([title, count]) => ({ title, count }))
-    .sort((a, b) => b.count - a.count);
+    // // bookArr.forEach(({ _id }) => {
+    // //     // bookGroup[_id] = bookGroup._id;
+    // //     bookGroup[_id] = bookGroup._id;
+    // // });
 
+    // // console.log(bookGroup)
+    // //inserting the two data entries from the bookgroup into object array and sorting the most duplicate
+    // const bookCounts = Object.entries(bookGroup)
+    // .map(([title, count]) => ({title, count }))
+    // .sort((a, b) => b.count - a.count);
+
+
+    const bookCounts = await Return.aggregate([
+        {
+          "$lookup": {
+            "from": "books",
+            "localField": "bookId",
+            "foreignField": "_id",
+            "pipeline": [
+              {
+                $project: {
+                  _id: 1,
+                  title: 1,
+                }
+              }
+            ],
+            "as": "bookId"
+          }
+
+        },
+        {
+          $unwind: "$bookId"
+        },
+        {
+          $group: {
+            _id: "$bookId",
+            count: {
+              $sum: 1
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: "$_id.title",
+            count: 1
+          }
+        },
+        {$sort: { count: -1 }}
+      ])
+      
+
+    console.log(bookCounts)
     res.status(200).json({
         success: true,
         bookCounts,
+    })
+}
+
+exports.BorrowerLeaderboards = async (req, res, next) => {
+    let borrowerArr = []
+
+    const borrowerRanking = await Return.aggregate([
+        {
+          "$lookup": {
+            "from": "users",
+            "localField": "userId",
+            "foreignField": "_id",
+            "pipeline": [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                  course: 1,
+                  avatar: 1
+                }
+              }
+            ],
+            "as": "userId"
+          }
+
+        },
+        {
+          $unwind: "$userId"
+        },
+        {
+          $group: {
+            _id: "$userId",
+            count: {
+              $sum: 1
+            },
+            returnedDate: {
+                $first: "$returnedDate"
+              },
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            name: "$_id.name",
+            course: "$_id.course",
+            avatar: "$_id.avatar.url",
+            returnedDate: 1,
+            count: 1
+          }
+        },
+        {$sort: { count: -1 }}
+      ])
+      
+    res.status(200).json({
+        success: true,
+        borrowerRanking,
     })
 }

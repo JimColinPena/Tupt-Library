@@ -63,7 +63,8 @@ import {
 	pendingUserRequestsReducer,
 	borrowedBooksChartReducer,
 	sectionBorrowedChartReducer,
-	bookLeaderboardsReducer
+	bookLeaderboardsReducer,
+	borrowerLeaderboardsReducer
 } from './reducers/borrowReducers'
 
 import { 
@@ -72,6 +73,7 @@ import {
 	allUsersReducer,
 	activateUserReducer,
 	deactivatedUserReducer,
+	endtermReducer
 } from './reducers/userReducers'
 
 import {
@@ -114,6 +116,7 @@ const reducer = combineReducers({
 	borrowedBooksCharts: borrowedBooksChartReducer,
 	sectionBorrowedCharts: sectionBorrowedChartReducer,
 	bookLeaderboards: bookLeaderboardsReducer,
+	borrowerLeaderboards: borrowerLeaderboardsReducer,
 	allActiveStudents: allActiveStudentsReducer,
 	allInactiveStudents: allInactiveStudentsReducer,
 	studentDetails: studentDetailsReducer,
@@ -135,6 +138,7 @@ const reducer = combineReducers({
 	allUsers: allUsersReducer,
 	activateUser: activateUserReducer,
 	deactivateUser: deactivatedUserReducer,
+	endtermuser: endtermReducer
 })
 
 

@@ -1,23 +1,10 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react'
-// import dateFormat from 'dateformat';
-// import { Bar } from 'react-chartjs-2';
-
+import { useNavigate, Link } from "react-router-dom";
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBookLeaderboards, clearErrors } from '../../actions/borrowActions'
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
-// import Profile from './profileBookLeaderboards'
-// import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, registerables } from 'chart.js';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
-// ChartJS.register(
-//     CategoryScale,
-//     LinearScale,
-//     BarElement,
-//     Title,
-//     ChartDataLabels,
-//     ...registerables
-// )
 
 const BookLeaderboards  = () => {
 	const alert = useAlert();
@@ -34,37 +21,26 @@ const BookLeaderboards  = () => {
 
     }, [dispatch, alert, error])
 
-    const handleClick = (e) => {
-        // console.log(e.target)
-    }
-    // console.log(bookCounts)
-
-
     return (
     	<Fragment>
         <MetaData title={'Dashboard'} />
     	{loading ? <Loader /> : (
-           <div className="col-md-4">
+           <div className="col-md-6">
            <div className='board'>
-               <h1 className='leaderboard'>Most Borrowed Books</h1>
+               <h2 className='leaderboard'>Most Borrowed Books</h2>
 
-               <div className='duration'>
-                   <button onClick={handleClick} data-id='7'>7 Days</button>
-                   <button onClick={handleClick} data-id='30'>30 Days</button>
-                   <button onClick={handleClick} data-id='0'>All-Time</button>
-               </div>
                {bookCounts.map((data) => 
+               <div className='profile-leaderboards'>
                <div className='flex'>
-               <div className='item'>
-                   <div className='info'>
-                    {/* {console.log(data)} */}
-                       <h3 className='name text-dark'>{data.title}</h3>
-                   </div>
-               </div>
+               {/* <div className='item'> */}
+                       {/* <h3 className='text-dark'>{data.title}</h3> */}
+                       <h3 className='text-dark'><Link to={`/admin/single/book/${data._id._id}`}>{data.title} </Link></h3>
+               {/* </div> */}
 
                <div className='item'>
-                   <span>Score: {data.count}</span>
+                   <span>&#215; lended: {data.count}</span>
                </div>
+           </div>
            </div>
            )}
            

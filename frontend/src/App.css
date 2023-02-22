@@ -1052,6 +1052,66 @@ ul.form-stepper li a .form-stepper-circle {
     border-radius: "4px";
 }
 
+.board {
+    text-align: center;
+}
+
+/* .board .leaderboard{
+    margin-bottom: 1em;
+} */
+
+.active{
+    background-color: var(--color-dark);
+    color: var(--color-light);
+}
+
+.profile-leaderboards .flex{
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    text-align: left;
+    /* margin-bottom: 2em; */
+}
+
+.profile-leaderboards .flex .item{
+    display: flex;
+    align-items: center;
+}
+
+.profile-leaderboards-img{
+    width: 80px;
+    min-height: 80px;
+    max-height: auto;
+    float: left;
+    margin: 3px;
+    padding: 3px;
+}
+
+.profile-leaderboards .flex img{
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+.profile-leaderboards .flex .info{
+   padding: 1em;
+}
+
+.text-dark{
+    color: var(--color-dark);
+    font-size: medium;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.endterm{
+    position: relative;
+    left: 45%;
+    margin-top: 30px;
+}
+
 /* .accessionButton {
     background: none;
 	color: inherit;

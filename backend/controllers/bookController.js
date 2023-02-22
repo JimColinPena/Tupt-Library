@@ -1,7 +1,7 @@
 const ErrorHandler = require('../utils/errorhand');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
-
+const cloudinary = require('cloudinary');
 const Book = require('../models/book');
 const Accession = require('../models/accession');
 const HistoryLog = require('../models/historylog')
@@ -16,193 +16,211 @@ exports.getBooks = async (req, res, next) => {
 }
 
 exports.createBook = async (req, res, next) => {
-    const newBookData = {
-        title: req.body.title,
-        responsibility: req.body.responsibility,
-        uniform_title: req.body.uniform_title,
-        parallel_title: req.body.parallel_title,
-        main_author: req.body.main_author,
-        other_author: req.body.other_author,
-        contributors: req.body.contributors,
-        corp_author: req.body.corp_author,
-        placePub: req.body.placePub,
-        publisher: req.body.publisher,
-        yearPub: req.body.yearPub,
-        edition: req.body.edition,
-        pages: req.body.pages,
-        other_details: req.body.other_details,
-        dimension: req.body.dimension,
-        series: req.body.series,
-        gen_notes: req.body.gen_notes,
-        isbn: req.body.isbn,
-        call_number: req.body.call_number,
-        languange: req.body.languange,
-        location: req.body.location,
-        entered_by: req.body.entered_by,
-        updated_by: req.body.updated_by,
-        date_entered: req.body.date_entered,
-        date_updated: req.body.date_updated,
-        copy: req.body.copy,
-        on_shelf: req.body.on_shelf,
-        out: req.body.out,
-        times_out: req.body.times_out,
-        subject: req.body.subjects,
-        content_notes: req.body.content_notes,
-        abstract: req.body.abstract,
-        reviews: req.body.reviews
-    }
+    console.log(req.body)
+    let book = {}
+    try {
+        if (req.body.bookImage === '') {
+            if (req.body.callNumberPrefix == 'Fil'){
+                req.body.Fil = true
+            } else if (req.body.callNumberPrefix == 'Ref'){
+                req.body.Ref = true
+            } else if (req.body.callNumberPrefix == 'Bio'){
+                req.body.Bio = true
+            } else if (req.body.callNumberPrefix == 'Fic'){
+                req.body.Fic = true
+            } else if (req.body.callNumberPrefix == 'Res'){
+                req.body.Res = true
+            } else {}
 
+            const book = await Book.create(req.body);
 
-    const callNumberPrefix = req.body.callNumberPrefix
+        } else {
+            const result = await cloudinary.v2.uploader.upload(req.body.bookImage, {
+                folder: 'TUPT_Library/Books/' + req.body.title,
+                width: 150,
+                height: 150,
+                crop: "scale"
+            })
+            
+            req.body.book_image = {
+                public_id: result.public_id,
+                    url: result.secure_url
+            }
 
-    if (callNumberPrefix == "Fil") {
-        newBookData.Fil = 1
-    } else if (callNumberPrefix == "Ref") {
-        newBookData.Ref = 1
-    } else if (callNumberPrefix == "Bio") {
-        newBookData.Bio = 1
-    } else if (callNumberPrefix == "Fic") {
-        newBookData.Fic = 1
-    } else if (callNumberPrefix == "Res") {
-        newBookData.Res = 1
-    }
+            if (req.body.callNumberPrefix == 'Fil'){
+                req.body.Fil = true
+            } else if (req.body.callNumberPrefix == 'Ref'){
+                req.body.Ref = true
+            } else if (req.body.callNumberPrefix == 'Bio'){
+                req.body.Bio = true
+            } else if (req.body.callNumberPrefix == 'Fic'){
+                req.body.Fic = true
+            } else if (req.body.callNumberPrefix == 'Res'){
+                req.body.Res = true
+            } else {}
 
-    const book = await Book.create(newBookData);
+            const book = await Book.create(req.body);
+        }
 
-    const nowDate = new Date();
-    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
-    const user = await User.findById(req.user._id);
-    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
-    const history = await HistoryLog.create(
-        {
+        const nowDate = new Date();
+        const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
+        const user = await User.findById(req.user._id);
+        const formatDate = nowDate.toLocaleString('en-US', {
+            dateStyle: 'full',
+            timeStyle: 'short',
+            hour12: true
+        })
+        const history = await HistoryLog.create({
             userId: user._id,
             historylogText: user.name + ' added a book "' + book.title + '", on ' + newDate,
             historylogDate: formatDate,
             historylogType: 'Create'
-        }
-    );
-    res.status(201).json({
-        success: true,
-        book,
-        history
-    });
+        });
+
+        res.status(201).json({
+            success: true,
+            book,
+            history
+        });
+
+    } catch (err) {
+        console.log(err)
+    }
 };
 
 exports.getSingleBook = async (req, res, next) => {
-    const book = await Book.findById(req.params.id);
-    if (!book) {
+    const BookDetails = await Book.findById(req.params.id);
+    if (!BookDetails) {
         return next(new ErrorHandler('Book not found', 404));
     }
     res.status(200).json({
         success: true,
-        book
+        BookDetails
     })
 }
 
 exports.updateBook = async (req, res, next) => {
+    const check_book = await Book.findById(req.params.id);
+    let book = {}
+    try {
+        if (!check_book) {
+            return next(new ErrorHandler('Book not found', 404));
+        }
+        if (req.body.bookImage === '') {
 
-    let book = await Book.findById(req.params.id);
-    if (!book) {
-        return next(new ErrorHandler('Book not found', 404));
-    }
+            const callNumberPrefix = req.body.callNumberPrefix
+            if (req.body.callNumberPrefix == "Fil") {
+                req.body.Fil = 1
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Ref") {
+                req.body.Fil = 0
+                req.body.Ref = 1
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Bio") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 1
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Fic") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 1
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Res") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 1
+            }
 
-    const newBookData = {
-        title: req.body.title,
-        responsibility: req.body.responsibility,
-        uniform_title: req.body.uniform_title,
-        parallel_title: req.body.parallel_title,
-        main_author: req.body.main_author,
-        other_author: req.body.other_author,
-        contributors: req.body.contributors,
-        corp_author: req.body.corp_author,
-        placePub: req.body.placePub,
-        publisher: req.body.publisher,
-        yearPub: req.body.yearPub,
-        edition: req.body.edition,
-        pages: req.body.pages,
-        other_details: req.body.other_details,
-        dimension: req.body.dimension,
-        acc_materials: req.body.acc_materials,
-        series: req.body.series,
-        gen_notes: req.body.gen_notes,
-        isbn: req.body.isbn,
-        call_number: req.body.call_number,
-        accession: req.body.accession,
-        languange: req.body.languange,
-        location: req.body.location,
-        electronic_access: req.body.electronic_access,
-        entered_by: req.body.entered_by,
-        updated_by: req.body.updated_by,
-        date_entered: req.body.date_entered,
-        date_updated: req.body.date_updated,
-        copy: req.body.copy,
-        on_shelf: req.body.on_shelf,
-        out: req.body.out,
-        times_out: req.body.times_out,
-        subject: req.body.subjects,
-        content_notes: req.body.content_notes,
-        abstract: req.body.abstract,
-        reviews: req.body.reviews
-    }
+            book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true,
+            })
+        }
 
+        else {
+            const result = await cloudinary.v2.uploader.upload(req.body.bookImage, {
+                folder: 'TUPT_Library/Books/' + req.body.title,
+                width: 150,
+                height: 150,
+                crop: "scale"
+            })
 
-    const callNumberPrefix = req.body.callNumberPrefix
-    if (callNumberPrefix == "Fil") {
-        newBookData.Fil = 1
-        newBookData.Ref = 0
-        newBookData.Bio = 0
-        newBookData.Fic = 0
-        newBookData.Res = 0
-    } else if (callNumberPrefix == "Ref") {
-        newBookData.Fil = 0
-        newBookData.Ref = 1
-        newBookData.Bio = 0
-        newBookData.Fic = 0
-        newBookData.Res = 0
-    }
-    else if (callNumberPrefix == "Bio") {
-        newBookData.Fil = 0
-        newBookData.Ref = 0
-        newBookData.Bio = 1
-        newBookData.Fic = 0
-        newBookData.Res = 0
-    } else if (callNumberPrefix == "Fic") {
-        newBookData.Fil = 0
-        newBookData.Ref = 0
-        newBookData.Bio = 0
-        newBookData.Fic = 1
-        newBookData.Res = 0
-    } else if (callNumberPrefix == "Res") {
-        newBookData.Fil = 0
-        newBookData.Ref = 0
-        newBookData.Bio = 0
-        newBookData.Fic = 0
-        newBookData.Res = 1
-    }
+            req.body.book_image = {
+                public_id: result.public_id,
+                    url: result.secure_url
+            }
 
-    book = await Book.findByIdAndUpdate(req.params.id, newBookData, {
-        new: true,
-        runValidators: true,
-    })
-    //create history Log
-    const nowDate = new Date();
-    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
-    const user = await User.findById(req.user._id);
-    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
-    const history = await HistoryLog.create(
-        {
+            if (req.body.callNumberPrefix == "Fil") {
+                req.body.Fil = 1
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Ref") {
+                req.body.Fil = 0
+                req.body.Ref = 1
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Bio") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 1
+                req.body.Fic = 0
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Fic") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 1
+                req.body.Res = 0
+            } else if (req.body.callNumberPrefix == "Res") {
+                req.body.Fil = 0
+                req.body.Ref = 0
+                req.body.Bio = 0
+                req.body.Fic = 0
+                req.body.Res = 1
+            }
+
+            book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true,
+            })
+        }
+        //create history Log
+        const nowDate = new Date();
+        const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
+        const user = await User.findById(req.user._id);
+        const formatDate = nowDate.toLocaleString('en-US', {
+            dateStyle: 'full',
+            timeStyle: 'short',
+            hour12: true
+        })
+        const history = await HistoryLog.create({
             userId: user._id,
             historylogText: user.name + " updated a Book titled: " + book.title + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Update'
-        }
-    );
+        });
 
-    res.status(200).json({
-        success: true,
-        book,
-        history
-    })
+        res.status(200).json({
+            success: true,
+            book,
+            history
+        })
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 exports.deleteBook = async (req, res, next) => {

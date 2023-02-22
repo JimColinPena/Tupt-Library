@@ -55,11 +55,53 @@ const HistoryLog = () => {
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
                 <div className="management-content">
-                    <button className="btn btn-danger" style={{ "borderStyle":"solid", "float":"right", "marginTop":"25px"}} onClick={() => deleteAllHistoryLogHandler()}>Clear All</button>
+                    <button className="btn btn-danger" style={{ "borderStyle":"solid", "float":"right", "marginTop":"25px"}} data-toggle="modal" data-target={"#DeleteActiveModal"}>Clear All</button>
+
+                    <div className="modal fade" data-backdrop="false" id={"DeleteActiveModal"} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeleteActiveModalLabel">Clear all History Log</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to clear the History Log?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deleteAllHistoryLogHandler()} data-dismiss="modal">Confirm</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <h1 className='history-log-header'>History Log</h1>
                     {history.map((h) => (
                         <div style={{ "border-style": "solid", "margin-bottom": "5px", "padding": "10px" }}>
-                            <button className="btn btn-outline-danger" onClick={() => deleteHistoryLogHandler(h._id)} style={{ "float": "right" }}>&#10006;</button>
+                            <button className="btn btn-outline-danger" data-toggle="modal" data-target={"#DeleteSingeActiveModal"}  style={{ "float": "right" }}>&#10006;</button>
+
+                            <div className="modal fade" data-backdrop="false" id={"DeleteSingeActiveModal"} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                                <div className="modal-dialog" role="document">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h3 className="modal-title" id="DeleteActiveModalLabel">Delete history log</h3>
+                                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div className="modal-body">
+                                            Are you sure you want to delete this History Log?
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-danger" onClick={() => deleteHistoryLogHandler(h._id)} data-dismiss="modal">Confirm</button>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <h5>{h.historylogText}</h5>
                             <h6>{h.historylogType}</h6>
                             <p>{h.historylogDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>

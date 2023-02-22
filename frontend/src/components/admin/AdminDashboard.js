@@ -7,6 +7,7 @@ import { useAlert } from 'react-alert'
 import ReturnedBooksCharts from './ReturnedBooksChart'
 import SectionBorrowedCharts from './SectionBorrowedChart'
 import BookLeaderboards from './BookLeaderboards'
+import BorrowerLeaderboards from './BorrowerLeaderboards'
 import Loader from '../layout/Loader'
 
 const AdminDashboard = () => {
@@ -36,6 +37,7 @@ const AdminDashboard = () => {
             {loading ? <Loader /> : (
                 <Fragment>
                     <div className="dashboard_header"><h1 className="overview">Dashboard</h1></div>
+                    {/* <hr className='dashboard_hr'/> */}
                     <div className="dashboard_container">
                         <div className="dashboard_borrowedbook dash-item">
                             <div className="icon">
@@ -77,6 +79,9 @@ const AdminDashboard = () => {
                             </div> */}
                             <ReturnedBooksCharts />
                             <SectionBorrowedCharts />
+                        </div>
+                        <div className="row">
+                            <BorrowerLeaderboards />
                             <BookLeaderboards />
                         </div>
                     </div>

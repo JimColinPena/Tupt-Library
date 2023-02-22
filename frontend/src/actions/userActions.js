@@ -31,6 +31,10 @@ import {
     DEACTIVATED_USER_SUCCESS,
     DEACTIVATED_USER_FAIL,
 
+    END_TERM_USER_REQUEST,
+    END_TERM_USER_SUCCESS,
+    END_TERM_USER_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/userConstants'
 
@@ -200,6 +204,26 @@ export const deactivatedUsers = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: DEACTIVATED_USER_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const endterm = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: END_TERM_USER_REQUEST })
+
+        const { data } = await axios.put(`/api/v1/user/endterm`)
+
+        dispatch({
+            type: END_TERM_USER_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: END_TERM_USER_FAIL,
             payload: error.response.data.message
         })
     }

@@ -88,7 +88,7 @@ export const getBookDetails = (id) => async (dispatch) => {
         const { data } = await axios.get(`/api/v1/admin/single/book/${id}`)
         dispatch({
             type: BOOK_DETAILS_SUCCESS,
-            payload: data.book
+            payload: data.BookDetails
         })
     } catch (error) {
         dispatch({
@@ -97,6 +97,7 @@ export const getBookDetails = (id) => async (dispatch) => {
         })
     }
 }
+
 
 export const updateBook = (id, bookData) => async (dispatch) => {
     try {

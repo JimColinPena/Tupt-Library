@@ -12,7 +12,8 @@ import { getBookDetails, updateBook, clearErrors } from '../../actions/bookActio
 import { UPDATE_BOOK_RESET } from '../../constants/bookConstants'
 
 const BookUpdate = () => {
-
+	const [imageFiles, setImageFiles] = useState('');
+	const [bookImage, setImages] = useState('');
 	const [title, setTitle] = useState('')
 	const [responsibility, setResponsibility] = useState('')
 	const [uniform_title, setUniform_title] = useState('')
@@ -59,57 +60,63 @@ const BookUpdate = () => {
 	const dispatch = useDispatch();
 	let navigate = useNavigate();
 	const { error, isUpdated } = useSelector(state => state.book);
-	const { loading, book } = useSelector(state => state.bookDetails)
+	const { loading, BookDetails } = useSelector(state => state.bookDetails)
 	const { id } = useParams();
 
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
 
-		if (book && book._id !== id) {
+		if (BookDetails && BookDetails._id !== id) {
 			dispatch(getBookDetails(id))
-		} else {
-			setTitle(book.title)
-			setResponsibility(book.responsibility)
-			setUniform_title(book.uniform_title)
-			setParallel_title(book.parallel_title)
-			setMain_author(book.main_author)
-			setOther_author(book.other_author)
-			setContributors(book.contributors)
-			setCorp_author(book.corp_author)
-			setPlacePub(book.placePub)
-			setPublisher(book.publisher)
-			setYearPub(book.yearPub)
-			setEdition(book.edition)
-			setPages(book.pages)
-			setOther_details(book.other_details)
-			setDimension(book.dimension)
-			setAcc_materials(book.acc_materials)
-			setSeries(book.series)
-			setGen_notes(book.gen_notes)
-			setIsbn(book.isbn)
-			setCall_number(book.call_number)
-			setFil(book.Fil)
-			setRef(book.Ref)
-			setBio(book.Bio)
-			setFic(book.Fic)
-			setRes(book.Res)
+		} 
+		else {
+			{(BookDetails.book_image == null || BookDetails.book_image == undefined) ? 
+				setImageFiles("")
+				:
+				setImageFiles(BookDetails.book_image.url)
+			}
+			setTitle(BookDetails.title)
+			setResponsibility(BookDetails.responsibility)
+			setUniform_title(BookDetails.uniform_title)
+			setParallel_title(BookDetails.parallel_title)
+			setMain_author(BookDetails.main_author)
+			setOther_author(BookDetails.other_author)
+			setContributors(BookDetails.contributors)
+			setCorp_author(BookDetails.corp_author)
+			setPlacePub(BookDetails.placePub)
+			setPublisher(BookDetails.publisher)
+			setYearPub(BookDetails.yearPub)
+			setEdition(BookDetails.edition)
+			setPages(BookDetails.pages)
+			setOther_details(BookDetails.other_details)
+			setDimension(BookDetails.dimension)
+			setAcc_materials(BookDetails.acc_materials)
+			setSeries(BookDetails.series)
+			setGen_notes(BookDetails.gen_notes)
+			setIsbn(BookDetails.isbn)
+			setCall_number(BookDetails.call_number)
+			setFil(BookDetails.Fil)
+			setRef(BookDetails.Ref)
+			setBio(BookDetails.Bio)
+			setFic(BookDetails.Fic)
+			setRes(BookDetails.Res)
 			// setAccession(book.accession)
 			// setLanguange(book.languange)
 			// setLocation(book.location)
-			setEntered_by(book.entered_by)
-			setUpdated_by(book.updated_by)
-			setDate_entered(book.date_entered)
-			setDate_updated(book.date_updated)
-			setCopy(book.copy)
-			setOn_shelf(book.on_shelf)
-			setOut(book.out)
-			setTimes_out(book.times_out)
+			setEntered_by(BookDetails.entered_by)
+			setUpdated_by(BookDetails.updated_by)
+			setDate_entered(BookDetails.date_entered)
+			setDate_updated(BookDetails.date_updated)
+			setCopy(BookDetails.copy)
+			setOn_shelf(BookDetails.on_shelf)
+			setOut(BookDetails.out)
+			setTimes_out(BookDetails.times_out)
 
-			setSubjects(book.subject)
-			setContent_notes(book.content_notes)
-			setAbstract(book.abstract)
-			setReviews(book.reviews)
+			setSubjects(BookDetails.subject)
+			setContent_notes(BookDetails.content_notes)
+			setAbstract(BookDetails.abstract)
+			setReviews(BookDetails.reviews)
 		}
 
 		if (error) {
@@ -127,7 +134,7 @@ const BookUpdate = () => {
 			})
 		}
 
-	}, [dispatch, alert, error, navigate, isUpdated, id, book])
+	}, [dispatch, alert, error, navigate, isUpdated, id, BookDetails])
 
 	const submitHandler = (e) => {
 		e.preventDefault();
@@ -137,8 +144,34 @@ const BookUpdate = () => {
 			formData.append('subjects', subject)
 		)
 		// console.log(subjects)
-		dispatch(updateBook(book._id, formData));
+		formData.set('bookImage', bookImage);
+		dispatch(updateBook(BookDetails._id, formData));
 	};
+
+	const imageHandler = (e) => {
+		if (e.target.name === 'bookImage') {
+
+            const reader = new FileReader();
+			
+            reader.onload = () => {
+				console.log(reader.readyState)
+                if (reader.readyState === 2) {
+                    setImageFiles(reader.result)
+                    setImages(reader.result)
+                }
+            }
+			// console.log(reader.readyState)
+			// console.log(e.target.files)
+			
+            reader.readAsDataURL(e.target.files[0])
+			clearImage('')
+        } 
+}
+
+const clearImage = (e) => {
+	setImageFiles('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+	setImages('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+};
 
 	function setCurrentPageNo(pageNumber) {
 		setCurrentPage(pageNumber)
@@ -234,6 +267,28 @@ const BookUpdate = () => {
 											<section id="step-1" className="form-step">
 												<h2 className="font-normal text-center">Title & Statement Responsibility Area</h2>
 												<div className="mt-3">
+												<div className="form-group row">
+												<label htmlFor="image_field" className="col-sm-2 col-form-label">Book Image</label>
+												<div className="col-sm-10">
+												<input 
+													type="file" 
+													id="bookImage" 
+													name="bookImage"
+													// className='custom-file-input' 
+													// multiple
+													accept="image/*"
+													onChange={imageHandler}
+													/>
+						<div>
+															<img
+																src={imageFiles}
+																className='preview_images'
+																alt=''
+															/>
+															<button type="button" class="btn btn-danger" onClick={clearImage}>Clear</button>
+													</div>
+												</div>
+											</div>
 													<div className="form-group row">
 														<label htmlFor="title_field" className="col-sm-2 col-form-label">Title</label>
 														<div className="col-sm-10">
