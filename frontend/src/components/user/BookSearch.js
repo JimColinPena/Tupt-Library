@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
+import DeactivatedUser from './DeactivatedUser'
 import SideNavbarUser from '../layout/SideNavbarUser'
 
 import { useAlert } from 'react-alert'
@@ -86,39 +87,27 @@ const BookSearch = () => {
                 <Fragment>
                     <div className="management-content">
                         {(user.course === undefined | null) ?
-                            (<Modal show={show} centered>
-                                <Modal.Header>
-                                    <Modal.Title>One Step Closer</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    Before proceeding on using the application.
-                                    We encourage you to edit your profile first and fill up your
-                                    Course and Section in order to avoid uneccesarry errors.
-                                    Thank you for your pantience TUPTians!
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <Button variant="primary" onClick={handleClose} href="/profile">
-                                        EDIT PROFILE NOW
-                                    </Button>
-                                </Modal.Footer>
-                            </Modal>
-                            ) : (<div></div>)
+                            <DeactivatedUser />
+                            : <div>
+                                <h1>Books <span></span>
+                                </h1>
+                                <hr />
+                                {/* </div> */}
+                                <div className="management-body">
+                                    {loading ? <Loader /> : (
+                                        <MDBDataTable
+                                            data={setBooks()}
+                                            className="px-3"
+                                            bordered
+                                            striped
+                                            hover
+                                        />
+                                    )}
+                                </div>
+                            </div>
                         }
-                        <h1>Books <span></span>
-                        </h1>
-                        <hr />
-                        {/* </div> */}
-                        <div className="management-body">
-                            {loading ? <Loader /> : (
-                                <MDBDataTable
-                                    data={setBooks()}
-                                    className="px-3"
-                                    bordered
-                                    striped
-                                    hover
-                                />
-                            )}
-                        </div>
+
+
                     </div>
                 </Fragment>
             )}

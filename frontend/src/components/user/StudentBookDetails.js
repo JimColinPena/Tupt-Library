@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarUser from '../layout/SideNavbarUser'
+import DeactivatedUser from './DeactivatedUser'
 
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
@@ -59,7 +60,7 @@ const StudentBookDetails = () => {
 
     const handleBorrow = (e) => {
         e.preventDefault();
-        
+
         const formData = new FormData();
         formData.set('userId', user._id);
         formData.set('bookId', studentbook._id);
@@ -78,70 +79,76 @@ const StudentBookDetails = () => {
             <SideNavbarUser />
             {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
+                    {(user.course === undefined | null) ?
+                        (
+                            <DeactivatedUser />
+                        ) : (
+                            <div className="book-details">
+                                <div className="book-body">
+                                    <div className="row">
+                                        <div className="col-md-2" id=""><h2><strong>{studentbook.call_number}</strong></h2></div>
 
-                    <div className="book-details">
-                        <div className="book-body">
-                            <div className="row">
-                                <div className="col-md-2" id=""><h2><strong>{studentbook.call_number}</strong></h2></div>
-
-                                <div className="col-md-10" id=""><h2>
-                                    {studentbook.title}{" / "}{studentbook.main_author}{" "}{studentbook.publisher}{" "}{studentbook.yearPub}</h2></div>
-                            </div>
-                            <div align="center">
-                                {
-                                    checkbook.approve === true ?
-                                        (
-                                            checkbook.check === true ?
-                                                (// check if book is in the user's borrow
-                                                    <Link to={`/studentbook/appointment`} id="cancel_btn" className="btn btn-warning py-1 px-2 ml-2">Check Due Date
-                                                    </Link>
-                                                ) : (
-                                                    <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailables
-                                                    </button>
-                                                )
-                                        ) : (
-                                            checkbook.check === true ?
+                                        <div className="col-md-10" id=""><h2>
+                                            {studentbook.title}{" / "}{studentbook.main_author}{" "}{studentbook.publisher}{" "}{studentbook.yearPub}</h2></div>
+                                    </div>
+                                    <div align="center">
+                                        {
+                                            checkbook.approve === true ?
                                                 (
-                                                    <button id="cancel_btn" className="btn btn-danger py-1 px-2 ml-2" onClick={() => cancelBookHandler()}>Cancel
-                                                    </button>
+                                                    checkbook.check === true ?
+                                                        (// check if book is in the user's borrow
+                                                            <Link to={`/studentbook/appointment`} id="cancel_btn" className="btn btn-warning py-1 px-2 ml-2">Check Due Date
+                                                            </Link>
+                                                        ) : (
+                                                            <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailable
+                                                            </button>
+                                                        )
                                                 ) : (
-                                                    checkbook.pendinglimit === true ?
-                                                        (//status pending
-                                                            <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailables
+                                                    checkbook.check === true ?
+                                                        (
+                                                            <button id="cancel_btn" className="btn btn-danger py-1 px-2 ml-2" onClick={() => cancelBookHandler()}>Cancel
                                                             </button>
                                                         ) : (
-                                                            studentbook.on_shelf <= 0 || studentbook.on_shelf == null ?
-                                                                (//no available copies
+                                                            checkbook.pendinglimit === true ?
+                                                                (//status pending
                                                                     <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailable
                                                                     </button>
                                                                 ) : (
-                                                                    <button id="request_btn" className="btn btn-primary py-1 px-2 ml-2" onClick={handleShow}>Borrow Schedule
-                                                                    </button>
+                                                                    studentbook.on_shelf <= 0 || studentbook.on_shelf == null ?
+                                                                        (//no available copies
+                                                                            <button disabled='true' id="unavailable_btn" className="btn btn-primary py-1 px-2 ml-2">Unavailable
+                                                                            </button>
+                                                                        ) : (
+                                                                            <button id="request_btn" className="btn btn-primary py-1 px-2 ml-2" onClick={handleShow}>Borrow Schedule
+                                                                            </button>
+                                                                        )
                                                                 )
                                                         )
                                                 )
-                                        )
-                                }
+                                        }
+                                    </div>
+                                </div>
+
+                                <Modal className="Modal-Confirm" show={show} onHide={handleClose}>
+                                    <Modal.Header>
+                                        <Modal.Title><h2>Borrow Confirmation</h2></Modal.Title>
+
+                                        <Button onClick={handleClose}><i className="fa fa-times-circle"></i></Button>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <h1>Do you want to Borrow this Book?</h1>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="warning" onClick={handleClose}>NO
+                                        </Button>
+                                        <Button variant="primary" onClick={handleBorrow}>YES
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
                             </div>
-                        </div>
+                        )
+                    }
 
-                        <Modal className="Modal-Confirm" show={show} onHide={handleClose}>
-                            <Modal.Header>
-                                <Modal.Title><h2>Borrow Confirmation</h2></Modal.Title>
-
-                                <Button onClick={handleClose}><i className="fa fa-times-circle"></i></Button>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <h1>Do you want to Borrow this Book?</h1>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="warning" onClick={handleClose}>NO
-                                </Button>
-                                <Button variant="primary" onClick={handleBorrow}>YES
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </div>
 
                 </Fragment>
             )}

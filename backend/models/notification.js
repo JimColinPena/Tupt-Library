@@ -11,10 +11,10 @@ const notificationSchema = new mongoose.Schema({
     },
     notificationType: {
         type: String,
-        enum: {
-            values: ['Approve', 'Decline', 'Penalty', 'Others'],
-            message: 'There is error on proccessing this input'
-        }
+        // enum: {
+        //     values: ['Approve', 'Decline', 'Penalty', 'Others'],
+        //     message: 'There is error on proccessing this input'
+        // }
     },
     notificationTitle:{
         type: String,

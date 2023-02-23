@@ -58,4 +58,4 @@ const evaluationSchema = new mongoose.Schema({
     },
 
 })
-module.exports = mongoose.model('Evalutation', evaluationSchema);
+module.exports = mongoose.model('Evaluation', evaluationSchema);

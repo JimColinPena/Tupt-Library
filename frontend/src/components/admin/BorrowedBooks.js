@@ -106,18 +106,18 @@ const BorrowedBooks = () => {
 					sort: 'asc'
 				},
 				{
-					label: 'Email',
-					field: 'borrowedbooks_email',
-					sort: 'asc'
-				},
-				{
-					label: 'Contact',
-					field: 'borrowedbooks_contact',
-					sort: 'asc'
-				},
-				{
 					label: 'Book(s)',
 					field: 'borrowedbooks_book',
+					sort: 'asc'
+				},
+				{
+					label: 'Accession',
+					field: 'borrowedbooks_accession',
+					sort: 'asc'
+				},
+				{
+					label: 'Schedule',
+					field: 'borrowedbooks_appointment',
 					sort: 'asc'
 				},
 				{
@@ -138,14 +138,14 @@ const BorrowedBooks = () => {
 			data.rows.push({
 				borrowedbooks_id: borrowedbook.userId.id_number,
 				borrowedbooks_name: borrowedbook.userId.name,
-				borrowedbooks_email: borrowedbook.userId.email,
-				borrowedbooks_contact: borrowedbook.userId.contact,
 				borrowedbooks_book: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
+				borrowedbooks_accession: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
 				borrowedbooks_due: dateFormat(borrowedbook.dueDate.split('T')[0], "mmmm dd, yyyy"),
+				borrowedbooks_appointment: dateFormat(borrowedbook.appointmentDate.split('T')[0], "mmmm dd, yyyy"),
 				actions:
 					<Fragment>
 						<button type="button" className="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
-							Returned
+							<i className="fa fa-box"></i>
 						</button>
 						<button className="btn btn-warning py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditBorrowModal" + borrowedbook._id}>
 							<i className="fa fa-pencil"></i>
@@ -153,9 +153,6 @@ const BorrowedBooks = () => {
 						<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#GiveAccessionModal" + borrowedbook._id}>
 							<i className="fa fa-plus"></i>
 						</button>
-						{/* <button type="button" className="btn btn-danger py-1 px-2 ml-2"  onClick={() => declineHandler(borrowedbook._id)}>
-							<i className="fa fa-trash"></i>
-						</button> */}
 						<button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeclineBookModal" + borrowedbook._id}>
 							<i className="fa fa-trash"></i>
 						</button>

@@ -55,6 +55,14 @@ const SideNavbarAdmin = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link to="/admin/books" className="sidenav-links">
+                                        <span className="material-symbols-rounded">
+                                            menu_book
+                                        </span>
+                                        books management
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link to="/appointments" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             edit_calendar
@@ -70,15 +78,6 @@ const SideNavbarAdmin = () => {
                                         borrowed books
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link to="/admin/books" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            menu_book
-                                        </span>
-                                        books management
-                                    </Link>
-                                </li>
-
                                 <li>
                                     <Link to="/historyLog" className="sidenav-links">
                                         <span className="material-symbols-rounded">

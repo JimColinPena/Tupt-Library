@@ -64,20 +64,6 @@ const StudentEvaluation = () => {
 		dispatch(newEvaluations(formData));
 	}
 
-	// const handleConfirm = (e) => {
-    //     e.preventDefault();
-    //     const appointmentDate = new Date();
-
-    //     appointmentDate.setDate(startDate.getDate())
-
-    //     const formData = new FormData();
-    //     formData.set('userId', user._id);
-    //     formData.set('appointmentDate', appointmentDate);
-    //     formData.set('dueDate', dueDate);
-
-    //     dispatch(confirmBorrowBooks(formData));
-    // }
-
 	function setCurrentPageNo(pageNumber) {
 		setCurrentPage(pageNumber)
 	}

@@ -28,6 +28,10 @@ import {
     ACCESSION_DETAILS_SUCCESS,
     ACCESSION_DETAILS_FAIL,
 
+    EDIT_BOOK_ACCESSION_REQUEST,
+    EDIT_BOOK_ACCESSION_SUCCESS,
+    EDIT_BOOK_ACCESSION_FAIL,
+
     DELETE_BOOK_ACCESSION_REQUEST,
     DELETE_BOOK_ACCESSION_SUCCESS,
     DELETE_BOOK_ACCESSION_FAIL,
@@ -187,12 +191,46 @@ export const getBookAccession = (id) => async (dispatch) => {
     }
 }
 
-export const deleteBookAccession = (id) => async (dispatch) => {
+export const editBookAccession = (id, accessionData) => async (dispatch) => {
     try {
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        dispatch({ type: EDIT_BOOK_ACCESSION_REQUEST })
+
+        const { data } = await axios.put(`/api/v1/book/accession/${id}`, accessionData, config)
+
+        dispatch({
+            type: EDIT_BOOK_ACCESSION_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: EDIT_BOOK_ACCESSION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const deleteBookAccession = (id, accessionData) => async (dispatch) => {
+    try {
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
 
         dispatch({ type: DELETE_BOOK_ACCESSION_REQUEST })
 
-        const { data } = await axios.delete(`/api/v1/book/accession/${id}`)
+        console.log(id, accessionData)
+
+        const { data } = await axios.put(`/api/v1/delete/accession/${id}`, accessionData, config)
 
         dispatch({
             type: DELETE_BOOK_ACCESSION_SUCCESS,

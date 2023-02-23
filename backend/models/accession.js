@@ -11,6 +11,10 @@ const accessionSchema = new mongoose.Schema({
     out: {
         type: Boolean,
         default: 0
-    }
+    },
+    userId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
 })
 module.exports = mongoose.model('Accession', accessionSchema);

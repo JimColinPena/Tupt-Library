@@ -29,7 +29,7 @@ const SideNavbarUser = () => {
                         <div className="flex-container">
                             <ul className="sidenav-items">
                                 <li>
-                                    <Link to="/dashboard" className="sidenav-links">
+                                    <Link to="/dashboard" className="sidenav-links" >
                                         <span className="material-symbols-rounded">
                                             dashboard
                                         </span>
@@ -68,7 +68,6 @@ const SideNavbarUser = () => {
                                         borrowed books
                                     </Link>
                                 </li>
-
                                 <li>
                                     <Link to="/" className="sidenav-links">
                                         <span className="material-symbols-rounded">

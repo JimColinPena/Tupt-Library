@@ -5,9 +5,6 @@ const notificationSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
-    // dueDate: {
-    //     type: Date,
-    // },
     penalty:{
         type: Number,
     }

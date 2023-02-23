@@ -8,6 +8,7 @@ const Book = require('../models/book');
 const Return = require('../models/return');
 const HistoryLog = require('../models/historylog');
 const Notification = require('../models/notification');
+const Penalty = require('../models/penalty');
 
 exports.getPersonnel = async (req, res, next) => {
     const personnel = await User.find({ $or: [{ role: 'admin' }, { role: 'personnel' }] });
@@ -32,18 +33,18 @@ exports.createPersonnel = async (req, res, next) => {
     const personnel = await User.create(newPersonnelData);
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" added a personnel named: "+ req.body.name+ ", on "+ newDate,
+            historylogText: user.name + " added a personnel named: " + req.body.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Create'
         }
     );
-    
+
     res.status(201).json({
         success: true,
         personnel,
@@ -84,13 +85,13 @@ exports.updatePersonnel = async (req, res, next) => {
 
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" updated a personnel named: "+ req.body.name+ ", on "+ newDate,
+            historylogText: user.name + " updated a personnel named: " + req.body.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Update'
         }
@@ -106,13 +107,13 @@ exports.updatePersonnel = async (req, res, next) => {
 exports.deletePersonnel = async (req, res, next) => {
     //creation of history log is executed first because deleting the object will remove all necessary for history log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" deleted a personnel named: "+ req.body.name+ ", on "+ newDate,
+            historylogText: user.name + " deleted a personnel named: " + req.body.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Delete'
         }
@@ -131,7 +132,7 @@ exports.deletePersonnel = async (req, res, next) => {
 }
 
 exports.getActiveStudent = async (req, res, next) => {
-    const active_students = await User.find({ role: 'student', status: 'active' });
+    const active_students = await User.find({ role: 'student' });
     res.status(200).json({
         success: true,
         active_students
@@ -178,13 +179,13 @@ exports.updateStudent = async (req, res, next) => {
     })
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" updated a student named: "+ req.body.name+ ", on "+ newDate,
+            historylogText: user.name + " updated a student named: " + req.body.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Update'
         }
@@ -203,13 +204,13 @@ exports.deleteStudent = async (req, res, next) => {
     }
     //creation of history log is executed first because deleting the object will remove all necessary for history log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" deleted a student named: "+ student.name+ ", on "+ newDate,
+            historylogText: user.name + " deleted a student named: " + student.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Delete'
         }
@@ -257,18 +258,18 @@ exports.acceptAppointment = async (req, res, next) => {
     const newBorrower = await User.findById(userId)
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" approved a borrowing request by "+ newBorrower.name+ ", on "+ newDate,
+            historylogText: user.name + " approved a borrowing request by " + newBorrower.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Approve'
         }
     );
-    
+
 
     res.status(200).json({
         success: true,
@@ -296,13 +297,13 @@ exports.declineAppointment = async (req, res, next) => {
     const newBorrower = await User.findById(userId)
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +" declined a borrowing request by "+ newBorrower.name+ ", on "+ newDate,
+            historylogText: user.name + " declined a borrowing request by " + newBorrower.name + ", on " + newDate,
             historylogDate: formatDate,
             historylogType: 'Decline'
         }
@@ -323,7 +324,7 @@ exports.getBorrowedBoooks = async (req, res, next) => {
         },
         {
             path: 'bookId',
-            select: 'title',
+            select: ['title', 'accession_numbers'],
         }
     ]);
     res.status(200).json({
@@ -333,7 +334,7 @@ exports.getBorrowedBoooks = async (req, res, next) => {
 }
 
 exports.getReturnedBooks = async (req, res, next) => {
-    
+
     const returnedbooks = await Return.find().populate(
         [
             {
@@ -385,13 +386,13 @@ exports.returnBook = async (req, res, next) => {
     const bookBorrowed = await Book.findById(bookId)
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: newBorrower.name +' returned a book "'+ bookBorrowed.title+ '", on '+ newDate,
+            historylogText: newBorrower.name + ' returned a book "' + bookBorrowed.title + '", on ' + newDate,
             historylogDate: formatDate,
             historylogType: 'Return'
         }
@@ -420,13 +421,13 @@ exports.declineBook = async (req, res, next) => {
     const newBorrower = await User.findById(userId)
     //create history Log
     const nowDate = new Date();
-    const newDate = (nowDate.getMonth()+1)+'/'+nowDate.getDate()+'/'+nowDate.getFullYear();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const user = await User.findById(req.user._id);
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
     const history = await HistoryLog.create(
         {
             userId: user._id,
-            historylogText: user.name +' decline a book appointment from '+ newBorrower.name+ ', on '+ newDate + ' due to book(s) not picked up on date',
+            historylogText: user.name + ' decline a book appointment from ' + newBorrower.name + ', on ' + newDate + ' due to book(s) not picked up on date',
             historylogDate: formatDate,
             historylogType: 'Decline'
         }
@@ -446,34 +447,34 @@ exports.getUserDetails = async (req, res, next) => {
         {
             path: 'bookId',
             select: 'title',
-             }
+        }
     );
 
     if (!getReturnedBooks) {
-        getReturnedBooks ==  null;
+        getReturnedBooks == null;
     }
 
     const userdetail = {
         userinfo: getUserInfo,
         returnedBooks: getReturnedBooks
     }
-    
+
     res.status(200).json({
         success: true,
         userdetail
     })
 }
 
-exports.getHistoryLog = async (req,res,next) => {
+exports.getHistoryLog = async (req, res, next) => {
     // const history = await HistoryLog.find();
-    const history = await HistoryLog.find().sort({createdAt: 'descending'});
+    const history = await HistoryLog.find().sort({ createdAt: 'descending' });
     res.status(200).json({
         success: true,
         history
     })
 }
 
-exports.deleteHistoryLog = async (req,res,next) => {
+exports.deleteHistoryLog = async (req, res, next) => {
     const history = await HistoryLog.findById(req.params.id);
     if (!history) {
         return next(new ErrorHandler('History Log not found', 404));
@@ -482,16 +483,18 @@ exports.deleteHistoryLog = async (req,res,next) => {
 
     res.status(200).json({
         success: true,
-        message: 'History Log deleted'
+        message: 'History Log deleted',
+        history
     })
 }
 
 exports.deleteAllHistoryLog = async (req, res, next) => {
     const history = await HistoryLog.find().deleteMany()
-    
+
     res.status(200).json({
         success: true,
-        message: 'All History Log Deleted'
+        message: 'All History Log Deleted',
+        history
     })
 }
 
@@ -505,22 +508,126 @@ exports.changeDueDate = async (req, res, next) => {
     // changeing duedate and inserting accession number(s) this function will determine if the personnel changed the
     //duedate only so that it will create notification for the user that their duedate is change
     //due to unforseen/ special circumstances
-    if(req.body.accession == ""){
-        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, {dueDate: req.body.dueDate})
+    if (req.body.accession == "") {
+        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, { dueDate: req.body.dueDate })
         await Notification.create({
             sender: req.user.id,
             receiver: borrowerId.userId,
             notificationType: 'Others',
-            notificationText: 'Personnel:'+personnel.name+' has changed your duedate to '+req.body.dueDate+' with a reason of: '+req.body.reason,
+            notificationText: 'Personnel:' + personnel.name + ' has changed your duedate to ' + req.body.dueDate + ' with a reason of: ' + req.body.reason,
             notificationDate: date,
             deliveryStatus: 'Delivered',
         })
-    }else{
-        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, { accession: req.body.accession})
+    } else {
+        borrow = await Borrow.findByIdAndUpdate(req.body.borrowId, { accession: req.body.accession })
     }
 
     res.status(200).json({
         success: true,
         borrow,
+    })
+}
+
+exports.checkPenalty = async (req, res, next) => {
+    let penalty = {}
+    const today = new Date().getTime()
+    const borrow = await Borrow.find({ status: 'Accepted' })
+    // console.log(borrow)
+
+    borrow.forEach(async data => {
+        const notification = await Notification.findOne({ receiver: data.userId, notificationType: 'Penalty' })
+        const penalty = await Penalty.findOne({ userId: data.userId })
+        const due_date = data.dueDate.getTime()
+        const time_due = today - due_date
+        var Difference_In_Days = Math.round((time_due / (1000 * 3600 * 24) + 1));
+
+        if (!penalty) {
+            if (Difference_In_Days > 0) {
+                await Penalty.create({
+                    userId: data.userId,
+                    penalty: Difference_In_Days * 5
+                })
+            }
+        } else {
+            await Penalty.findByIdAndUpdate(penalty.id, {
+                penalty: Difference_In_Days * 5
+            })
+        }
+
+        if (!notification) {
+            if (Difference_In_Days == -1) {
+                await Notification.create({
+                    sender: req.user.id,
+                    receiver: data.userId,
+                    notificationType: 'Penalty',
+                    notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on ' + data.dueDate.getMonth + " " + data.dueDate.getDay + " " + data.dueDate.getFullYear,
+                    notificationDate: today,
+                    deliveryStatus: 'Delivered',
+                })
+            }
+            else if (Difference_In_Days == 0) {
+                await Notification.create({
+                    sender: req.user.id,
+                    receiver: data.userId,
+                    notificationType: 'Penalty',
+                    notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned Today. Please return now to avoid any penalties, thank you!',
+                    notificationDate: today,
+                    deliveryStatus: 'Delivered',
+                })
+            }
+            else if (Difference_In_Days > 0) {
+                await Notification.create({
+                    sender: req.user.id,
+                    receiver: data.userId,
+                    notificationType: 'Penalty',
+                    notificationText: 'This is a reminder that you have a pending penalty to be cleared. Please check your penalty tab.',
+                    notificationDate: today,
+                    deliveryStatus: 'Delivered',
+                })
+            }
+        } else {
+            const notif_date = notification.notificationDate.getTime()
+            const time_notif = today - notif_date
+            var notif_frequency = Math.round((time_notif / (1000 * 3600 * 24) + 1));
+            console.log(notif_frequency)
+            if (notif_frequency != 0) {
+                if (Difference_In_Days == -1) {
+                    await Notification.create({
+                        sender: req.user.id,
+                        receiver: data.userId,
+                        notificationType: 'Penalty',
+                        notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on ' + data.dueDate.getMonth + " " + data.dueDate.getDay + " " + data.dueDate.getFullYear,
+                        notificationDate: today,
+                        deliveryStatus: 'Delivered',
+                    })
+                }
+                else if (Difference_In_Days == 0) {
+                    await Notification.create({
+                        sender: req.user.id,
+                        receiver: data.userId,
+                        notificationType: 'Penalty',
+                        notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned Today. Please return now to avoid any penalties, thank you!',
+                        notificationDate: today,
+                        deliveryStatus: 'Delivered',
+                    })
+                }
+                else if (Difference_In_Days > 0) {
+                    await Notification.create({
+                        sender: req.user.id,
+                        receiver: data.userId,
+                        notificationType: 'Penalty',
+                        notificationText: 'This is a reminder that you have a pending penalty to be cleared. Please check your penalty tab.',
+                        notificationDate: today,
+                        deliveryStatus: 'Delivered',
+                    })
+                }
+            }
+        }
+
+        
+    });
+    res.status(200).json({
+        success: true,
+        penalty
     })
 }

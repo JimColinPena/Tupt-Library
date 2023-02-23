@@ -7,6 +7,7 @@ import dateFormat from 'dateformat';
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarUser from '../layout/SideNavbarUser'
+import DeactivatedUser from './DeactivatedUser'
 
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
@@ -43,7 +44,6 @@ const AppointmentDetails = () => {
                 <Fragment>
                     {studentappointmentbook ? (
                         <Fragment>
-
                             <div className="management-content">
                                 <h1>Borrowed Books</h1>
                                 <hr />
@@ -77,32 +77,17 @@ const AppointmentDetails = () => {
                             <SideNavbarUser />
                             <div className="management-content">
                                 {(user.course === undefined | null) ?
-                                    (<Modal show={show} centered>
-                                        <Modal.Header>
-                                            <Modal.Title>One Step Closer</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            Before proceeding on using the application.
-                                            We encourage you to edit your profile first and fill up your
-                                            Course and Section in order to avoid uneccesarry errors.
-                                            Thank you for your pantience TUPTians!
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                            <Button variant="primary" onClick={handleClose} href="/profile">
-                                                EDIT PROFILE NOW
-                                            </Button>
-                                        </Modal.Footer>
-                                    </Modal>
-                                    ) : (<div></div>)
+                                    (<DeactivatedUser />
+                                    ) : (<div>
+                                        <h1>Borrowed Books</h1>
+                                        <hr />
+                                        <div className="management-body">
+                                            <h1>No Borrowed Books</h1>
+                                        </div>
+                                    </div>)
                                 }
-                                <h1>Borrowed Books</h1>
-                                <hr />
-                                <div className="management-body">
-                                    <h1>No Borrowed Books</h1>
-                                </div>
                             </div>
                         </Fragment>
-
                     )}
                 </Fragment>
             )}

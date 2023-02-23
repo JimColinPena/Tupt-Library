@@ -10,8 +10,8 @@ import Loader from '../layout/Loader'
 import SideNavbarAdmin from '../layout/SideNavbarAdmin'
 
 
-import { getBookAccession, addBookAccession, deleteBookAccession, clearErrors } from '../../actions/bookActions'
-import { ADD_BOOK_ACCESSION_RESET, DELETE_BOOK_ACCESSION_RESET } from '../../constants/bookConstants'
+import { getBookAccession, addBookAccession, editBookAccession, deleteBookAccession, clearErrors } from '../../actions/bookActions'
+import { ADD_BOOK_ACCESSION_RESET, DELETE_BOOK_ACCESSION_RESET, EDIT_BOOK_ACCESSION_RESET } from '../../constants/bookConstants'
 
 const BookAccession = () => {
     const alert = useAlert();
@@ -21,15 +21,13 @@ const BookAccession = () => {
 
     const { bookAccessions, loading, error } = useSelector(state => state.accessionDetails)
     const { success } = useSelector(state => state.addBookAccession)
-    const { accessionDeleted } = useSelector(state => state.accessionDelete)
+    const { accessionDeleted , accessionEdited} = useSelector(state => state.accessionReducer)
 
     const [accession, setAccession] = useState('');
     const [accession_edit, setAccession_Edit] = useState('');
-    const [on_shelf, setOn_shelf_Edit] = useState('');
-    const [out, setOut_Edit] = useState();
+
 
     useEffect(() => {
-        // if (bookAccessions && bookAccessions._id !== id) {
         dispatch(getBookAccession(id));
 
 
@@ -49,11 +47,20 @@ const BookAccession = () => {
             alert.success('Book accession deleted successfully');
             dispatch({ type: DELETE_BOOK_ACCESSION_RESET })
         }
+        if (accessionEdited) {
+            navigate(`/accession/detail/${id}`);
+            alert.success('Book accession edited successfully');
+            dispatch({ type: EDIT_BOOK_ACCESSION_RESET })
+        }
 
-    }, [dispatch, alert, error, success, accessionDeleted, navigate,])
+    }, [dispatch, alert, error, success, accessionDeleted, accessionEdited, navigate,])
 
-    const deleteAccessionHandler = (id) => {
-        dispatch(deleteBookAccession(id))
+    const deleteAccessionHandler = (accessionId) => {
+        const formData = new FormData();
+        console.log(id)
+        console.log(accessionId)
+        formData.set('bookId', id)
+        dispatch(deleteBookAccession(accessionId, formData))
     }
 
     const addAccessionHandler = () => {
@@ -61,6 +68,13 @@ const BookAccession = () => {
         formData.set('bookId', id)
         formData.set('accession', accession)
         dispatch(addBookAccession(formData))
+    }
+
+    const editAccessionHandler = (accessionId) => {
+        const formData = new FormData();
+        formData.set('bookId', id)
+        formData.set('accession', accession_edit)
+        dispatch(editBookAccession(accessionId, formData))
     }
 
     const setBookAccessions = () => {
@@ -72,13 +86,8 @@ const BookAccession = () => {
                     sort: 'asc'
                 },
                 {
-                    label: 'On Shelf',
-                    field: 'on_shelf',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Out',
-                    field: 'out',
+                    label: 'Inventory Status',
+                    field: 'inventory',
                     sort: 'asc'
                 },
                 {
@@ -92,95 +101,85 @@ const BookAccession = () => {
         bookAccessions.forEach(accession => {
             data.rows.push({
                 accession_number: accession.accession_number,
-                on_shelf: accession.on_shelf ? 1 : 0,
-                out: accession.out ? 1 : 0,
+                inventory: <Fragment>
+                    <div className="icon-buttons">
+                        {(accession.on_shelf == true) ?
+                            <div>
+                                <button className="btn btn-success py-1 px-2 ml-2" data-toggle="modal" data-target={"#onshelfAccessionModal" + accession._id}>
+                                    <i className="fa fa-box"></i>
+                                </button> This book is on shelf
+                            </div>
+                            :
+                            <div>D
+                                <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#outAccessionModal" + accession._id}>
+                                    <i className="fa fa-box"></i>
+                                </button> This book is out
+                            </div> 
+                        }
+                    </div>
+                </Fragment>,
                 actions: <Fragment>
                     <div className="icon-buttons">
                         <button className="btn btn-warning py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditAccessionModal" + accession._id}>
                             <i className="fa fa-pencil"></i>
                         </button>
-                        <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteAccessionModal" + accession._id}>
-                            <i className="fa fa-trash"></i>
-                        </button>
-                    </div>
-                    <div className="modal fade" data-backdrop="false" id={"DeleteAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h3 className="modal-title" id="DeleteAccessionModalLabel">Delete Accession Number</h3>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div className="modal-body">
-                                    Are you sure you want to delete this book?
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" onClick={() => deleteAccessionHandler(accession._id)} data-dismiss="modal">Delete</button>
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal fade" id={"EditAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h3 className="modal-title" id="DeleteAccessionModalLabel">Edit Accession Number</h3>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <form>
-                                        <div className="modal-body">
-                                            <div className='row'>
-                                                <div className='col-md-12'>
-                                                    <label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                    <div className="col-sm-8">
-                                                        <input
-                                                            type="text"
-                                                            id="accession_field"
-                                                            className="form-control"
-                                                            name='accession_edit'
-                                                            value={accession_edit}
-                                                            onChange={(e) => setAccession_Edit(e.target.value)}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className='col-md-6'>
-                                                    <label htmlFor="on_shelf_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                    <div className="col-sm-10">
-                                                        <input
-                                                            type="text"
-                                                            id="on_shelf_field"
-                                                            className="form-control"
-                                                            name='on_shelf'
-                                                            value={on_shelf}
-                                                            onChange={(e) => setOn_shelf_Edit(e.target.value)}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className='col-md-6'>
-                                                    <label htmlFor="out_field" className="col-sm-2 col-form-label">Accession Number</label>
-                                                    <div className="col-sm-10">
-                                                        <input
-                                                            type="text"
-                                                            id="out_field"
-                                                            className="form-control"
-                                                            name='out'
-                                                            value={out}
-                                                            onChange={(e) => setOut_Edit(e.target.value)}
-                                                        />
+                        <div className="modal fade" id={"EditAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="DeleteAccessionModalLabel">Edit Accession Number</h3>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <form>
+                                            <div className="modal-body">
+                                                <div className='row'>
+                                                    <div className='col-md-12'>
+                                                        <label htmlFor="accession_field" className="col-sm-2 col-form-label">Accession Number</label>
+                                                        <div className="col-sm-8">
+                                                            <input
+                                                                type="text"
+                                                                id="accession_field"
+                                                                className="form-control"
+                                                                name='accession_edit'
+                                                                value={accession_edit}
+                                                                placeholder={accession.accession_number}
+                                                                onChange={(e) => setAccession_Edit(e.target.value)}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-primary" onClick={() => editAccessionHandler(accession._id)} data-dismiss="modal">Update</button>
+                                        <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                    </div>
                                 </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => addAccessionHandler()} data-dismiss="modal">Update</button>
-                                    <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                        <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteAccessionModal" + accession._id}>
+                            <i className="fa fa-trash"></i>
+                        </button>
+                        <div className="modal fade" data-backdrop="false" id={"DeleteAccessionModal" + accession._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="DeleteAccessionModalLabel">Delete Accession Number</h3>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div className="modal-body">
+                                        Are you sure you want to delete this book?
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-danger" onClick={() => deleteAccessionHandler(accession._id)} data-dismiss="modal">Delete</button>
+                                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

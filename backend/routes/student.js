@@ -9,7 +9,6 @@ const {
 	getSingleStudentBook,
 	getStudentBorrowBook,
 	getStudentAppointmentBook,
-	checkPenalty,
 } = require('../controllers/studentController');
 
 router.route('/getstudent/:id').get(isAuthenticatedUser, getStudentDetails);
@@ -18,6 +17,6 @@ router.route('/books').get(isAuthenticatedUser, getStudentBooks);
 router.route('/book/:id').get(getSingleStudentBook);
 router.route('/borrow/request').get(isAuthenticatedUser, getStudentBorrowBook);
 router.route('/borrow/books').get(isAuthenticatedUser, getStudentAppointmentBook);
-router.route('/penalty/check').get(isAuthenticatedUser, checkPenalty);
+
 
 module.exports = router;

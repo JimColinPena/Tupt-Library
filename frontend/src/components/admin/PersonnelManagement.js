@@ -95,10 +95,6 @@ const PersonnelManagement = () => {
         dispatch(endterm())
     }
 
-    // const approveStudentHandler = (id) => {
-    //     dispatch(approveStudent(id))
-    // }
-
     const setPersonnels = () => {
         const data = {
             columns: [
@@ -187,11 +183,6 @@ const PersonnelManagement = () => {
                     field: 'contact',
                     sort: 'asc'
                 },
-                // {
-                //     label: 'Date Published',
-                //     field: 'yearPub',
-                //     sort: 'asc'
-                // },
                 {
                     label: 'Actions',
                     field: 'actions',
@@ -207,9 +198,20 @@ const PersonnelManagement = () => {
                 contact: active_student.contact,
                 // yearPub: active_students.yearPub,
                 actions: <Fragment>
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal" + active_student._id}>
+                    <button className="btn btn-danger py-1 px-2 px-2" data-toggle="modal" data-target={"#DeleteActiveModal" + active_student._id}>
                         <i className="fa fa-trash"></i>
                     </button>
+
+                    {active_student.status == 'active' ?
+                        <button className="btn btn-success py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeactivateModal"+active_student._id}>
+                            <i className="fa fa-unlock"></i>
+                        </button>
+
+                    : <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#ActivateModal"+active_student._id}>
+                            <i className="fa fa-lock"></i>
+                        </button>
+
+                    }
 
                     <div className="modal fade" data-backdrop="false" id={"DeleteActiveModal" + active_student._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">
@@ -230,65 +232,8 @@ const PersonnelManagement = () => {
                             </div>
                         </div>
                     </div>
-
-                </Fragment>
-            })
-        })
-
-        return data;
-
-        // console.log(data);
-    }
-
-    const setUsers = () => {
-        const data = {
-            columns: [
-                {
-                    label: 'ID',
-                    field: 'id_number',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Name',
-                    field: 'name',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Contact',
-                    field: 'contact',
-                    // sort: 'asc'
-                },
-                {
-                    label: 'Account Status',
-                    field: 'status',
-                    // sort: 'asc'
-                },
-                {
-                    label: 'Actions',
-                    field: 'actions',
-                },
-            ],
-            rows: []
-        }
-
-        users.forEach(user => {
-            data.rows.push({
-                id_number: user.id_number,
-                name: user.name,
-                contact: user.contact,
-                status: user.status,
-                actions : 
-                <Fragment>
-                    {user.status == 'active' ?
-                        <button className="btn btn-danger py-1 px-2" data-toggle="modal" data-target={"#DeactivateModal"+user._id}>Deactivate
-                        </button>
-
-                    : <button className="btn btn-primary py-1 px-2" data-toggle="modal" data-target={"#ActivateModal"+user._id}>Activate
-                        </button>
-
-                    }
-
-                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal"+user._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
+                    
+                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal"+active_student._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -301,13 +246,12 @@ const PersonnelManagement = () => {
                                     Are you sure you want to deactivate this User?
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" onClick={() => deacvateUserHandler(user._id)} data-dismiss="modal">Confirm</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => deacvateUserHandler(active_student._id)} data-dismiss="modal">Confirm</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="modal fade" data-backdrop="false" id={"ActivateModal"+user._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
+                    <div className="modal fade" data-backdrop="false" id={"ActivateModal"+active_student._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -320,16 +264,18 @@ const PersonnelManagement = () => {
                                     Are you sure you want to activate this User?
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" onClick={() => acvateUserHandler(user._id)} data-dismiss="modal">Confirm</button>
+                                    <button type="button" className="btn btn-primary" onClick={() => acvateUserHandler(active_student._id)} data-dismiss="modal">Confirm</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </Fragment>
             })
         })
+
         return data;
+
+        // console.log(data);
     }
 
     return (
@@ -390,21 +336,6 @@ const PersonnelManagement = () => {
                                 {loading ? <Loader /> : (
                                     <MDBDataTable
                                         data={setActiveStudents()}
-                                        className="px-3"
-                                        bordered
-                                        striped
-                                        hover
-                                    />
-                                )}
-                            </div>
-                        </div>
-                        <div className="col-12">
-                            <div className="">
-                                <h1 className="text-center">User Management
-                                </h1>
-                                {loading ? <Loader /> : (
-                                    <MDBDataTable
-                                        data={setUsers()}
                                         className="px-3"
                                         bordered
                                         striped

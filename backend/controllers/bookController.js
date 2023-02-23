@@ -6,6 +6,7 @@ const Book = require('../models/book');
 const Accession = require('../models/accession');
 const HistoryLog = require('../models/historylog')
 const User = require('../models/user');
+const { findById } = require('../models/book');
 
 exports.getBooks = async (req, res, next) => {
     const book = await Book.find().populate('accession_numbers');
@@ -259,15 +260,7 @@ exports.createBookAccession = async (req, res, next) => {
         on_shelf: 1,
         out: 0
     })
-
-    console.log(accession)
-    console.log(accession._id)
-
     const book = await Book.updateOne({ _id: req.body.bookId }, { $push: { accession_numbers: accession._id } })
-
-    // console.log(accession)
-    // console.log(book)
-
     res.status(200).json({
         success: true,
         message: 'Accession Added',
@@ -290,18 +283,39 @@ exports.singleBookAccession = async (req, res, next) => {
 }
 
 exports.editBookAccession = async (req, res, next) => {
+    const accession = await Accession.findByIdAndUpdate(req.params.id, {accession_number: req.body.accession})
+    console.log(req.body.bookId)
+    const book = await Book.findById(req.body.bookId)
+    const nowDate = new Date();
+    const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
+    const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
+    const user = await User.findById(req.user._id);
+    const history = await HistoryLog.create(
+        {
+            userId: user._id,
+            historylogText: user.name + " Edited a Book accession from " + book.title + ", on " + newDate,
+            historylogDate: formatDate,
+            historylogType: 'Update'
+        }
+    );
+
+    res.status(200).json({
+        success: true,
+        message: 'Book Edited',
+        history
+    })
 
 }
 
 exports.deleteBookAccession = async (req,res,next) => {
     const accession = await Accession.findById(req.params.id);
     if (!accession) {
-        return next(new ErrorHandler('History Log not found', 404));
+        return next(new ErrorHandler('Accession Log not found', 404));
     }
+    await Book.updateOne({ _id: req.body.bookId }, { $pull: { accession_numbers: accession._id } })
     await accession.remove();
 
-    const book = await Book.updateOne({ _id: req.body.bookId }, { $pull: { accession_numbers: accession._id } })
-
+    const book =  await Book.findById(req.body.bookId)
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })

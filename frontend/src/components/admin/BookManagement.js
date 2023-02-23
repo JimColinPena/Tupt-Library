@@ -120,7 +120,7 @@ const BookManagement = () => {
                 yearPub: books.yearPub,
                 accession: <Fragment>
                     <div className="icon-buttons">
-                        <Link to={`/book/single/accession/${books._id}`} className="btn btn-info py-1 px-2">
+                        <Link to={`/accession/detail/${books._id}`} className="btn btn-info py-1 px-2">
                             View Details
                         </Link>
                     </div>

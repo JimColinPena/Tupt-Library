@@ -23,7 +23,8 @@ const {
 	getHistoryLog,
 	deleteHistoryLog,
 	deleteAllHistoryLog,
-	changeDueDate
+	changeDueDate,
+	checkPenalty
 } = require('../controllers/personnelController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
@@ -53,5 +54,7 @@ router.route('/admin/delete/historylog').delete(isAuthenticatedUser,deleteAllHis
 
 
 router.route('/change/duedate').post(isAuthenticatedUser, changeDueDate);
+
+router.route('/penalty/check').get(isAuthenticatedUser, checkPenalty);
 
 module.exports = router;

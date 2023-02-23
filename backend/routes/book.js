@@ -20,5 +20,6 @@ router.route('/admin/single/book/:id').get(getSingleBook);
 router.route('/admin/book/:id').put(isAuthenticatedUser, updateBook).delete(isAuthenticatedUser, deleteBook);
 router.route('/book/accession').post(isAuthenticatedUser, createBookAccession);
 router.route('/accession/detail/:id').get(isAuthenticatedUser, singleBookAccession);
-router.route('/book/accession/:id').put(isAuthenticatedUser, editBookAccession).delete(isAuthenticatedUser, deleteBookAccession);
+router.route('/book/accession/:id').put(isAuthenticatedUser, editBookAccession)
+router.route('/delete/accession/:id').put(isAuthenticatedUser, deleteBookAccession);
 module.exports = router;

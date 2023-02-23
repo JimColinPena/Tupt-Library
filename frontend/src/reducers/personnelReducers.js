@@ -1,4 +1,4 @@
-import { 
+import {
     ALL_PERSONNELS_REQUEST,
     ALL_PERSONNELS_SUCCESS,
     ALL_PERSONNELS_FAIL,
@@ -50,8 +50,8 @@ import {
     DELETE_STUDENT_FAIL,
 
     ALL_BORROW_REQUEST,
-	ALL_BORROW_SUCCESS,
-	ALL_BORROW_FAIL,
+    ALL_BORROW_SUCCESS,
+    ALL_BORROW_FAIL,
 
     ALL_BORROWED_REQUEST,
     ALL_BORROWED_SUCCESS,
@@ -105,7 +105,7 @@ import {
     UPDATE_DUE_DATE_FAIL,
 
 
-    CLEAR_ERRORS 
+    CLEAR_ERRORS
 } from '../constants/personnelConstants'
 export const allPersonnelsReducer = (state = { personnels: [] }, action) => {
     switch (action.type) {
@@ -180,31 +180,31 @@ export const newPersonnelReducer = (state = { personnel: {} }, action) => {
 }
 
 export const personnelDetailsReducer = (state = { personnel: {} }, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case PERSONNEL_DETAILS_REQUEST:
-        return {
-            ...state,
-            loading: true,
-        }
+            return {
+                ...state,
+                loading: true,
+            }
         case PERSONNEL_DETAILS_SUCCESS:
-        return {
-            ...state,
-            loading:false,
-            personnel: action.payload,
+            return {
+                ...state,
+                loading: false,
+                personnel: action.payload,
 
-        }
+            }
         case PERSONNEL_DETAILS_FAIL:
-        return {
-            ...state,
-            error: action.payload
-        }
+            return {
+                ...state,
+                error: action.payload
+            }
         case CLEAR_ERRORS:
-        return {
-            ...state,
-            error: null
-        }
+            return {
+                ...state,
+                error: null
+            }
         default:
-        return state;
+            return state;
     }
 }
 
@@ -240,7 +240,7 @@ export const personnelReducer = (state = {}, action) => {
         case DELETE_PERSONNEL_RESET:
             return {
                 ...state,
-                isDeleted: false
+                PersonnelDeleted: false
             }
         case UPDATE_PERSONNEL_RESET:
             return {
@@ -326,31 +326,31 @@ export const allInactiveStudentsReducer = (state = { inactive_students: [] }, ac
 }
 
 export const studentDetailsReducer = (state = { student: {} }, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case STUDENT_DETAILS_REQUEST:
-        return {
-            ...state,
-            loading: true,
-        }
+            return {
+                ...state,
+                loading: true,
+            }
         case STUDENT_DETAILS_SUCCESS:
-        return {
-            ...state,
-            loading:false,
-            student: action.payload,
+            return {
+                ...state,
+                loading: false,
+                student: action.payload,
 
-        }
+            }
         case STUDENT_DETAILS_FAIL:
-        return {
-            ...state,
-            error: action.payload
-        }
+            return {
+                ...state,
+                error: action.payload
+            }
         case CLEAR_ERRORS:
-        return {
-            ...state,
-            error: null
-        }
+            return {
+                ...state,
+                error: null
+            }
         default:
-        return state;
+            return state;
     }
 }
 
@@ -396,7 +396,7 @@ export const studentReducer = (state = {}, action) => {
         case DELETE_STUDENT_RESET:
             return {
                 ...state,
-                isDeleted: false
+                StudentDeleted: false
             }
         case UPDATE_STUDENT_RESET:
             return {
@@ -454,7 +454,7 @@ export const allBorrowersReducer = (state = { borrowers: [] }, action) => {
     }
 }
 
-export const allBorrowedBooksReducer = (state = { borrowedbooks: [] },action) => {
+export const allBorrowedBooksReducer = (state = { borrowedbooks: [] }, action) => {
     switch (action.type) {
         case ALL_BORROWED_REQUEST:
             return {
@@ -650,7 +650,7 @@ export const declineBookReducer = (state = {}, action) => {
     }
 }
 
-export const allReturnedBooksReducer = (state = { returnedbooks: [] },action) => {
+export const allReturnedBooksReducer = (state = { returnedbooks: [] }, action) => {
     switch (action.type) {
         case RETURNED_BOOKS_REQUEST:
             return {
@@ -683,7 +683,7 @@ export const allReturnedBooksReducer = (state = { returnedbooks: [] },action) =>
 }
 
 
-export const userDetailReducer = (state = {userdetail : {}}, action) => {
+export const userDetailReducer = (state = { userdetail: {} }, action) => {
     switch (action.type) {
 
         case USER_DETAILS_REQUEST:
@@ -750,41 +750,7 @@ export const allHistoryLogReducer = (state = { history: [] }, action) => {
 
 export const historylogReducer = (state = {}, action) => {
     switch (action.type) {
-
         case DELETE_HISTORYLOG_REQUEST:
-            return {
-                ...state,
-                loading: true
-            }
-        case DELETE_HISTORYLOG_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                historyLogDeleted: action.payload
-            }
-        case DELETE_HISTORYLOG_FAIL:
-            return {
-                ...state,
-                error: action.payload
-            }
-        case DELETE_HISTORYLOG_RESET:
-            return {
-                ...state,
-                historyLogDeleted: false
-            }
-        case CLEAR_ERRORS:
-            return {
-                ...state,
-                error: null
-            }
-        default:
-            return state
-    }
-}
-
-export const historylogAllDeleteReducer = (state = {}, action) => {
-    switch (action.type) {
-        
         case DELETE_ALL_HISTORYLOG_REQUEST:
             return {
                 ...state,
@@ -794,19 +760,30 @@ export const historylogAllDeleteReducer = (state = {}, action) => {
             return {
                 ...state,
                 loading: false,
-                historylogAllDeleted: action.payload
+                isDeletedAll: action.payload
             }
-        case DELETE_ALL_HISTORYLOG_RESET:
+        case DELETE_HISTORYLOG_SUCCESS:
             return {
                 ...state,
-                historylogAllDeleted: false
+                loading: false,
+                isDeleted: action.payload
             }
+        case DELETE_HISTORYLOG_FAIL:
         case DELETE_ALL_HISTORYLOG_FAIL:
             return {
                 ...state,
                 error: action.payload
             }
-        
+        case DELETE_HISTORYLOG_RESET:
+            return {
+                ...state,
+                isDeleted: false
+            }
+        case DELETE_ALL_HISTORYLOG_RESET:
+            return {
+                ...state,
+                isDeletedAll: false
+            }
         case CLEAR_ERRORS:
             return {
                 ...state,
