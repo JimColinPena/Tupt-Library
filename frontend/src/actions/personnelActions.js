@@ -92,6 +92,10 @@ import {
     UPDATE_DUE_DATE_SUCCESS,
     UPDATE_DUE_DATE_FAIL,
 
+    PENATY_CHECK_REQUEST,
+    PENATY_CHECK_SUCCESS,
+    PENATY_CHECK_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/personnelConstants'
 
@@ -529,7 +533,7 @@ export const deleteHistoryLog = (id) => async (dispatch) => {
 export const deleteAllHistoryLog = () => async (dispatch) => {
     try {
 
-        dispatch({ type: DELETE_ALL_HISTORYLOG_REQUEST})
+        dispatch({ type: DELETE_ALL_HISTORYLOG_REQUEST })
 
         const { data } = await axios.delete(`/api/v1/admin/delete/historylog`)
 
@@ -544,10 +548,10 @@ export const deleteAllHistoryLog = () => async (dispatch) => {
             payload: error.response.data.message
         })
     }
-            
+
 }
 
-export const updateDueDate = ( borrowData) => async (dispatch) => {
+export const updateDueDate = (borrowData) => async (dispatch) => {
     try {
 
         dispatch({ type: UPDATE_DUE_DATE_REQUEST })
@@ -567,6 +571,22 @@ export const updateDueDate = ( borrowData) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: UPDATE_DUE_DATE_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const getPenaltyCheck = () => async (dispatch) => {
+    try {
+        dispatch({ type: PENATY_CHECK_REQUEST })
+        const { data } = await axios.get(`/api/v1/penalty/check/`)
+        dispatch({
+            type: PENATY_CHECK_SUCCESS,
+            payload: data.penalties
+        })
+    } catch (error) {
+        dispatch({
+            type: PENATY_CHECK_FAIL,
             payload: error.response.data.message
         })
     }

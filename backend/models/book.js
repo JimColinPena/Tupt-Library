@@ -187,7 +187,7 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         maxLength: [100, 'Cannot exceed 100 characters']
     },
-    subject: [{
+    subjects: [{
         type: String,
         max: [100, 'Cannot exceed 100 characters']
     }],

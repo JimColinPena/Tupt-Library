@@ -40,6 +40,7 @@ import {
 	allHistoryLogReducer,
 	historylogReducer,
 	changeDueDateReducer,
+	penaltyCheckReducer,
 } from './reducers/personnelReducers'
 
 import { 
@@ -131,6 +132,7 @@ const reducer = combineReducers({
 	historyLogs: allHistoryLogReducer,
 	historylog: historylogReducer,
 	changeDueDate: changeDueDateReducer,
+	penaltyCheck: penaltyCheckReducer,
 	allevaluation: allEvaluationsReducer,
 	newevaluation: newEvaluationReducer,
 	allUsers: allUsersReducer,

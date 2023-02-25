@@ -12,6 +12,18 @@ import { getBookDetails, updateBook, clearErrors } from '../../actions/bookActio
 import { UPDATE_BOOK_RESET } from '../../constants/bookConstants'
 
 const BookUpdate = () => {
+	const subject_arr = [
+		'General Circulation',
+		'Circulation',
+		'Special Collection',
+		'Essay',
+		'Teacher Reference',
+		'Reference',
+		'Biography',
+		'Fiction',
+		'Filipiniana',
+		'Reserve'
+	];
 	const [imageFiles, setImageFiles] = useState('');
 	const [bookImage, setImages] = useState('');
 	const [title, setTitle] = useState('')
@@ -39,10 +51,6 @@ const BookUpdate = () => {
 	const [bio, setBio] = useState('')
 	const [res, setRes] = useState('')
 	const [fic, setFic] = useState('')
-
-	// const [accession, setAccession] = useState('')
-	// const [languange, setLanguange] = useState('')
-	// const [location, setLocation] = useState('')
 	const [entered_by, setEntered_by] = useState('')
 	const [updated_by, setUpdated_by] = useState('')
 	const [date_entered, setDate_entered] = useState('')
@@ -69,9 +77,10 @@ const BookUpdate = () => {
 
 		if (BookDetails && BookDetails._id !== id) {
 			dispatch(getBookDetails(id))
-		} 
+		}
 		else {
-			{(BookDetails.book_image == null || BookDetails.book_image == undefined) ? 
+			{
+				(BookDetails.book_image == null || BookDetails.book_image == undefined) ?
 				setImageFiles("")
 				:
 				setImageFiles(BookDetails.book_image.url)
@@ -112,8 +121,7 @@ const BookUpdate = () => {
 			setOn_shelf(BookDetails.on_shelf)
 			setOut(BookDetails.out)
 			setTimes_out(BookDetails.times_out)
-
-			setSubjects(BookDetails.subject)
+			setSubjects(BookDetails.subjects)
 			setContent_notes(BookDetails.content_notes)
 			setAbstract(BookDetails.abstract)
 			setReviews(BookDetails.reviews)
@@ -151,27 +159,27 @@ const BookUpdate = () => {
 	const imageHandler = (e) => {
 		if (e.target.name === 'bookImage') {
 
-            const reader = new FileReader();
-			
-            reader.onload = () => {
+			const reader = new FileReader();
+
+			reader.onload = () => {
 				console.log(reader.readyState)
-                if (reader.readyState === 2) {
-                    setImageFiles(reader.result)
-                    setImages(reader.result)
-                }
-            }
+				if (reader.readyState === 2) {
+					setImageFiles(reader.result)
+					setImages(reader.result)
+				}
+			}
 			// console.log(reader.readyState)
 			// console.log(e.target.files)
-			
-            reader.readAsDataURL(e.target.files[0])
-			clearImage('')
-        } 
-}
 
-const clearImage = (e) => {
-	setImageFiles('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
-	setImages('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
-};
+			reader.readAsDataURL(e.target.files[0])
+			clearImage('')
+		}
+	}
+
+	const clearImage = (e) => {
+		setImageFiles('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+		setImages('https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png');
+	};
 
 	function setCurrentPageNo(pageNumber) {
 		setCurrentPage(pageNumber)
@@ -267,28 +275,28 @@ const clearImage = (e) => {
 											<section id="step-1" className="form-step">
 												<h2 className="font-normal text-center">Title & Statement Responsibility Area</h2>
 												<div className="mt-3">
-												<div className="form-group row">
-												<label htmlFor="image_field" className="col-sm-2 col-form-label">Book Image</label>
-												<div className="col-sm-10">
-												<input 
-													type="file" 
-													id="bookImage" 
-													name="bookImage"
-													// className='custom-file-input' 
-													// multiple
-													accept="image/*"
-													onChange={imageHandler}
-													/>
-						<div>
-															<img
-																src={imageFiles}
-																className='preview_images'
-																alt=''
+													<div className="form-group row">
+														<label htmlFor="image_field" className="col-sm-2 col-form-label">Book Image</label>
+														<div className="col-sm-10">
+															<input
+																type="file"
+																id="bookImage"
+																name="bookImage"
+																// className='custom-file-input' 
+																// multiple
+																accept="image/*"
+																onChange={imageHandler}
 															/>
-															<button type="button" class="btn btn-danger" onClick={clearImage}>Clear</button>
+															<div>
+																<img
+																	src={imageFiles}
+																	className='preview_images'
+																	alt=''
+																/>
+																<button type="button" class="btn btn-danger" onClick={clearImage}>Clear</button>
+															</div>
+														</div>
 													</div>
-												</div>
-											</div>
 													<div className="form-group row">
 														<label htmlFor="title_field" className="col-sm-2 col-form-label">Title</label>
 														<div className="col-sm-10">
@@ -720,50 +728,11 @@ const clearImage = (e) => {
 
 													<div className="form-group row">
 														<label htmlFor="subject_field" className="col-sm-2 col-form-label">Subjects</label>
-														<div className="col-sm-2">
-															{/* {console.log(subjects.indexOf("Circulation"))} */}
-															<input type="checkbox" id="checkbox" name="checkbox" value="General Circulation" checked={subjects.indexOf("General Circulation") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "General Circulation"])} /> General Circulation
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Circulation" checked={subjects.indexOf("Circulation") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Circulation"])} /> Circulation
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Special Collection" checked={subjects.indexOf("Special Collection") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Special Collection"])} /> Special Collection
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Essay" checked={subjects.indexOf("Essay") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Essay"])} />Essay
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Teachers Reference" checked={subjects.indexOf("Teachers Reference") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Teachers Reference"])} /> Teacher Reference
-														</div>
-
-														<label htmlFor="subject_field" className="col-sm-2 col-form-label"> </label>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Reference" checked={subjects.indexOf("Reference") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Reference"])} /> Reference
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Biography" checked={subjects.indexOf("Biography") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Biography"])} /> Biography
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Fiction" checked={subjects.indexOf("Fiction") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Fiction"])} /> Fiction
-														</div>
-
-														<label htmlFor="subject_field" className="col-sm-2 col-form-label"> </label>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Filipiniana" checked={subjects.indexOf("Filipiniana") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Filipiniana"])} /> Filipiniana
-														</div>
-
-														<div className="col-sm-2">
-															<input type="checkbox" id="checkbox" name="checkbox" value="Reserve" checked={subjects.indexOf("Reserve") <= -1 ? false : true} onChange={e => setSubjects([...subjects, "Reserve"])} /> Reserve
-														</div>
+														{subject_arr.map((subject, index) => (
+															<div className="col-sm-2" key={index}>
+																<input type="checkbox" id="checkbox" name="checkbox" value={subject} checked={subjects.includes(subject)} onChange={e => setSubjects([...subjects, "General Circulation"])} /> {subject}
+															</div>
+														))}
 													</div>
 
 												</div>

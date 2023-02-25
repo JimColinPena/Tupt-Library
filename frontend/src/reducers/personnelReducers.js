@@ -104,6 +104,10 @@ import {
     UPDATE_DUE_DATE_RESET,
     UPDATE_DUE_DATE_FAIL,
 
+    PENATY_CHECK_REQUEST,
+    PENATY_CHECK_SUCCESS,
+    PENATY_CHECK_FAIL,
+
 
     CLEAR_ERRORS
 } from '../constants/personnelConstants'
@@ -826,5 +830,38 @@ export const changeDueDateReducer = (state = {}, action) => {
 
         default:
             return state
+    }
+}
+
+export const penaltyCheckReducer = (state = { penalties: [] }, action) => {
+    switch (action.type) {
+
+        case PENATY_CHECK_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case PENATY_CHECK_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                penalties: action.payload
+            }
+
+        case PENATY_CHECK_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
     }
 }

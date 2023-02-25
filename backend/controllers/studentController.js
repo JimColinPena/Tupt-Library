@@ -91,3 +91,11 @@ exports.getStudentAppointmentBook = async (req, res, next) => {
     })
 }
 
+exports.studentPenalty = async (req, res, next) => {
+    const penalty = await Penalty.find({userId: req.user.id}).populate({path: 'userId'});
+
+    res.status(200).json({
+        success: true,
+        penalty
+    })
+}

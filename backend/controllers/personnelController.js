@@ -531,31 +531,44 @@ exports.changeDueDate = async (req, res, next) => {
 exports.checkPenalty = async (req, res, next) => {
     let penalty = {}
     const today = new Date().getTime()
-    const borrow = await Borrow.find({ status: 'Accepted' })
-    // console.log(borrow)
 
+    //fetching all borrow object with status 'Accepted'
+    const borrow = await Borrow.find({ status: 'Accepted' })
+
+    //loop borrow collection 
     borrow.forEach(async data => {
-        const notification = await Notification.findOne({ receiver: data.userId, notificationType: 'Penalty' })
+        //check if there is existing penalty of user
         const penalty = await Penalty.findOne({ userId: data.userId })
+        //check if there is existing penalty notification of user
+        const notification = await Notification.findOne({ receiver: data.userId, notificationType: 'Penalty' })
+        //fetching duedate into time
         const due_date = data.dueDate.getTime()
+        //deduct the duedate from today's time and compute for the range of days
         const time_due = today - due_date
         var Difference_In_Days = Math.round((time_due / (1000 * 3600 * 24) + 1));
 
         if (!penalty) {
+            //if there's no penalty object, determine if the due date is over due
             if (Difference_In_Days > 0) {
+                //if the due date is indeed overdue, create a penalty object else, do nothing
                 await Penalty.create({
                     userId: data.userId,
                     penalty: Difference_In_Days * 5
                 })
             }
         } else {
+            //if there is existing penalty, just update the penalty based on the number of overdue dates
             await Penalty.findByIdAndUpdate(penalty.id, {
                 penalty: Difference_In_Days * 5
             })
         }
 
+        //after determining the penalty, server wil then reate notification for user
+
         if (!notification) {
+            //if there is no notification object create for penalty, determine the value of days from the due date
             if (Difference_In_Days == -1) {
+                //if the duedate is tommorrow, create a notification taht will remind user that they have borrowed boos to be returned tomorrow
                 await Notification.create({
                     sender: req.user.id,
                     receiver: data.userId,
@@ -566,6 +579,7 @@ exports.checkPenalty = async (req, res, next) => {
                 })
             }
             else if (Difference_In_Days == 0) {
+                //if the duedate is today, create a notification taht will remind user to return the book today
                 await Notification.create({
                     sender: req.user.id,
                     receiver: data.userId,
@@ -576,6 +590,7 @@ exports.checkPenalty = async (req, res, next) => {
                 })
             }
             else if (Difference_In_Days > 0) {
+                //if the duedate is overdue, create a notification taht will remind user that they have pending penalty to be cleared
                 await Notification.create({
                     sender: req.user.id,
                     receiver: data.userId,
@@ -586,11 +601,13 @@ exports.checkPenalty = async (req, res, next) => {
                 })
             }
         } else {
+            //if there is existing notification for penalty, deteremine if that notification is created today or not
             const notif_date = notification.notificationDate.getTime()
             const time_notif = today - notif_date
             var notif_frequency = Math.round((time_notif / (1000 * 3600 * 24) + 1));
             console.log(notif_frequency)
             if (notif_frequency != 0) {
+                //if the created notification is not today, redo the sending notifaction for today
                 if (Difference_In_Days == -1) {
                     await Notification.create({
                         sender: req.user.id,
@@ -624,10 +641,19 @@ exports.checkPenalty = async (req, res, next) => {
             }
         }
 
-        
+
     });
     res.status(200).json({
         success: true,
         penalty
+    })
+}
+
+exports.getPenalty = async (req, res, next) => {
+    const penalty = await Penalty.find();
+
+    res.status(200).json({
+        success: true,
+        penalties
     })
 }

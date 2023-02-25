@@ -1,9 +1,18 @@
 import React, { Fragment, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { borrowedBooksLength, pendingBookRequests, pendingUserRequests, clearErrors } from '../../actions/borrowActions'
-// import { allBorrowed, clearErrors } from '../../actions/personnelActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAlert } from 'react-alert'
+
+import {
+    borrowedBooksLength,
+    pendingBookRequests,
+    pendingUserRequests,
+    clearErrors
+} from '../../actions/borrowActions'
+import {
+    getPenaltyCheck,
+} from '../../actions/personnelActions'
+
 import ReturnedBooksCharts from './ReturnedBooksChart'
 import SectionBorrowedCharts from './SectionBorrowedChart'
 import BookLeaderboards from './BookLeaderboards'
@@ -19,8 +28,10 @@ const AdminDashboard = () => {
     const { loading, error, borrowedbooksLength } = useSelector(state => state.borrowedBooksLength);
     const { pendingBooksRequests } = useSelector(state => state.pendingBookRequests);
     const { pendingUsersRequests } = useSelector(state => state.pendingUserRequests);
+    const { penalties } = useSelector(state => state.penaltyCheck);
 
     useEffect(() => {
+        dispatch(getPenaltyCheck());
         dispatch(borrowedBooksLength());
         dispatch(pendingBookRequests());
         dispatch(pendingUserRequests());

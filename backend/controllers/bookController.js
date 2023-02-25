@@ -101,6 +101,8 @@ exports.getSingleBook = async (req, res, next) => {
 }
 
 exports.updateBook = async (req, res, next) => {
+
+    console.log(req.body)
     const check_book = await Book.findById(req.params.id);
     let book = {}
     try {
@@ -225,6 +227,7 @@ exports.updateBook = async (req, res, next) => {
 }
 
 exports.deleteBook = async (req, res, next) => {
+    
     const book = await Book.findById(req.params.id);
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
