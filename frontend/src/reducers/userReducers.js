@@ -15,6 +15,29 @@ import {
     LOAD_USER_SUCCESS,
     LOAD_USER_FAIL,
 
+    ALL_NOTIFICATION_REQUEST,
+    ALL_NOTIFICATION_SUCCESS,
+    ALL_NOTIFICATION_FAIL,
+
+    COUNTER_NOTIFICATION_REQUEST,
+    COUNTER_NOTIFICATION_SUCCESS,
+    COUNTER_NOTIFICATION_FAIL,
+
+    DELETE_NOTIFICATION_REQUEST,
+    DELETE_NOTIFICATION_SUCCESS,
+    DELETE_NOTIFICATION_RESET,
+    DELETE_NOTIFICATION_FAIL,
+
+    DELETE_ALL_NOTIFICATION_REQUEST,
+    DELETE_ALL_NOTIFICATION_SUCCESS,
+    DELETE_ALL_NOTIFICATION_RESET,
+    DELETE_ALL_NOTIFICATION_FAIL,
+
+    SEEN_NOTIFICATION_REQUEST,
+    SEEN_NOTIFICATION_SUCCESS,
+    SEEN_NOTIFICATION_FAIL,
+    SEEN_NOTIFICATION_RESET,
+
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
 
@@ -95,8 +118,183 @@ export const authReducer = (state = { user: {} }, action) => {
 
         default:
             return state
+    }  
+}
+
+export const allNotificationReducer = (state = { notification : [] }, action ) => {
+    switch (action.type) {
+        
+        case ALL_NOTIFICATION_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case ALL_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                notification: action.payload
+            }
+
+        case ALL_NOTIFICATION_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
     }
-    
+}
+
+export const counterNotificationReducer = (state = { notification: [] }, action) => {
+    switch (action.type) {
+
+        case COUNTER_NOTIFICATION_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case COUNTER_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                notification: action.payload
+            }
+
+        case COUNTER_NOTIFICATION_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const notificationDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case DELETE_NOTIFICATION_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case DELETE_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                notificationDeleted: action.payload
+            }
+        case DELETE_NOTIFICATION_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case DELETE_NOTIFICATION_RESET:
+            return {
+                ...state,
+                notificationDeleted: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+        default:
+            return state
+    }
+}
+
+export const notificationAllDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case DELETE_ALL_NOTIFICATION_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case DELETE_ALL_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                notificationAllDeleted: action.payload
+            }
+        case DELETE_ALL_NOTIFICATION_RESET:
+            return {
+                ...state,
+                notificationAllDeleted: false
+            }
+        case DELETE_ALL_NOTIFICATION_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+        default:
+            return state
+    }
+}
+
+export const seenNotificationReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case SEEN_NOTIFICATION_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        
+        case SEEN_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isSeen: action.payload,
+            }
+
+        case SEEN_NOTIFICATION_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
+        case SEEN_NOTIFICATION_RESET:
+            return {
+                ...state,
+                loading: false,
+                isSeen: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
 }
 
 export const profileReducer = (state = { user: {} },

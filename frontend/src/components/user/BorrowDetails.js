@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from 'react-datepicker';
+// import DatePicker from 'react-calendar';
 import dateFormat from 'dateformat';
 
 import MetaData from '../layout/MetaData'
@@ -51,6 +52,7 @@ const BorrowDetails = () => {
     }, [dispatch, alert, error, isConfirm, isCancelAll])
 
     const [startDate, setStartDate] = useState(new Date());
+    const [dueDate, setDueDate] = useState(new Date());
     const isWeekday = (date) => {
         const day = date.getDay();
         return day !== 0 && day !== 6;
@@ -60,28 +62,22 @@ const BorrowDetails = () => {
 
     const handleConfirm = (e) => {
         e.preventDefault();
-
-        const dueDate = new Date();
-
+        // var dueDate = new Date();
         if (startDate.getDay() === 6 || startDate.getDay() === 0) {
-            console.group(startDate.getDay())
+            // console.group(startDate.getDay())
             setShow1(false);
             alert.error('Weekend is not a valid appointment date');
         } else {
-            startDate.setDate(startDate.getDate())
-            startDate.setMonth(startDate.getMonth())
-            startDate.setFullYear(startDate.getFullYear())
 
             if ((startDate.getDay() === 5)) {
-                dueDate.setDate(startDate.getDate() + 3)
-                dueDate.setMonth(startDate.getMonth())
-                dueDate.setFullYear(startDate.getFullYear())
-
+                var days = 3;
+                // dueDate.setDate(startDate.getDate() + days)
+                dueDate.setTime(startDate.getTime()+(3*24*3600000));
             }
             else {
-                dueDate.setDate(startDate.getDate() + 1)
-                dueDate.setMonth(startDate.getMonth())
-                dueDate.setFullYear(startDate.getFullYear())
+                var days = 1;
+                // dueDate.setDate(startDate.getDate() + days)
+                dueDate.setTime(startDate.getTime()+(24*3600000));
             }
 
             const formData = new FormData();
@@ -89,7 +85,11 @@ const BorrowDetails = () => {
             formData.set('appointmentDate', startDate);
             formData.set('dueDate', dueDate);
 
+            console.group(startDate, dueDate)
+
             dispatch(confirmBorrowBooks(formData));
+
+
         }
     }
 
@@ -125,7 +125,7 @@ const BorrowDetails = () => {
                                 <div className="management-body">
                                     <div className='row'>
                                         {studentborrowbooks.bookId && studentborrowbooks.bookId.map(data => (
-                                            <div className='col-md-4'>
+                                            <div className='col-md-4' key={studentborrowbooks.bookId}>
                                                 <div className='card-header'>
                                                     {/* {console.log(data.book_image.url)} */}
                                                     {(data.book_image.url == null || undefined) ?
@@ -167,6 +167,7 @@ const BorrowDetails = () => {
                                     <Button onClick={handleClose1}><i className="fa fa-times-circle"></i></Button>
                                 </Modal.Header>
                                 <Modal.Body>
+                                    {/* <DatePicker minDate={new Date()} filterDate={isWeekday} value={startDate} onChange={(date) => setStartDate(date)} /> */}
                                     <DatePicker minDate={new Date()} filterDate={isWeekday} value={dateFormat(startDate, "dd-mm-yyyy")} onChange={(date) => setStartDate(date)} />
                                 </Modal.Body>
                                 <Modal.Footer>

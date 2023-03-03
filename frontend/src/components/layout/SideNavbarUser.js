@@ -1,18 +1,30 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useAlert } from 'react-alert'
 
 import { logout } from '../../actions/userActions'
+import { counterNotification, seenNotification } from '../../actions/userActions'
 
 import Loader from '../layout/Loader'
 const SideNavbarUser = () => {
     const alert = useAlert();
     const dispatch = useDispatch();
+    const { id } = useParams();
+    const { notification } = useSelector(state => state.counterNotification)
+    const { isSeen } = useSelector(state => state.seenNotification)
     const { user, loading } = useSelector(state => state.auth)
+
+    useEffect(() => {
+        dispatch(counterNotification(id));
+    }, [dispatch])
     const logoutHandler = () => {
         dispatch(logout());
         alert.success('Logged out successfully.')
+    }
+
+    const seenHandler = (id) => {
+        dispatch(seenNotification(id))
     }
     return (
         <Fragment>
@@ -37,7 +49,8 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="sidenav-links">
+                                    <Link to={"/notification/"+user._id} onClick={() => seenHandler(notification._id)} className="sidenav-links">
+                                        <h5>{notification}</h5>
                                         <span className="material-symbols-rounded">
                                             mark_email_unread
                                         </span>

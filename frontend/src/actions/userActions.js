@@ -16,6 +16,26 @@ import {
     LOAD_USER_SUCCESS,
     LOAD_USER_FAIL,
 
+    ALL_NOTIFICATION_REQUEST,
+    ALL_NOTIFICATION_SUCCESS,
+    ALL_NOTIFICATION_FAIL,
+
+    COUNTER_NOTIFICATION_REQUEST,
+    COUNTER_NOTIFICATION_SUCCESS,
+    COUNTER_NOTIFICATION_FAIL,
+
+    DELETE_NOTIFICATION_REQUEST,
+    DELETE_NOTIFICATION_SUCCESS,
+    DELETE_NOTIFICATION_FAIL,
+
+    DELETE_ALL_NOTIFICATION_REQUEST,
+    DELETE_ALL_NOTIFICATION_SUCCESS,
+    DELETE_ALL_NOTIFICATION_FAIL,
+
+    SEEN_NOTIFICATION_REQUEST,
+    SEEN_NOTIFICATION_SUCCESS,
+    SEEN_NOTIFICATION_FAIL,
+
     LOGOUT_SUCCESS,
     LOGOUT_FAIL,
 
@@ -127,6 +147,102 @@ export const loadUser = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: LOAD_USER_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const allNotification = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ALL_NOTIFICATION_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/notification/`)
+
+        dispatch({
+            type: ALL_NOTIFICATION_SUCCESS,
+            payload: data.notifications
+        })
+    } catch (error) {
+        dispatch({
+            type: ALL_NOTIFICATION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const counterNotification = (id) => async (dispatch) => {
+    try {
+
+        dispatch ({ type: COUNTER_NOTIFICATION_REQUEST })
+
+        const { data } = await axios.get(`/api/v1/counter/notification`)
+
+        dispatch({
+            type: COUNTER_NOTIFICATION_SUCCESS,
+            payload: data.notifications
+        })
+    } catch (error) {
+        dispatch({
+            type: COUNTER_NOTIFICATION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const deleteSingleNotification = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: DELETE_NOTIFICATION_REQUEST })
+
+        const { data } = await axios.delete(`/api/v1/notification/${id}`)
+
+        dispatch({
+            type: DELETE_NOTIFICATION_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_NOTIFICATION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const deleteAllNotification = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: DELETE_ALL_NOTIFICATION_REQUEST })
+
+        const { data } = await axios.delete(`/api/v1/clear/notification/`)
+
+        dispatch({
+            type: DELETE_ALL_NOTIFICATION_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_ALL_NOTIFICATION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const seenNotification = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: SEEN_NOTIFICATION_REQUEST })
+        const { data } = await axios.put(`/api/v1/notification/seen/${id}`)
+
+        dispatch({
+            type: SEEN_NOTIFICATION_SUCCESS,
+            payload: data.success
+        })
+    } catch (error) {
+        dispatch({
+            type: SEEN_NOTIFICATION_FAIL,
             payload: error.response.data.message
         })
     }

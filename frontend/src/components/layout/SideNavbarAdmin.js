@@ -87,7 +87,7 @@ const SideNavbarAdmin = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/" className="sidenav-links">
+                                    <Link to="/admin/penalty" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             payment
                                         </span>

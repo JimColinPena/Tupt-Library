@@ -144,3 +144,61 @@ exports.getnotification = async(req,res,next) => {
         notifications
     })
 }
+
+exports.usernotification = async(req, res, next) => {
+    const notifications = await notification.find({receiver: req.user.id}).sort({createdAt:'descending'})
+
+    res.status(200).json({
+        success: true,
+        notifications
+    })
+}
+
+exports.counternotification = async(req, res, next) => {
+    const notifications = (await notification.find({receiver: req.user.id, deliveryStatus: 'Delivered'})).length
+    
+    res.status(200).json({
+        success: true,
+        notifications
+    })
+}
+
+exports.notificationseen = async(req, res, next) => {
+    // const notifications = await notification.find({receiver: req.user.id})
+
+    // await notification.updateMany
+
+    const notifications = await notification.updateMany(
+        {receiver: req.user.id},
+        {$set:{deliveryStatus: 'Seen'}}
+        )
+
+    res.status(200).json({
+        success: true,
+        notifications
+    })
+}
+
+exports.deleteNotification = async (req, res, next) => {
+    const notifications = await notification.findById(req.params.id);
+    // if (!notifications) {
+    //     return next(new ErrorHandler('Notification not found', 404));
+    // }
+    await notifications.remove();
+
+    res.status(200).json({
+        success: true,
+        message: 'Notification cleared'
+    })
+}
+
+exports.deleteAllNotification = async (req, res, next) => {
+    const notifications = await notification.find({ receiver: req.user.id }).deleteMany()
+
+
+    res.status(200).json({
+        success: true,
+        message: 'All notification cleared',
+        
+    })
+}

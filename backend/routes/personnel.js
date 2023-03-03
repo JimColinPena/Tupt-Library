@@ -16,6 +16,8 @@ const {
 	acceptAppointment,
 	declineAppointment,
 	getBorrowedBoooks,
+	getAccession,
+	updateAccession,
 	returnBook,
 	declineBook,
 	getReturnedBooks,
@@ -25,7 +27,8 @@ const {
 	deleteAllHistoryLog,
 	changeDueDate,
 	checkPenalty,
-	getPenalty,
+	getPenalties,
+	paidPenalties
 } = require('../controllers/personnelController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
@@ -39,10 +42,13 @@ router.route('/inactive/student').get(isAuthenticatedUser, getInactiveStudent);
 router.route('/single/student/:id').get(isAuthenticatedUser, getSingleStudent);
 router.route('/admin/student/:id').put(isAuthenticatedUser, updateStudent).delete(isAuthenticatedUser, deleteStudent);
 
-router.route('/borrowers').get(getBorrowers);
-router.route('/borrowers/appointment/:id').put(isAuthenticatedUser, acceptAppointment).delete(isAuthenticatedUser, declineAppointment);
+router.route('/borrowers').get(isAuthenticatedUser, getBorrowers);
+router.route('/borrowers/appointment/:id').put(isAuthenticatedUser, acceptAppointment);
+router.route('/borrowers/appointment/decline/:id').put(isAuthenticatedUser, declineAppointment);
 
-router.route('/borrowed').get(getBorrowedBoooks);
+router.route('/borrowed').get(isAuthenticatedUser, getBorrowedBoooks);
+// router.route('/borrowed/accession/:id').get(isAuthenticatedUser, getAccession);
+router.route('/borrowed/accession/').post(isAuthenticatedUser, updateAccession);
 
 router.route('/borrowers/return/:id').put(isAuthenticatedUser, returnBook);
 router.route('/returned/books').get(isAuthenticatedUser, getReturnedBooks);
@@ -57,6 +63,7 @@ router.route('/admin/delete/historylog').delete(isAuthenticatedUser,deleteAllHis
 router.route('/change/duedate').post(isAuthenticatedUser, changeDueDate);
 
 router.route('/penalty/check').get(isAuthenticatedUser, checkPenalty);
-router.route('/admin/penalty').get(isAuthenticatedUser, getPenalty);
+router.route('/admin/penalty').get(isAuthenticatedUser, getPenalties);
+router.route('/admin/penalty/:id').put(isAuthenticatedUser, paidPenalties);
 
 module.exports = router;

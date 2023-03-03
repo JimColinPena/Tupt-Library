@@ -5,8 +5,12 @@ const notificationSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User'
     },
-    penalty:{
+    penalty: {
         type: Number,
+    },
+    status: {
+        type: String,
+        default: 'Unpaid'
     }
     
 })

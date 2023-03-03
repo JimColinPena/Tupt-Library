@@ -12,10 +12,10 @@ import SideNavbarAdmin from '../layout/SideNavbarAdmin'
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RETURN_BOOK_RESET, DECLINE_BOOK_RESET, UPDATE_DUE_DATE_RESET } from '../../constants/personnelConstants'
+import { RETURN_BOOK_RESET, DECLINE_BOOK_RESET, UPDATE_DUE_DATE_RESET, ACCESSION_BORROWED_RESET } from '../../constants/personnelConstants'
 
 // import { allBorrowed, returnBook, allReturned, updateDueDate, clearErrors } from '../../actions/personnelActions'
-import { allBorrowed, returnBook, declineBook, updateDueDate, clearErrors } from '../../actions/personnelActions'
+import { allBorrowed, returnBook, declineBook, updateDueDate, borrowedAccession, clearErrors } from '../../actions/personnelActions'
 
 const BorrowedBooks = () => {
 	const alert = useAlert();
@@ -37,6 +37,7 @@ const BorrowedBooks = () => {
 	const { isReturned } = useSelector(state => state.returnBook)
 	const { isDecline } = useSelector(state => state.declineBook)
 	const { isChange } = useSelector(state => state.changeDueDate)
+	const { bookAccession } = useSelector(state => state.borrowedBookAccession)
 
 
 
@@ -67,7 +68,13 @@ const BorrowedBooks = () => {
 			dispatch({ type: UPDATE_DUE_DATE_RESET })
 		}
 
-	}, [dispatch, alert, error, navigate, isReturned, isDecline, isChange])
+		if (bookAccession) {
+			alert.success('Accession Updated');
+			navigate('/books/borrowed');
+			dispatch({ type: ACCESSION_BORROWED_RESET })
+		}
+
+	}, [dispatch, alert, error, navigate, isReturned, isDecline, isChange, bookAccession])
 
 
 	const returnedHandler = (id) => {
@@ -92,6 +99,23 @@ const BorrowedBooks = () => {
 
 	}
 
+	const giveAccessionHandler = (userId, accessionId) => {
+		const formData = new FormData();
+		formData.set('accessionId', accessionId);
+		formData.set('userId', userId);
+		formData.set('func', 'give');
+
+		dispatch(borrowedAccession(formData));
+	}
+	const retrieveAccessionHandler = (userId, accessionId) => {
+		const formData = new FormData();
+		formData.set('accessionId', accessionId);
+		formData.set('userId', userId);
+		formData.set('func', 'retrieve');
+
+		dispatch(borrowedAccession(formData));
+	}
+
 	const setBorrowedBooks = () => {
 		const data = {
 			columns: [
@@ -111,8 +135,8 @@ const BorrowedBooks = () => {
 					sort: 'asc'
 				},
 				{
-					label: 'Accession',
-					field: 'borrowedbooks_accession',
+					label: 'Accssion(s)',
+					field: 'accessionbooks_book',
 					sort: 'asc'
 				},
 				{
@@ -139,7 +163,67 @@ const BorrowedBooks = () => {
 				borrowedbooks_id: borrowedbook.userId.id_number,
 				borrowedbooks_name: borrowedbook.userId.name,
 				borrowedbooks_book: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
-				borrowedbooks_accession: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
+				accessionbooks_book: borrowedbook.bookId.map((accession_item, index) => (
+					// item.accession_numbers.map((accession_number, index) => (<p>{accession_number.accession_number}</p>))
+					<div>
+						<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#AccessionBorrowModal" + accession_item._id}>
+							<i className="fa fa-plus"></i>
+						</button>
+						<div className="modal fade" data-backdrop="false" id={"AccessionBorrowModal" + accession_item._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+							<div className="modal-dialog" role="document">
+								<div className="modal-content">
+									<div className="modal-header">
+										<h3 className="modal-title" id="DeleteActiveModalLabel">Add Accession</h3>
+										<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div>
+										{((accession_item.accession_numbers.length) > 0) ?
+											(
+												<div>
+													<p>List of Accession number(s) available</p>
+													{accession_item.accession_numbers.map((acc_number, index) => (
+														<div>
+															<h4>{acc_number.accession_number}
+
+																{(borrowedbook.accessions.includes(acc_number._id)) ?
+																	(
+																		<button type="button" className="btn btn-danger" onClick={() => retrieveAccessionHandler(borrowedbook.userId._id, acc_number._id)} data-dismiss="modal">
+																			<i className="fa fa-arrow-right-to-bracket"></i>
+																		</button>
+																	) : (
+																		<button type="button" className="btn btn-success" onClick={() => giveAccessionHandler(borrowedbook.userId._id, acc_number._id)} data-dismiss="modal">
+																			<i className="fa fa-arrow-right-from-bracket"></i>
+																		</button>
+																	)}
+															</h4>
+														</div>
+													))}
+
+												</div>
+
+
+											)
+											:
+											(
+												<div>
+													No accession available! please! Please create 1 first {<Link to={`/accession/detail/${accession_item._id}`}>HERE</Link>}
+												</div>
+											)
+
+										}
+										{/* <hr /> */}
+									</div>
+									<div className="modal-footer">
+										{/* <button type="button" className="btn btn-warning" onClick={() => accessionHandler(borrowedbook._id)} data-dismiss="modal">Set</button> */}
+										<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div >
+					</div >
+				)),
 				borrowedbooks_due: dateFormat(borrowedbook.dueDate.split('T')[0], "mmmm dd, yyyy"),
 				borrowedbooks_appointment: dateFormat(borrowedbook.appointmentDate.split('T')[0], "mmmm dd, yyyy"),
 				actions:

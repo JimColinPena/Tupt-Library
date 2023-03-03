@@ -81,9 +81,9 @@ const BookUpdate = () => {
 		else {
 			{
 				(BookDetails.book_image == null || BookDetails.book_image == undefined) ?
-				setImageFiles("")
-				:
-				setImageFiles(BookDetails.book_image.url)
+					setImageFiles("")
+					:
+					setImageFiles(BookDetails.book_image.url)
 			}
 			setTitle(BookDetails.title)
 			setResponsibility(BookDetails.responsibility)
@@ -222,6 +222,28 @@ const BookUpdate = () => {
 			navigateToFormStep(stepNumber);
 		});
 	});
+
+	const handleCheckedChanged = (sub) => {
+		const isChecked = subjects.includes(sub);
+
+		if (!isChecked) {
+			// Set checked
+			setSubjects([...subjects, sub]);
+		} else {
+			// Remove from checked
+			// var index = subjects.indexOf(sub)
+			// if (index !== -1) {
+			// 	subjects.splice(index, 1);
+			// 	setSubjects(subjects);
+			// }
+
+			const updatedSubjects = [...subjects].filter(s => s !== sub);
+			// const sub_arr = subjects.indexOf((subs) => subs === sub)
+			// const updatedSubjects = subjects.splice(sub_arr, 1)
+
+			setSubjects(updatedSubjects);
+		}
+	}
 
 
 	return (
@@ -730,7 +752,7 @@ const BookUpdate = () => {
 														<label htmlFor="subject_field" className="col-sm-2 col-form-label">Subjects</label>
 														{subject_arr.map((subject, index) => (
 															<div className="col-sm-2" key={index}>
-																<input type="checkbox" id="checkbox" name="checkbox" value={subject} checked={subjects.includes(subject)} onChange={e => setSubjects([...subjects, "General Circulation"])} /> {subject}
+																<input type="checkbox" id="checkbox" name="checkbox" value={subject} checked={subjects.includes(subject)} onChange={() => handleCheckedChanged(subject)} /> {subject}
 															</div>
 														))}
 													</div>

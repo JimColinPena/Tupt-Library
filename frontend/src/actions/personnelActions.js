@@ -48,10 +48,6 @@ import {
     ALL_BORROW_SUCCESS,
     ALL_BORROW_FAIL,
 
-    ALL_BORROWED_REQUEST,
-    ALL_BORROWED_SUCCESS,
-    ALL_BORROWED_FAIL,
-
     ACCEPT_BORROW_REQUEST,
     ACCEPT_BORROW_SUCCESS,
     ACCEPT_BORROW_FAIL,
@@ -60,6 +56,10 @@ import {
     DECLINE_BORROW_SUCCESS,
     DECLINE_BORROW_FAIL,
 
+    ALL_BORROWED_REQUEST,
+    ALL_BORROWED_SUCCESS,
+    ALL_BORROWED_FAIL,
+
     RETURN_BOOK_REQUEST,
     RETURN_BOOK_SUCCESS,
     RETURN_BOOK_FAIL,
@@ -67,10 +67,16 @@ import {
     DECLINE_BOOK_REQUEST,
     DECLINE_BOOK_SUCCESS,
     DECLINE_BOOK_FAIL,
+    
+    ACCESSION_BORROWED_REQUEST,
+    ACCESSION_BORROWED_SUCCESS,
+    ACCESSION_BORROWED_FAIL,
 
     RETURNED_BOOKS_REQUEST,
     RETURNED_BOOKS_SUCCESS,
     RETURNED_BOOKS_FAIL,
+
+    
 
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
@@ -96,7 +102,15 @@ import {
     PENATY_CHECK_SUCCESS,
     PENATY_CHECK_FAIL,
 
-    CLEAR_ERRORS
+    ALL_PENALTIES_REQUEST,
+    ALL_PENALTIES_SUCCESS,
+    ALL_PENALTIES_FAIL,
+
+    PAID_PENALTIES_REQUEST,
+    PAID_PENALTIES_SUCCESS,
+    PAID_PENALTIES_FAIL,
+
+    CLEAR_ERRORS,
 } from '../constants/personnelConstants'
 
 export const allPersonnels = () => async (dispatch) => {
@@ -363,24 +377,6 @@ export const allBorrow = () => async (dispatch) => {
     }
 }
 
-export const allBorrowed = () => async (dispatch) => {
-    try {
-        dispatch({ type: ALL_BORROWED_REQUEST })
-
-        const { data } = await axios.get('/api/v1/borrowed')
-
-        dispatch({
-            type: ALL_BORROWED_SUCCESS,
-            payload: data.borrowedbooks
-        })
-    } catch (error) {
-        dispatch({
-            type: ALL_BORROWED_FAIL,
-            payload: error.response.data.message
-        })
-    }
-}
-
 export const acceptBorrow = (id) => async (dispatch) => {
     try {
 
@@ -399,12 +395,12 @@ export const acceptBorrow = (id) => async (dispatch) => {
     }
 }
 
-export const declineBorrow = (id) => async (dispatch) => {
+export const declineBorrow = (id, NewData) => async (dispatch) => {
     try {
 
         dispatch({ type: DECLINE_BORROW_REQUEST })
 
-        const { data } = await axios.delete(`/api/v1/borrowers/appointment/${id}`)
+        const { data } = await axios.put(`/api/v1/borrowers/appointment/decline/${id}`, NewData)
 
         dispatch({
             type: DECLINE_BORROW_SUCCESS,
@@ -413,6 +409,24 @@ export const declineBorrow = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: DECLINE_BORROW_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const allBorrowed = () => async (dispatch) => {
+    try {
+        dispatch({ type: ALL_BORROWED_REQUEST })
+
+        const { data } = await axios.get('/api/v1/borrowed')
+
+        dispatch({
+            type: ALL_BORROWED_SUCCESS,
+            payload: data.borrowedbooks
+        })
+    } catch (error) {
+        dispatch({
+            type: ALL_BORROWED_FAIL,
             payload: error.response.data.message
         })
     }
@@ -467,6 +481,31 @@ export const allReturned = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: RETURNED_BOOKS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const borrowedAccession = (accessionData) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ACCESSION_BORROWED_REQUEST })
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+                // "Content-Type": "application/json"
+            }
+        }
+        const { data } = await axios.post(`/api/v1/borrowed/accession`, accessionData, config)
+
+        dispatch({
+            type: ACCESSION_BORROWED_SUCCESS,
+            payload: data.success
+        })
+    } catch (error) {
+        dispatch({
+            type: ACCESSION_BORROWED_FAIL,
             payload: error.response.data.message
         })
     }
@@ -587,6 +626,45 @@ export const getPenaltyCheck = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PENATY_CHECK_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const allPenalties = () => async (dispatch) => {
+    try {
+        dispatch({ type: ALL_PENALTIES_REQUEST })
+
+        const { data } = await axios.get('/api/v1/admin/penalty')
+
+        dispatch({
+            type: ALL_PENALTIES_SUCCESS,
+            payload: data.penalties
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ALL_PERSONNELS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const paidPenalty = (id) => async (dispatch) => {
+    try {
+
+        dispatch({ type: PAID_PENALTIES_REQUEST })
+
+        const { data } = await axios.put(`/api/v1/admin/penalty/${id}`)
+
+        dispatch({
+            type: PAID_PENALTIES_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PAID_PENALTIES_FAIL,
             payload: error.response.data.message
         })
     }

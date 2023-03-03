@@ -77,6 +77,11 @@ import {
     DECLINE_BOOK_RESET,
     DECLINE_BOOK_FAIL,
 
+    ACCESSION_BORROWED_REQUEST,
+    ACCESSION_BORROWED_SUCCESS,
+    ACCESSION_BORROWED_RESET,
+    ACCESSION_BORROWED_FAIL,
+
     RETURNED_BOOKS_REQUEST,
     RETURNED_BOOKS_SUCCESS,
     RETURNED_BOOKS_FAIL,
@@ -108,6 +113,14 @@ import {
     PENATY_CHECK_SUCCESS,
     PENATY_CHECK_FAIL,
 
+    ALL_PENALTIES_REQUEST,
+    ALL_PENALTIES_SUCCESS,
+    ALL_PENALTIES_FAIL,
+
+    PAID_PENALTIES_REQUEST,
+    PAID_PENALTIES_SUCCESS,
+    PAID_PENALTIES_RESET,
+    PAID_PENALTIES_FAIL,
 
     CLEAR_ERRORS
 } from '../constants/personnelConstants'
@@ -654,6 +667,41 @@ export const declineBookReducer = (state = {}, action) => {
     }
 }
 
+export const borrowedBookAccessionReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case ACCESSION_BORROWED_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACCESSION_BORROWED_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                bookAccession: action.payload
+            }
+        case ACCESSION_BORROWED_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case ACCESSION_BORROWED_RESET:
+            return {
+                ...state,
+                bookAccession: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state
+    }
+}
+
 export const allReturnedBooksReducer = (state = { returnedbooks: [] }, action) => {
     switch (action.type) {
         case RETURNED_BOOKS_REQUEST:
@@ -863,5 +911,74 @@ export const penaltyCheckReducer = (state = { penalties: [] }, action) => {
 
         default:
             return state;
+    }
+}
+
+export const penaltiesAllReducer = (state = { penalties: [] }, action) => {
+    switch (action.type) {
+
+        case ALL_PENALTIES_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case ALL_PENALTIES_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                penalties: action.payload
+            }
+
+        case ALL_PENALTIES_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const paidPenaltiesReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case PAID_PENALTIES_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case PAID_PENALTIES_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isPaid: action.payload
+            }
+        case PAID_PENALTIES_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case PAID_PENALTIES_RESET:
+            return {
+                ...state,
+                isPaid: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state
     }
 }

@@ -271,6 +271,7 @@ exports.createBookAccession = async (req, res, next) => {
     })
 }
 
+
 exports.singleBookAccession = async (req, res, next) => {
     const getbook_accessions = await Book.findById(req.params.id).populate({
         path: 'accession_numbers',
@@ -337,4 +338,148 @@ exports.deleteBookAccession = async (req,res,next) => {
         message: 'Book deleted',
         history
     })
+}
+
+// call/install the marcjs with the command: npm install marcjs
+// fs is built-in with node and doesn't need to be installed:
+// Importing the MRC (ignore: Could not find a declaration file for module 'marcjs'. error)
+const { Marc } = require('marcjs');
+const fs = require('fs');
+
+exports.importMRC = async(req,res,next) => {
+    // Create the code necessary to upload the file in request to the temporary folder named tmp in the root directory
+    if (!req.files || req.files.file.mimetype !== 'application/marc'){
+        return next(new ErrorHandler("No File Uploaded or Incorrect Extension", 404));
+    }
+    const fileData = req.files.file.data;
+    const filename = req.files.file.name;
+    const newFileName = filename.replace(/\s/g, '_');
+    const filePath = process.cwd() + '/tmp/' + newFileName; // Set the file path
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (!err) {
+          // File already exists, delete it before overwriting
+        fs.unlink(filePath, (err) => {
+            if (err) {
+              return next(new ErrorHandler('File upload failed', 500));
+            }
+            console.log('Deleted existing file');
+            // Create the file through fs
+            fs.writeFile(filePath, fileData, (err) => {
+              if (err) {
+                return next(new ErrorHandler('File upload failed', 500));
+              }
+              // Now that the file has been created, we can now read it.
+            })
+            // Read the uploaded file using marcjs
+            const reader = Marc.stream(fs.createReadStream(filePath), 'Iso2709');
+            let Mrcbookdata;
+            reader.on('data', (record) => {
+                const MrcContent = JSON.parse(record.as('mij'));
+            
+                //  We can read the MRC content through the fields object as is below
+                //  code below reads the first field content assuming that all mrc is only one content/record
+                //  we then access the field through the key identifier such as '001'.
+                //  console.log(MrcContent.fields[0]['001']);
+                //  code outputs the value of the 001 field: 'UP-CODE'
+                //  Example:
+                //  ['040'] catalogue number
+                //  If you have trouble knowing which ID is which you can refer to this link: https://www.loc.gov/marc/bibliographic/
+
+                //  Code Below Finds the Field with the ID of '020' which correspondes to the International Standard Book Number (ISBN)
+                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']);
+                //  MrcContent.fields.find(field => field['020']) returns the data of the field with the ID of '020'
+                //  We still need to access said data through the addition of ['020'] at the end and as such:
+                //  MrcContent.fields.find(field => field['020'])['020'] <---- We can now access the data inside of the field ['020']
+                //  This has been done to use .subfields as is the structure of mrc files. and as such we can access the subfields of the field with the ID of '020'
+                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']); // This will output the value of the subfield with the ID of 'a'
+                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['b']); // This will output the value of the subfield with the ID of 'b'
+                //  etc....
+                //  This has been made inline to ease code structurization.
+
+                //  Testing:
+                //  console.log( MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'] );
+
+                //  040 - Cataloging    // Cataloging Source
+                //  035 - UP system ID // System Control Number
+
+                Mrcbookdata = {
+                    // Using tertiary condition here just to ease code length
+                    title: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'],
+                    responsibility: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['c'])?.['c'],
+                    uniform_title: MrcContent.fields.find(field => field['240'])?.['240'].subfields.find(subfield => subfield['a'])?.['a'],
+                    main_author: MrcContent.fields.find(field => field['100'])?.['100'].subfields.find(subfield => subfield['a'])?.['a'],
+                    other_author: MrcContent.fields.find(field => field['700'])?.['700'].subfields.find(subfield => subfield['a'])?.['a'],
+                    corp_author: MrcContent.fields.find(field => field['110'])?.['110'].subfields.find(subfield => subfield['a'])?.['a'],
+                    placePub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['a'])?.['a'],
+                    publisher: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['b'])?.['b'],
+                    yearPub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['c'])?.['c'],
+                    edition: MrcContent.fields.find(field => field['250'])?.['250'].subfields.find(subfield => subfield['a'])?.['a'],
+                    series: MrcContent.fields.find(field => field['400'])?.['400'].subfields.find(subfield => subfield['a'])?.['a'],
+                    gen_notes: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'],
+                    isbn: MrcContent.fields.find(field => field['020'])?.['020'].subfields.find(subfield => subfield['a'])?.['a'],
+                    languange: MrcContent.fields.find(field => field['041'])?.['041'].subfields.find(subfield => subfield['a'])?.['a'],
+                    abstract: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'], // Abstract or Summary
+                }
+
+                });
+                reader.on('end', () => {
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                          return next(new ErrorHandler('File Deletion failed', 500));
+                        }
+                        console.log('Deleted temp file');
+                    });
+                    res.status(200).json({
+                        success:true,
+                        Mrcbookdata
+                    })
+            });
+          });
+        } else {
+            // File doesn't exist, create it first
+            fs.writeFile(filePath, fileData, (err) => {
+                if (err) {
+                  return next(new ErrorHandler('File upload failed', 500));
+                }
+                // Now that the file has been created, we can now read it.
+              })
+            // File doesn't exist, read the uploaded/created file
+            const reader = Marc.stream(fs.createReadStream(filePath), 'Iso2709');
+            let Mrcbookdata;
+            reader.on('data', (record) => {
+                const MrcContent = JSON.parse(record.as('mij'));
+                Mrcbookdata = {
+                    // Using tertiary condition here just to ease code length
+                    title: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'],
+                    responsibility: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['c'])?.['c'],
+                    uniform_title: MrcContent.fields.find(field => field['240'])?.['240'].subfields.find(subfield => subfield['a'])?.['a'],
+                    main_author: MrcContent.fields.find(field => field['100'])?.['100'].subfields.find(subfield => subfield['a'])?.['a'],
+                    other_author: MrcContent.fields.find(field => field['700'])?.['700'].subfields.find(subfield => subfield['a'])?.['a'],
+                    corp_author: MrcContent.fields.find(field => field['110'])?.['110'].subfields.find(subfield => subfield['a'])?.['a'],
+                    placePub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['a'])?.['a'],
+                    publisher: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['b'])?.['b'],
+                    yearPub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['c'])?.['c'],
+                    edition: MrcContent.fields.find(field => field['250'])?.['250'].subfields.find(subfield => subfield['a'])?.['a'],
+                    series: MrcContent.fields.find(field => field['400'])?.['400'].subfields.find(subfield => subfield['a'])?.['a'],
+                    gen_notes: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'],
+                    isbn: MrcContent.fields.find(field => field['020'])?.['020'].subfields.find(subfield => subfield['a'])?.['a'],
+                    languange: MrcContent.fields.find(field => field['041'])?.['041'].subfields.find(subfield => subfield['a'])?.['a'],
+                    abstract: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'], // Abstract or Summary
+                }
+            });
+            reader.on('end', () => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                      return next(new ErrorHandler('File Deletion failed', 500));
+                    }
+                });
+                res.status(200).json({
+                    success:true,
+                    Mrcbookdata
+                })
+            });
+        }
+      });
+
+
 }

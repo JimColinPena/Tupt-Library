@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { MDBDataTable } from 'mdbreact'
 import dateFormat from 'dateformat';
@@ -20,11 +20,16 @@ const Appointments = () => {
 
 	const { isDeclined } = useSelector(state => state.declineBorrower)
 	const { isAccepted } = useSelector(state => state.acceptBorrower)
+	const [reasons, setReasons] = useState('')
 
 	const { loading, error, borrowers } = useSelector(state => state.allBorrow);
 
 	const declinedHandler = (id) => {
-		dispatch(declineBorrow(id))
+		const formData = new FormData();
+		formData.append('reasons', reasons)
+		// console.log(reasons)
+
+		dispatch(declineBorrow(id, formData))
 	}
 
 	const acceptedHandler = (id) => {
@@ -96,12 +101,44 @@ const Appointments = () => {
 				borrower_book: borrower.bookId.map((item, index) => (<p>{item.title}</p>)),
 				borrower_appointment: dateFormat(borrower.appointmentDate.split('T')[0], "mmmm dd, yyyy"),
 				borrower_status: borrower.status,
-				actions: <Fragment>
+				actions: 
+				<Fragment>
 					<button className="btn btn-success py-1 px-2 ml-2 fa-regular fa-circle-check fa-2x" onClick={() => acceptedHandler(borrower._id)}>
 					</button>
 
-					<button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" onClick={() => declinedHandler(borrower._id)}>
+					<button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" data-toggle="modal" data-target={"#DeclineModal"+borrower._id} >
 					</button>
+
+					<div className="modal fade" data-backdrop="false" id={"DeclineModal"+borrower._id} tabindex="-1" role="dialog" aria-labelledby="DeclineModal" aria-hidden="true">
+						<div className="modal-dialog" role="document">
+							<div className="modal-content">
+								<div className="modal-header">
+									<h3 className="modal-title" id="DeclineModal">Decline appointment</h3>
+									<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div className="modal-body">
+									Please provide a reason for declining the appointment
+									<form>
+										<input
+											type="text"
+											id="reasons_field"
+											className="form-control"
+											name='reasons'
+											value={reasons}
+											onChange={(e) => setReasons(e.target.value)}
+										/>
+									</form>
+
+									<div className="modal-footer">
+										<button type="button" className="btn btn-danger" onClick={() => declinedHandler(borrower._id)} data-dismiss="modal">Confirm</button>
+										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</Fragment>
 			})
 		})

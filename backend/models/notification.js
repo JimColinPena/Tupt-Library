@@ -26,12 +26,22 @@ const notificationSchema = new mongoose.Schema({
     notificationDate: {
         type: Date,
     },
+    notificationWebDate: {
+        type: String,
+    },
     deliveryStatus:{
         type: String,
         enum: {
             values: ['Delivered', 'Seen'],
             message: 'There is error on proccessing this input'
         }
+    },
+    reasons: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
     
 })

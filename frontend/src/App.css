@@ -1112,6 +1112,10 @@ ul.form-stepper li a .form-stepper-circle {
     margin-top: 30px;
 }
 
+.reason{
+    font-weight: 900;
+    color: red;
+}
 /* .accessionButton {
     background: none;
 	color: inherit;

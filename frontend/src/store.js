@@ -35,12 +35,15 @@ import {
 	declineBorrowReducer,
 	returnBookReducer,
 	declineBookReducer,
+	borrowedBookAccessionReducer,
 	allReturnedBooksReducer,
 	userDetailReducer,
 	allHistoryLogReducer,
 	historylogReducer,
 	changeDueDateReducer,
 	penaltyCheckReducer,
+	penaltiesAllReducer,
+	paidPenaltiesReducer
 } from './reducers/personnelReducers'
 
 import { 
@@ -73,7 +76,12 @@ import {
 	allUsersReducer,
 	activateUserReducer,
 	deactivatedUserReducer,
-	endtermReducer
+	endtermReducer,
+	allNotificationReducer,
+	notificationDeleteReducer,
+	notificationAllDeleteReducer,
+	counterNotificationReducer,
+	seenNotificationReducer
 } from './reducers/userReducers'
 
 import {
@@ -127,6 +135,7 @@ const reducer = combineReducers({
 	acceptBorrower: acceptBorrowReducer,
 	returnBook: returnBookReducer,
 	declineBook: declineBookReducer,
+	borrowedBookAccession: borrowedBookAccessionReducer,
 	allReturnedState: allReturnedBooksReducer,
 	userDetail: userDetailReducer,
 	historyLogs: allHistoryLogReducer,
@@ -138,7 +147,14 @@ const reducer = combineReducers({
 	allUsers: allUsersReducer,
 	activateUser: activateUserReducer,
 	deactivateUser: deactivatedUserReducer,
-	endtermuser: endtermReducer
+	endtermuser: endtermReducer,
+	penaltiesall: penaltiesAllReducer,
+	paidPenalties: paidPenaltiesReducer,
+	notifications: allNotificationReducer,
+	singleDeleteNotification: notificationDeleteReducer,
+	allDeleteNotification: notificationAllDeleteReducer,
+	counterNotification: counterNotificationReducer,
+	seenNotification: seenNotificationReducer
 })
 
 

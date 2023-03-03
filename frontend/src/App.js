@@ -29,11 +29,15 @@ import StudentBookDetails from './components/user/StudentBookDetails'
 import BorrowDetails from './components/user/BorrowDetails'
 import AppointmentDetails from './components/user/AppointmentDetails'
 
-import Appointments from './components/admin/Appointments'
+import BookRequests from './components/admin/BookRequests'
 
 import HistoryLog from './components/admin/HistoryLog'
 
+import Notification from './components/user/Notification'
+
 import StudentEvaluation  from './components/user/StudentEvaluation'
+
+import Penalty from './components/admin/Penalties'
 
 import Home from './components/Home'
 import Login from './components/credential/Login'
@@ -74,9 +78,11 @@ function App() {
 					<Route path="/active/student" element={<ProtectedRoute isAdmin={true}><RegisteredUsers /></ProtectedRoute>} />
 					<Route path="/inactive/student" element={<ProtectedRoute isAdmin={true}><ApprovalUsers /></ProtectedRoute>} />
 					<Route path="/returned/books" element={<ProtectedRoute isAdmin={true}><ReturnedBooks /></ProtectedRoute>} />
-					<Route path="/appointments" element={<ProtectedRoute isAdmin={true}><Appointments /></ProtectedRoute>} />
+					<Route path="/appointments" element={<ProtectedRoute isAdmin={true}><BookRequests /></ProtectedRoute>} />
 
 					<Route path="/historyLog" element={<ProtectedRoute isAdmin={true}><HistoryLog /></ProtectedRoute>} />
+
+					<Route path="/notification/:id" element={<ProtectedRoute isAdmin={false}><Notification /></ProtectedRoute>} />
 
 					<Route path="/books" element={<ProtectedRoute isAdmin={false}><BookSearch /></ProtectedRoute>} />
 					<Route path="/book/:id" element={<ProtectedRoute isAdmin={false}><StudentBookDetails /></ProtectedRoute>} />
@@ -85,6 +91,8 @@ function App() {
 					<Route path="/profile/update/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />
 					
 					<Route path="/student/evaluation" element={<StudentEvaluation />} />
+
+					<Route path='/admin/penalty' element={<Penalty />} />
 				</Routes>
 			</div>
 		</Router>
