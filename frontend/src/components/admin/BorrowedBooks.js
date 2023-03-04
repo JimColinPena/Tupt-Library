@@ -1,27 +1,25 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from "react-router-dom";
-import DatePicker from 'react-datepicker';
-import dateFormat from 'dateformat';
-import "react-datepicker/dist/react-datepicker.css";
-import { MDBDataTable } from 'mdbreact'
-
+import MaterialTable from 'material-table'
+import { ThemeProvider, createTheme } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarAdmin from '../layout/SideNavbarAdmin'
-
+import dateFormat from 'dateformat';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RETURN_BOOK_RESET, DECLINE_BOOK_RESET, UPDATE_DUE_DATE_RESET, ACCESSION_BORROWED_RESET } from '../../constants/personnelConstants'
-
-// import { allBorrowed, returnBook, allReturned, updateDueDate, clearErrors } from '../../actions/personnelActions'
-import { allBorrowed, returnBook, declineBook, updateDueDate, borrowedAccession, clearErrors } from '../../actions/personnelActions'
+import { RETURN_BOOK_RESET, DECLINE_BOOK_RESET, UPDATE_DUE_DATE_RESET } from '../../constants/personnelConstants'
+import { allBorrowed, returnBook, declineBook, updateDueDate, clearErrors } from '../../actions/personnelActions'
 
 const BorrowedBooks = () => {
-	const alert = useAlert();
-	const dispatch = useDispatch();
-	let navigate = useNavigate();
 
+    const alert = useAlert();
+    const dispatch = useDispatch();
+    let navigate = useNavigate();
 
 	const [dueDate, setDueDate] = useState(new Date());//setdate is not working
 	const isWeekday = (date) => {
@@ -37,11 +35,10 @@ const BorrowedBooks = () => {
 	const { isReturned } = useSelector(state => state.returnBook)
 	const { isDecline } = useSelector(state => state.declineBook)
 	const { isChange } = useSelector(state => state.changeDueDate)
-	const { bookAccession } = useSelector(state => state.borrowedBookAccession)
 
+    const defaultMaterialTheme = createTheme({});
 
-
-	useEffect(() => {
+    useEffect(() => {
 		dispatch(allBorrowed());
 		// dispatch(allReturned());
 
@@ -68,14 +65,7 @@ const BorrowedBooks = () => {
 			dispatch({ type: UPDATE_DUE_DATE_RESET })
 		}
 
-		if (bookAccession) {
-			alert.success('Accession Updated');
-			navigate('/books/borrowed');
-			dispatch({ type: ACCESSION_BORROWED_RESET })
-		}
-
-	}, [dispatch, alert, error, navigate, isReturned, isDecline, isChange, bookAccession])
-
+	}, [dispatch, alert, error, navigate, isReturned, isDecline, isChange])
 
 	const returnedHandler = (id) => {
 		dispatch(returnBook(id))
@@ -99,149 +89,108 @@ const BorrowedBooks = () => {
 
 	}
 
-	const giveAccessionHandler = (userId, accessionId) => {
-		const formData = new FormData();
-		formData.set('accessionId', accessionId);
-		formData.set('userId', userId);
-		formData.set('func', 'give');
-
-		dispatch(borrowedAccession(formData));
-	}
-	const retrieveAccessionHandler = (userId, accessionId) => {
-		const formData = new FormData();
-		formData.set('accessionId', accessionId);
-		formData.set('userId', userId);
-		formData.set('func', 'retrieve');
-
-		dispatch(borrowedAccession(formData));
-	}
-
-	const setBorrowedBooks = () => {
-		const data = {
-			columns: [
-				{
-					label: 'TUPT-ID',
-					field: 'borrowedbooks_id',
-					sort: 'asc'
-				},
-				{
-					label: 'Name',
-					field: 'borrowedbooks_name',
-					sort: 'asc'
-				},
-				{
-					label: 'Book(s)',
-					field: 'borrowedbooks_book',
-					sort: 'asc'
-				},
-				{
-					label: 'Accssion(s)',
-					field: 'accessionbooks_book',
-					sort: 'asc'
-				},
-				{
-					label: 'Schedule',
-					field: 'borrowedbooks_appointment',
-					sort: 'asc'
-				},
-				{
-					label: 'Due Date',
-					field: 'borrowedbooks_due',
-					sort: 'asc'
-				},
-				{
-					label: 'Actions',
-					field: 'actions'
-				}
-
-			],
-			rows: []
-		}
-
-		borrowedbooks.forEach(borrowedbook => {
-			data.rows.push({
-				borrowedbooks_id: borrowedbook.userId.id_number,
-				borrowedbooks_name: borrowedbook.userId.name,
-				borrowedbooks_book: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
-				accessionbooks_book: borrowedbook.bookId.map((accession_item, index) => (
-					// item.accession_numbers.map((accession_number, index) => (<p>{accession_number.accession_number}</p>))
-					<div>
-						<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#AccessionBorrowModal" + accession_item._id}>
-							<i className="fa fa-plus"></i>
-						</button>
-						<div className="modal fade" data-backdrop="false" id={"AccessionBorrowModal" + accession_item._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-							<div className="modal-dialog" role="document">
-								<div className="modal-content">
-									<div className="modal-header">
-										<h3 className="modal-title" id="DeleteActiveModalLabel">Add Accession</h3>
-										<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div>
-										{((accession_item.accession_numbers.length) > 0) ?
-											(
-												<div>
-													<p>List of Accession number(s) available</p>
-													{accession_item.accession_numbers.map((acc_number, index) => (
-														<div>
-															<h4>{acc_number.accession_number}
-
-																{(borrowedbook.accessions.includes(acc_number._id)) ?
-																	(
-																		<button type="button" className="btn btn-danger" onClick={() => retrieveAccessionHandler(borrowedbook.userId._id, acc_number._id)} data-dismiss="modal">
-																			<i className="fa fa-arrow-right-to-bracket"></i>
-																		</button>
-																	) : (
-																		<button type="button" className="btn btn-success" onClick={() => giveAccessionHandler(borrowedbook.userId._id, acc_number._id)} data-dismiss="modal">
-																			<i className="fa fa-arrow-right-from-bracket"></i>
-																		</button>
-																	)}
-															</h4>
-														</div>
-													))}
-
-												</div>
-
-
-											)
-											:
-											(
-												<div>
-													No accession available! please! Please create 1 first {<Link to={`/accession/detail/${accession_item._id}`}>HERE</Link>}
-												</div>
-											)
-
-										}
-										{/* <hr /> */}
-									</div>
-									<div className="modal-footer">
-										{/* <button type="button" className="btn btn-warning" onClick={() => accessionHandler(borrowedbook._id)} data-dismiss="modal">Set</button> */}
-										<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-									</div>
-								</div>
-							</div>
-						</div >
-					</div >
-				)),
-				borrowedbooks_due: dateFormat(borrowedbook.dueDate.split('T')[0], "mmmm dd, yyyy"),
-				borrowedbooks_appointment: dateFormat(borrowedbook.appointmentDate.split('T')[0], "mmmm dd, yyyy"),
-				actions:
+	// console.log(borrowedbooks)
+    const col = [
+        {
+            title: 'TUPT-ID',
+            field: 'userId.id_number',
+			render: rowData => (
+						<Fragment>
+							<div><p>{rowData.userId.id_number}</p></div>
+						</Fragment>
+              ),
+			  cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Name',
+            field: 'userId.name',
+			render: rowData => (
+                <Fragment>
+                    <div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
+                </Fragment>
+      ),
+	  cellStyle: {
+		textAlign: "left",
+	},
+        },
+        {
+            title: 'E-mail',
+            field: 'userId.email',
+			searchable: false,
+			render: rowData => (
+				<Fragment>
+					<div><p>{rowData.userId.email}</p></div>
+				</Fragment>
+	 	 ),
+		  cellStyle: {
+			textAlign: "left",
+		},
+        },
+        {
+            title: 'Contact',
+            field: 'userId.contact',
+            width: '10%',
+			searchable: false,
+			render: rowData => (
+				<Fragment>
+					<div><p>{rowData.userId.contact}</p></div>
+				</Fragment>
+	 	 ),
+        },
+		{
+            title: 'Book(s)',
+            field: 'bookId.title',
+			searchable: false,
+			render: rowData => (
+				rowData.bookId.map((item, index) => (
 					<Fragment>
-						<button type="button" className="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
-							<i className="fa fa-box"></i>
+							<div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
+					</Fragment>
+				))
+	  ),
+	  cellStyle: {
+		textAlign: "left",
+	},
+        },
+		// {
+        //     title: 'Status',
+        //     field: 'status',
+        //     width: 180,
+        // },
+		{
+            title: 'Actions',
+            field: '_id',
+            render: rowData => (
+                <Fragment>
+                    <div className="icon-buttons">
+                    <Tooltip title="Return">
+					<button type="button" className="btn btn-success" onClick={() => returnedHandler(rowData._id)}>
+							Returned
 						</button>
-						<button className="btn btn-warning py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditBorrowModal" + borrowedbook._id}>
+                    </Tooltip>
+
+                    <Tooltip title="Edit">
+					<button className="btn btn-warning py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditBorrowModal" + rowData._id}>
 							<i className="fa fa-pencil"></i>
 						</button>
-						<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#GiveAccessionModal" + borrowedbook._id}>
+                    </Tooltip>
+
+					<Tooltip title="Accession">
+					<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#GiveAccessionModal" + rowData._id}>
 							<i className="fa fa-plus"></i>
 						</button>
-						<button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeclineBookModal" + borrowedbook._id}>
+                    </Tooltip>
+
+					<Tooltip title="Decline">
+					<button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeclineBookModal" + rowData._id}>
 							<i className="fa fa-trash"></i>
 						</button>
+                    </Tooltip>
+                    </div>
 
-						<div className="modal fade" data-backdrop="false" id={"EditBorrowModal" + borrowedbook._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+					<div className="modal fade" data-backdrop="false" id={"EditBorrowModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 							<div className="modal-dialog" role="document">
 								<div className="modal-content">
 									<div className="modal-header">
@@ -273,13 +222,14 @@ const BorrowedBooks = () => {
 										</form>
 									</div>
 									<div className="modal-footer">
-										<button type="button" className="btn btn-warning" onClick={() => updateHandler(borrowedbook._id)} data-dismiss="modal">Update</button>
+										<button type="button" className="btn btn-warning" onClick={() => updateHandler(rowData._id)} data-dismiss="modal">Update</button>
 										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 									</div>
 								</div>
 							</div>
 						</div >
-						<div className="modal fade" data-backdrop="false" id={"GiveAccessionModal" + borrowedbook._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+
+						<div className="modal fade" data-backdrop="false" id={"GiveAccessionModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 							<div className="modal-dialog" role="document">
 								<div className="modal-content">
 									<div className="modal-header">
@@ -306,13 +256,14 @@ const BorrowedBooks = () => {
 										</form>
 									</div>
 									<div className="modal-footer">
-										<button type="button" className="btn btn-warning" onClick={() => updateHandler(borrowedbook._id)} data-dismiss="modal">Update</button>
+										<button type="button" className="btn btn-warning" onClick={() => updateHandler(rowData._id)} data-dismiss="modal">Update</button>
 										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 									</div>
 								</div>
 							</div>
 						</div >
-						<div className="modal fade" data-backdrop="false" id={"DeclineBookModal" + borrowedbook._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
+
+						<div className="modal fade" data-backdrop="false" id={"DeclineBookModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 							<div className="modal-dialog" role="document">
 								<div className="modal-content">
 									<div className="modal-header">
@@ -325,27 +276,33 @@ const BorrowedBooks = () => {
 										<h1>Do you really want to decline this appointment?</h1>
 									</div>
 									<div className="modal-footer">
-										<button type="button" className="btn btn-danger" onClick={() => declineHandler(borrowedbook._id)} data-dismiss="modal">Confirm</button>
+										<button type="button" className="btn btn-danger" onClick={() => declineHandler(rowData._id)} data-dismiss="modal">Confirm</button>
 										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 									</div>
 								</div>
 							</div>
 						</div >
-					</Fragment >
-			})
-		})
-		return data;
-	}
-
-	return (
-		<Fragment>
-			<MetaData title={'TUP-T Online Library - Books Borrowed'} />
-			<SideNavbarAdmin />
-			{loading ? <Loader /> : (
-				<div className="management-content">
+                    </Fragment>
+              ),
+              searchable: false,
+			  cellStyle: {
+                textAlign: "left",
+            },
+            headerStyle: {
+                textAlign: 'center'
+            }
+        },
+    ]
+      
+    return (
+        <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            <SideNavbarAdmin />
+            {loading ? <Loader /> : (
+                <div className="management-content">
 					<div className="management-body">
-						<div className="row">
-							<div className="col-md-12">
+					<div className="row">
+					<div className="col-md-12">
 								<div className="next">
 									<Link to="/returned/books">
 										<span className='span1'>Returned Books</span>
@@ -354,23 +311,43 @@ const BorrowedBooks = () => {
 										</span>
 									</Link>
 								</div>
-								<h1 className="text-center">Borrowed</h1>
-
-								{loading ? <Loader /> : (
-									<MDBDataTable
-										data={setBorrowedBooks()}
-										className="px-3"
-										bordered
-										noBottomColumns
-									/>
-								)}
-
-							</div>
-						</div>
-					</div>
+									<h1 className="text-center">Borrowed</h1>
+									{loading ? <Loader /> : (
+                        <ThemeProvider theme={defaultMaterialTheme}>
+                            <MaterialTable
+                                title='Borrowed Books List'
+                                data={borrowedbooks}
+                                columns={col}
+                                localization={
+                                    { 
+                                        toolbar: { 
+                                            searchPlaceholder: 'ID, Name...' 
+                                        } 
+                                    }
+                                }
+                                options={{
+                                    pageSize:10, 
+                                    headerStyle: {
+                                      fontSize: 16,
+                                      fontWeight: 'bold',
+                                      backgroundColor: '#BA0202',
+                                      color: '#ffffff',
+                                    },
+                                    rowStyle: {
+                                        fontSize: 15,
+                                        backgroundColor: '#F9F5F5',
+                                      },
+                                      emptyRowsWhenPaging: false
+                                  }}
+                            />
+                            </ThemeProvider>
+                        )}
+								</div>
+                </div>
 				</div>
-			)}
-		</Fragment>
-	)
+				</div>
+          )}
+        </Fragment>
+    )
 }
 export default BorrowedBooks

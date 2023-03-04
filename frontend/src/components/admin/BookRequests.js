@@ -1,42 +1,41 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { useNavigate } from "react-router-dom";
-import { MDBDataTable } from 'mdbreact'
-import dateFormat from 'dateformat';
-
+import React, { Fragment, useState, useEffect, useRef } from 'react'
+import { useNavigate, Link } from "react-router-dom";
+import MaterialTable from 'material-table'
+import { ThemeProvider, createTheme } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarAdmin from '../layout/SideNavbarAdmin'
-
+import dateFormat from 'dateformat';
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { DECLINE_BORROW_RESET, ACCEPT_BORROW_RESET } from '../../constants/personnelConstants'
 
 import { allBorrow, acceptBorrow, declineBorrow, clearErrors } from '../../actions/personnelActions'
 
 const Appointments = () => {
-	const alert = useAlert();
-	const dispatch = useDispatch();
-	let navigate = useNavigate();
 
-	const { isDeclined } = useSelector(state => state.declineBorrower)
+    const alert = useAlert();
+    const dispatch = useDispatch();
+    let navigate = useNavigate();
+
+    const { isDeclined } = useSelector(state => state.declineBorrower)
 	const { isAccepted } = useSelector(state => state.acceptBorrower)
-	const [reasons, setReasons] = useState('')
 
 	const { loading, error, borrowers } = useSelector(state => state.allBorrow);
 
 	const declinedHandler = (id) => {
-		const formData = new FormData();
-		formData.append('reasons', reasons)
-		// console.log(reasons)
-
-		dispatch(declineBorrow(id, formData))
+		dispatch(declineBorrow(id))
 	}
 
 	const acceptedHandler = (id) => {
 		dispatch(acceptBorrow(id))
 	}
 
-	useEffect(() => {
+    const defaultMaterialTheme = createTheme({});
+
+    useEffect(() => {
 		dispatch(allBorrow());
 
 		if (error) {
@@ -56,120 +55,129 @@ const Appointments = () => {
 
 	}, [dispatch, alert, error, navigate, isDeclined, isAccepted])
 
-	
-
-	const setBorrower = () => {
-		const data = {
-			columns: [
-				{
-					label: 'Name',
-					field: 'borrower_name',
-					sort: 'asc'
-
-				},
-				{
-					label: 'Book',
-					field: 'borrower_book',
-					sort: 'asc'
-
-				},
-				{
-					label: 'Appointment',
-					field: 'borrower_appointment',
-					sort: 'asc'
-
-				},
-				{
-					label: 'Status',
-					field: 'borrower_status',
-					sort: 'asc'
-
-				},
-				{
-					label: 'Actions',
-					field: 'actions',
-				},
-			],
-			rows: []
-		}
-
-		console.log(borrowers)
-
-		borrowers.forEach(borrower => {
-			data.rows.push({
-				borrower_name: borrower.userId.name,
-				borrower_book: borrower.bookId.map((item, index) => (<p>{item.title}</p>)),
-				borrower_appointment: dateFormat(borrower.appointmentDate.split('T')[0], "mmmm dd, yyyy"),
-				borrower_status: borrower.status,
-				actions: 
+    const col = [
+        {
+            title: 'Name',
+            field: 'userId.name',
+			render: rowData => (
+						<Fragment>
+							<div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
+						</Fragment>
+              ),
+              cellStyle: {
+                textAlign: "left"
+            }
+        },
+        {
+            title: 'Book',
+            field: 'bookId.title',
+            // width: '10%',
+			render: rowData => (
+				rowData.bookId.map((item, index) => (
+					<Fragment>
+							<div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
+					</Fragment>
+				))
+	  ),
+      cellStyle: {
+        textAlign: "left"
+    }
+        },
+        {
+            title: 'Appointment',
+            field: 'borrower_appointment',
+            // width: '20%',
+			render: rowData => (
 				<Fragment>
-					<button className="btn btn-success py-1 px-2 ml-2 fa-regular fa-circle-check fa-2x" onClick={() => acceptedHandler(borrower._id)}>
-					</button>
-
-					<button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" data-toggle="modal" data-target={"#DeclineModal"+borrower._id} >
-					</button>
-
-					<div className="modal fade" data-backdrop="false" id={"DeclineModal"+borrower._id} tabindex="-1" role="dialog" aria-labelledby="DeclineModal" aria-hidden="true">
-						<div className="modal-dialog" role="document">
-							<div className="modal-content">
-								<div className="modal-header">
-									<h3 className="modal-title" id="DeclineModal">Decline appointment</h3>
-									<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div className="modal-body">
-									Please provide a reason for declining the appointment
-									<form>
-										<input
-											type="text"
-											id="reasons_field"
-											className="form-control"
-											name='reasons'
-											value={reasons}
-											onChange={(e) => setReasons(e.target.value)}
-										/>
-									</form>
-
-									<div className="modal-footer">
-										<button type="button" className="btn btn-danger" onClick={() => declinedHandler(borrower._id)} data-dismiss="modal">Confirm</button>
-										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div><p>{dateFormat(rowData.appointmentDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
 				</Fragment>
-			})
-		})
-		return data;
-	}
+	  ),
+      cellStyle: {
+        textAlign: "left"
+    }
+        },
+        {
+            title: 'Status',
+            field: 'status',
+            width: '10%',
+            cellStyle: {
+                textAlign: "left",
+            }
+        },
+        {
+            title: 'Actions',
+            field: '_id',
+            // width: 180,
+            render: rowData => (
+                <Fragment>
+                    {/* <div className="icon-buttons"> */}
+                    <Tooltip title="Accept">
+					<button className="btn btn-success py-1 px-2 ml-2 fa-regular fa-circle-check fa-2x" onClick={() => acceptedHandler(rowData._id)}>
+					</button>
+                    </Tooltip>
 
-	return (
-		<Fragment>
-			<MetaData title={'Book Requests'} />
-			<SideNavbarAdmin />
-			{loading ? <Loader /> : (
-				<div className="management-content">
-					{/* <div className="management-header"> */}
-					<h1>Book Requests <span></span>
-					</h1>
-					<hr />
-					{/* </div> */}
-					<div className="management-body">
+                    <Tooltip title="Decline">
+					<button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" onClick={() => declinedHandler(rowData._id)}>
+					</button>
+                    </Tooltip>
+                    {/* </div> */}
+                    </Fragment>
+              ),
+              searchable: false,
+              cellStyle: {
+                textAlign: "left",
+            },
+            headerStyle: {
+                textAlign: 'center'
+            }
+        },
+        
+    ]
+      
+    return (
+        <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            <SideNavbarAdmin />
+            {loading ? <Loader /> : (
+                <div className="management-content">
+                    <h1>Book Requests <span></span>
+                    </h1>
+                    <div className="management-body">
 
-						<MDBDataTable
-							data={setBorrower()}
-							className="px-3"
-							bordered
-							striped
-							hover
-						/>
-
-					</div>
-				</div>
-			)}
-		</Fragment>
-	)
+                        {loading ? <Loader /> : (
+                        <ThemeProvider theme={defaultMaterialTheme}>
+                            <MaterialTable
+                                title='Book Requests'
+                                data={borrowers}
+                                columns={col}
+                                localization={
+                                    { 
+                                        toolbar: { 
+                                            searchPlaceholder: 'Name...' 
+                                        } 
+                                    }
+                                }
+                                options={{
+                                    pageSize:10, 
+                                    headerStyle: {
+                                      fontSize: 16,
+                                      fontWeight: 'bold',
+                                      backgroundColor: '#BA0202',
+                                      color: '#ffffff',
+                                    },
+                                    rowStyle: {
+                                        fontSize: 15,
+                                        backgroundColor: '#F9F5F5',
+                                      },
+                                      emptyRowsWhenPaging: false
+                                  }}
+                            />
+                            </ThemeProvider>
+                        )}
+                    </div>
+                </div>
+          )}
+        </Fragment>
+    )
 }
 export default Appointments

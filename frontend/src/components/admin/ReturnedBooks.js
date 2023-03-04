@@ -1,11 +1,12 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from "react-router-dom";
-import { MDBDataTable } from 'mdbreact'
-
+import MaterialTable from 'material-table'
+import { ThemeProvider, createTheme } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
 import SideNavbarAdmin from '../layout/SideNavbarAdmin'
-
+import dateFormat from 'dateformat';
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -13,197 +14,191 @@ import { RETURN_BOOK_RESET } from '../../constants/personnelConstants'
 
 import { allBorrowed, returnBook, allReturned, clearErrors } from '../../actions/personnelActions'
 
-const BorrowedBooks = () => {
-	const alert = useAlert();
-	const dispatch = useDispatch();
-	let navigate = useNavigate();
+const ReturnedBooks = () => {
 
-	const { loading, error, borrowedbooks } = useSelector(state => state.allBorrowed);
-	const { returnedbooks } = useSelector(state => state.allReturnedState);
-	const { isReturned } = useSelector(state => state.returnBook)
+    const alert = useAlert();
+    const dispatch = useDispatch();
+    let navigate = useNavigate();
 
-	useEffect(() => {
-		dispatch(allBorrowed());
-		dispatch(allReturned());
+    const { loading, error, borrowedbooks } = useSelector(state => state.allBorrowed);
+    const { returnedbooks } = useSelector(state => state.allReturnedState);
+    const { isReturned } = useSelector(state => state.returnBook)
 
-		if (error) {
-			alert.error(error);
-			dispatch(clearErrors())
-		}
+    const defaultMaterialTheme = createTheme({});
 
-		if (isReturned) {
-			alert.success('Book returned');
-			navigate('/books/borrowed');
-			dispatch({ type: RETURN_BOOK_RESET })
-		}
+    useEffect(() => {
+        dispatch(allBorrowed());
+        dispatch(allReturned());
 
-	}, [dispatch, alert, error, navigate, isReturned])
+        if (error) {
+            alert.error(error);
+            dispatch(clearErrors())
+        }
 
-	const returnedHandler = (id) => {
-		dispatch(returnBook(id))
+        if (isReturned) {
+            alert.success('Book returned');
+            navigate('/books/borrowed');
+            dispatch({ type: RETURN_BOOK_RESET })
+        }
+
+    }, [dispatch, alert, error, navigate, isReturned])
+
+    const returnedHandler = (id) => {
+        dispatch(returnBook(id))
+    }
+
+    const col = [
+        {
+            title: 'TUPT-ID',
+            field: 'userId.id_number',
+            render: rowData => (
+                        <Fragment>
+                            <div><p>{rowData.userId.id_number}</p></div>
+                        </Fragment>
+              ),
+              cellStyle: {
+                textAlign: "left",
+            },
+			headerStyle: {
+				textAlign: 'center'
+			}
+        },
+        {
+            title: 'Name',
+            field: 'userId.name',
+            render: rowData => (
+                <Fragment>
+                    <div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
+                </Fragment>
+      ),
+      cellStyle: {
+        textAlign: "left",
+    },
+        },
+        {
+            title: 'E-mail',
+            field: 'returnedbooks_email',
+            searchable: false,
+            render: rowData => (
+                <Fragment>
+                    <div><p>{rowData.userId.email}</p></div>
+                </Fragment>
+         ),
+          cellStyle: {
+            textAlign: "left",
+        },
+        },
+        {
+            title: 'Contact',
+            field: 'returnedbooks_contact',
+            width: '5%',
+            searchable: false,
+            render: rowData => (
+                <Fragment>
+                    <div><p>{rowData.userId.contact}</p></div>
+                </Fragment>
+         ),
+          cellStyle: {
+            textAlign: "left",
+        },
+        },
+        {
+            title: 'Book',
+            field: '[returnedbooks.bookId.title]',
+            render: rowData => (
+                rowData.bookId.map((item, index) => (
+                    <Fragment>
+                            <div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
+                    </Fragment>
+                ))
+      ),
+      cellStyle: {
+        textAlign: "left",
+    },
+        },
+        {
+            title: 'Due Date',
+            field: 'returnedDate',
+            searchable: false,
+            render: rowData => (
+                <Fragment>
+                    <div><p>{dateFormat(rowData.returnedDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
+                </Fragment>
+      ),
+      cellStyle: {
+        textAlign: "left",
+    },
+	headerStyle: {
+		textAlign: 'center'
 	}
-
-	const setBorrowedBooks = () => {
-		const data = {
-			columns: [
-				{
-					label: 'TUPT-ID',
-					field: 'borrowedbooks_id',
-					sort: 'asc'
-				},
-				{
-					label: 'Name',
-					field: 'borrowedbooks_name',
-					sort: 'asc'
-				},
-				{
-					label: 'Gender',
-					field: 'borrowedbooks_gender',
-					sort: 'asc'
-				},
-				{
-					label: 'Email',
-					field: 'borrowedbooks_email',
-					sort: 'asc'
-				},
-				{
-					label: 'Contact',
-					field: 'borrowedbooks_contact',
-					sort: 'asc'
-				},
-				{
-					label: 'Book',
-					field: 'borrowedbooks_book',
-					sort: 'asc'
-				},
-				{
-					label: 'Due Date',
-					field: 'borrowedbooks_due',
-					sort: 'asc'
-				},
-				{
-					label: 'Actions',
-					field: 'actions'
-				}
-
-			],
-			rows: []
-		}
-
-		borrowedbooks.forEach(borrowedbook => {
-			data.rows.push({
-				borrowedbooks_id: borrowedbook.userId.id_number,
-				borrowedbooks_name: borrowedbook.userId.name,
-				borrowedbooks_gender: borrowedbook.userId.gender,
-				borrowedbooks_email: borrowedbook.userId.email,
-				borrowedbooks_contact: borrowedbook.userId.contact,
-				borrowedbooks_book: borrowedbook.bookId.map((item, index) => (<p>{item.title}</p>)),
-				borrowedbooks_due: borrowedbook.dueDate,
-				actions:
-					<Fragment>
-						<button type="button" className="btn btn-success" onClick={() => returnedHandler(borrowedbook._id)}>
-							Returned
-						</button>
-
-					</Fragment>
-			})
-		})
-		return data;
+        },
+        {
+            title: 'Returned To',
+            field: 'returnedTo.name',
+            searchable: false,
+      cellStyle: {
+        textAlign: "left",
+    },
+	headerStyle: {
+		textAlign: 'center'
 	}
-
-	const setReturnedBooks = () => {
-		const data = {
-			columns: [
-				{
-					label: 'TUPT-ID',
-					field: 'returnedbooks_id',
-					sort: 'asc'
-				},
-				{
-					label: 'Name',
-					field: 'returnedbooks_name',
-					sort: 'asc'
-				},
-				{
-					label: 'E-mail',
-					field: 'returnedbooks_email',
-					sort: 'asc'
-				},
-				{
-					label: 'Contact',
-					field: 'returnedbooks_contact',
-					sort: 'asc'
-				},
-				{
-					label: 'Book',
-					field: 'returnedbooks_book',
-					sort: 'asc'
-				},
-				{
-					label: 'Due Date',
-					field: 'returnedbooks_due',
-					sort: 'asc'
-				},
-				{
-					label: 'Returned to',
-					field: 'returnedbooks_to',
-					sort: 'asc'
-				},
-			],
-			rows: []
-		}
-
-		returnedbooks.forEach(returnedBook => {
-			data.rows.push({
-				returnedbooks_id: returnedBook.userId.id_number,
-				returnedbooks_name: returnedBook.userId.name,
-				returnedbooks_email: returnedBook.userId.email,
-				returnedbooks_contact: returnedBook.userId.contact,
-				returnedbooks_book: returnedBook.bookId.map((item, index) => (<p>{item.title}</p>)),
-				returnedbooks_due: returnedBook.returnedDate,
-				returnedbooks_to: returnedBook.returnedTo.name,
-			})
-		})
-		return data;
-	}
-
-	return (
-		<Fragment>
-			{loading ? <Loader /> : (
-				<Fragment>
-					<MetaData title={'TUP-T Online Library - Books Borrowed'} />
-					<SideNavbarAdmin />
-
-					<div className="management-content">
-						<div className="management-body">
-							<div className="row">
-								<div className="col-md-12">
-									<div className="previous">
-										<Link to="/books/borrowed">
-											<span className='span2'>Borrowed Books</span>
-											<span className="material-symbols-outlined borroweed_books">
-												navigate_before
-											</span>
-										</Link>
-									</div>
-									<h1 className="text-center">Returned</h1>
-									{loading ? <Loader /> : (
-										<MDBDataTable
-											data={setReturnedBooks()}
-											className="px-3"
-											bordered
-											noBottomColumns
-										/>
-									)}
-								</div>
-							</div>
-						</div>
-
-
-					</div>
-				</Fragment>
-			)}
-		</Fragment>
-	)
+        },
+    ]
+      
+    return (
+        <Fragment>
+            <MetaData title={'TUP-T Online Library - Admin'} />
+            <SideNavbarAdmin />
+            {loading ? <Loader /> : (
+                <div className="management-content">
+                    <div className="management-body">
+                    <div className="row">
+                    <div className="col-md-12">
+                                    <div className="previous">
+                                        <Link to="/books/borrowed">
+                                            <span className='span2'>Borrowed Books</span>
+                                            <span className="material-symbols-outlined borroweed_books">
+                                                navigate_before
+                                            </span>
+                                        </Link>
+                                    </div>
+                                    <h1 className="text-center">Returned</h1>
+                                    {loading ? <Loader /> : (
+                        <ThemeProvider theme={defaultMaterialTheme}>
+                            <MaterialTable
+                                title='Returned Books List'
+                                data={returnedbooks}
+                                columns={col}
+                                localization={
+                                    { 
+                                        toolbar: { 
+                                            searchPlaceholder: 'ID, Name...' 
+                                        } 
+                                    }
+                                }
+                                options={{
+                                    pageSize:10, 
+                                    headerStyle: {
+                                      fontSize: 16,
+                                      fontWeight: 'bold',
+                                      backgroundColor: '#BA0202',
+                                      color: '#ffffff',
+                                    },
+                                    rowStyle: {
+                                        fontSize: 15,
+                                        backgroundColor: '#F9F5F5',
+                                      },
+                                      emptyRowsWhenPaging: false
+                                  }}
+                            />
+                            </ThemeProvider>
+                        )}
+                                </div>
+                </div>
+                </div>
+                </div>
+          )}
+        </Fragment>
+    )
 }
-export default BorrowedBooks
+export default ReturnedBooks

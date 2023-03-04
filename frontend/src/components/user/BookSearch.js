@@ -1,8 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
-import { MDBDataTable } from 'mdbreact'
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import MaterialTable from 'material-table'
+import { ThemeProvider, createTheme } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -26,65 +27,123 @@ const BookSearch = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const newYearStart = studentbooks.lowestYearPub;
+    const newYearEnd = studentbooks.highestYearPub;
+
+    console.log(newYearStart)
+    console.log(newYearEnd)
+
+    const [yearPubStart, setyearPubStart] = useState(newYearStart);
+    const [yearPubEnd, setyearPubEnd] = useState(newYearEnd);
+    const [new_yearValue, setnew_yearValue] = useState([yearPubStart, yearPubEnd]);
+
+    console.log(yearPubStart)
+    console.log(yearPubEnd)
+
+    const defaultMaterialTheme = createTheme({});
+
     useEffect(() => {
-        dispatch(allStudentBooks());
+        dispatch(allStudentBooks(new_yearValue));
 
         if (error) {
             alert.error(error);
             dispatch(clearErrors())
         }
 
-    }, [dispatch, alert, error, navigate])
+    }, [dispatch, new_yearValue, alert, error, navigate])
 
-    const setBooks = () => {
-        const data = {
-            columns: [
-                {
-                    label: 'Book ID',
-                    field: 'call_number',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Title',
-                    field: 'title',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Author',
-                    field: 'main_author',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Date Published',
-                    field: 'yearPub',
-                    sort: 'asc'
-                },
-            ],
-            rows: []
-        }
+    const filterYearPub = (e) => {
+        setyearPubStart(yearPubStart)
+        setyearPubEnd(yearPubEnd)
 
-        studentbooks.forEach(books => {
-            data.rows.push({
-                call_number: books.call_number,
-                title: <Fragment>
-                    <Link to={`/book/${books._id}`} className="">
-                        {books.title}
-                    </Link>
-                </Fragment>,
-                main_author: books.main_author,
-                yearPub: books.yearPub,
-            })
-        })
+        setnew_yearValue([yearPubStart, yearPubEnd])
+        console.log(new_yearValue)
+      };
+    
+      const clearYearPub = (e) => {
+        setyearPubStart(newYearStart)
+        setyearPubEnd(newYearEnd)
 
-        return data;
-    }
+        setnew_yearValue([yearPubStart, yearPubEnd])
+        console.log(new_yearValue)
+      };
+
+      const col = [
+        {
+            title: 'Call Number',
+            field: 'call_number',
+            searchable: false,
+            render: rowData => (
+                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div>:
+                (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div>:
+                (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div>:
+                (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div>:
+                <div><p>{"N/A " + rowData.call_number}</p></div>
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Book Title',
+            field: 'title',
+            render: rowData => (
+                <Fragment>
+                <div>
+                    {
+                        <Link to={`/admin/single/book/${rowData._id}`}>{rowData.title} </Link>
+                    }
+
+                    </div>
+                    </Fragment>
+              ),
+              cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Author',
+            field: 'main_author',
+            render: rowData => (
+                <Fragment>
+                <div><p>{rowData.main_author}</p></div>
+                </Fragment>
+              ),
+              cellStyle: {
+                textAlign: "left",
+            },
+            
+        },
+        {
+            title: 'Year Pub',
+            field: 'yearPub',
+            emptyValue:()=><em>null</em>,
+            cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Subject(s)',
+            field: 'subjects',
+            // emptyValue:()=><em>null</em>,
+            render: rowData => (
+                (rowData.subjects === null || rowData.subjects === undefined) ? <em>null</em> :
+                <Fragment>
+                <div>{rowData.subjects.map((item) => (<p>{item}</p>)) }</div>
+                </Fragment>
+              ),
+              cellStyle: {
+                textAlign: "left",
+            },
+        },
+    ]
 
     return (
         <Fragment>
             <MetaData title={'Books'} />
             <SideNavbarUser />
             {loading ? <Loader /> : (
-                <Fragment>
+                <Fragment>                                  
                     <div className="management-content">
                         {(user.course === undefined | null) ?
                             <DeactivatedUser />
@@ -94,15 +153,51 @@ const BookSearch = () => {
                                 <hr />
                                 {/* </div> */}
                                 <div className="management-body">
-                                    {loading ? <Loader /> : (
-                                        <MDBDataTable
-                                            data={setBooks()}
-                                            className="px-3"
-                                            bordered
-                                            striped
-                                            hover
-                                        />
-                                    )}
+                                <h4 className='text-center'>Year Published</h4>
+                    <div className='row' style={{marginBottom: 10}}>
+                                <TextField id="yearStart" label="Start Year" defaultValue={studentbooks.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto',marginRight: '20px'}}/>
+
+                                    <span style={{paddingTop: '1em'}}>&#8212;</span>
+                                    
+                                <TextField id="yearEnd" label="End Year" defaultValue={studentbooks.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto', marginLeft: '20px'}}/>
+                    </div>
+
+                    <div className='row' style={{marginBottom: 10}}>
+                                <button type="button" className="btn btn-primary col-md-1" onClick={filterYearPub} style={{display: 'block', margin: '0 auto',marginRight: '0px'}}>Filter  <i class="fa-solid fa-filter"></i></button>
+
+                                <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{display: 'block', margin: '0 auto', marginLeft: '0px'}}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                    </div>
+
+                        {loading ? <Loader /> : (
+                        <ThemeProvider theme={defaultMaterialTheme}>
+                            <MaterialTable
+                                title='Books List'
+                                data={studentbooks.studentbook}
+                                columns={col}
+                                localization={
+                                    { 
+                                        toolbar: { 
+                                            searchPlaceholder: 'Book,Year,Author,Subject...' 
+                                        } 
+                                    }
+                                }
+                                options={{
+                                    pageSize:10, 
+                                    headerStyle: {
+                                      fontSize: 16,
+                                      fontWeight: 'bold',
+                                      backgroundColor: '#BA0202',
+                                      color: '#ffffff',
+                                    },
+                                    rowStyle: {
+                                        fontSize: 15,
+                                        backgroundColor: '#F9F5F5',
+                                      },
+                                      emptyRowsWhenPaging: false
+                                  }}
+                            />
+                            </ThemeProvider>
+                        )}
                                 </div>
                             </div>
                         }

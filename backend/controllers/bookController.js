@@ -9,10 +9,47 @@ const User = require('../models/user');
 const { findById } = require('../models/book');
 
 exports.getBooks = async (req, res, next) => {
-    const book = await Book.find().populate('accession_numbers');
+    // const book = await Book.find();
+    const apiFeatures = new APIFeatures(Book.find(),req.query).filter();
+    const book = await apiFeatures.query
+
+    book.map(b =>{
+        let new_callnumber = ""
+        if (b.Fil == true) { 
+            new_callnumber = "FIL "+ b.call_number
+        } else if (b.Ref == true) {
+            new_callnumber = "REF "+ b.call_number
+        } else if (b.Bio == true) {
+            new_callnumber = "BIO "+ b.call_number
+        } else if (b.Res == true) {
+            new_callnumber = "RES "+ b.call_number
+        } else {
+            new_callnumber = "N/A "+ b.call_number
+        }
+        // console.log(new_callnumber)
+        b.new_callnumber = new_callnumber
+    })
+
+    const yearPub = await Book.find().select('yearPub -_id')
+
+    let yearPub_val = []
+    yearPub.forEach(y => {
+        yearPub_val.push(y.yearPub)
+    });
+
+    let formattedYearPubArr = yearPub_val.map(Number)
+
+    const lowestYearPub = Math.min(...formattedYearPubArr)
+    console.log(lowestYearPub)
+
+    const highestYearPub = Math.max(...formattedYearPubArr)
+    console.log(highestYearPub)
+
     res.status(200).json({
         success: true,
-        book
+        book,
+        lowestYearPub,
+        highestYearPub
     })
 }
 

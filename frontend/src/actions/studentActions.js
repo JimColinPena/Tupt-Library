@@ -69,16 +69,20 @@ export const updateStudent = (id, studentData) => async (dispatch) => {
     }
 }
 
-export const allStudentBooks = () => async (dispatch) => {
+export const allStudentBooks = (yearPub) => async (dispatch) => {
     try {
 
         dispatch({ type: ALL_STUDENTBOOKS_REQUEST })
 
-        const { data } = await axios.get('/api/v1/books')
+        let link = `/api/v1/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
+        
+        // const { data } = await axios.get('/api/v1/admin/books')
+
+        const { data } = await axios.get(link)
 
         dispatch({
             type: ALL_STUDENTBOOKS_SUCCESS,
-            payload: data.studentbook
+            payload: data
         })
 
     } catch (error) {
@@ -88,7 +92,6 @@ export const allStudentBooks = () => async (dispatch) => {
         })
     }
 }
-
 
 export const getStudentBookDetails = (id) => async (dispatch) => {
     try {

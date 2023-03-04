@@ -16,7 +16,6 @@ exports.createEvaluation = async (req,res,next) => {
 	const newEvaluationData ={
 		ia: true,
 		dv: req.body.dv,
-		tr: req.body.tr,
 		yl: req.body.yl,
 		course: req.body.course,
 		gender: req.body.gender,

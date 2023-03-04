@@ -39,16 +39,20 @@ import {
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 
-export const allBooks = () => async (dispatch) => {
+export const allBooks = (yearPub) => async (dispatch) => {
     try {
 
         dispatch({ type: ALL_BOOKS_REQUEST })
 
-        const { data } = await axios.get('/api/v1/admin/books')
+        let link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
+        
+        // const { data } = await axios.get('/api/v1/admin/books')
+
+        const { data } = await axios.get(link)
 
         dispatch({
             type: ALL_BOOKS_SUCCESS,
-            payload: data.book
+            payload: data
         })
 
     } catch (error) {

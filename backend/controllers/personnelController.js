@@ -1,6 +1,8 @@
+const {format} = require('date-fns')
 const ErrorHandler = require('../utils/errorhand');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
+
 
 const User = require('../models/user');
 const Borrow = require('../models/borrow');
@@ -644,16 +646,12 @@ exports.changeDueDate = async (req, res, next) => {
 
 exports.checkPenalty = async (req, res, next) => {
     let penalty = {}
-    const borrower = await Borrow.findById(req.params.id);
-    if (!borrower) {
-        return next(new ErrorHandler('Borrowers not found', 404));
-    }
-    // console.log(userId)
+    // const borrower = await Borrow.findById(req.params.id);
     const today = new Date().getTime()
     const nowDate = new Date()
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
-    const userId = borrower.userId;
-    const newBorrower = await User.findById(userId)
+    // const userId = borrower.userId;
+    // const newBorrower = await User.findById(userId)
     
 
     //fetching all borrow object with status 'Accepted'
@@ -661,8 +659,13 @@ exports.checkPenalty = async (req, res, next) => {
 
     //loop borrow collection 
     borrow.forEach(async data => {
+        var notif_dueDate = format(data.dueDate, 'MMMM dd, yyyy')
+        
+        // const new_data = notif_dueDate.setDate(data.dueDate)
+        
         //check if there is existing penalty of user
         const penalty = await Penalty.findOne({ userId: data.userId })
+
         //check if there is existing penalty notification of user
         const notification = await Notification.findOne({ receiver: data.userId, notificationType: 'Penalty' })
         //fetching duedate into time
@@ -698,31 +701,35 @@ exports.checkPenalty = async (req, res, next) => {
                 // const nowDate = new Date();
                 // const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
                 
+
                 await Notification.create({
                     sender: req.user.id,
                     receiver: data.userId,
                     notificationType: 'Penalty',
-                    notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on ' + data.dueDate.getMonth + " " + data.dueDate.getDay + " " + data.dueDate.getFullYear,
+                    notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on '+ notif_dueDate,
                     notificationDate: today,
                     deliveryStatus: 'Delivered',
                     notificationWebDate: formatDate
                 })
 
-                //email send
-                const emailData = {
-                    from: "tuptlibrary.dev@gmail.com",
-                    to: newBorrower.email,
-                    subject: "Penalty",
-                    html: 
-                    `
-                        <h1>Email received from TUPT Library</h1>
-                        <h3>This is to remind you ${newBorrower.name} you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
-                        <h4>${formatDate}</h4>
-                        <hr />
-                        <p>This email may contain sensitive information</p>
-                    `,
-                };
-                sendEmailWithNodemailer(req, res, emailData);
+                const userId = data.userId;
+                    const newBorrower = await User.findById(userId)
+
+                    //email send
+                    const emailData = {
+                        from: "tuptlibrary.dev@gmail.com",
+                        to: newBorrower.email,
+                        subject: "Penalty",
+                        html: 
+                        `
+                            <h1>Email received from TUPT Library</h1>
+                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
+                            <h4>${formatDate}</h4>
+                            <hr />
+                            <p>This email may contain sensitive information</p>
+                        `,
+                    };
+                    sendEmailWithNodemailer(req, res, emailData);
             }
             else if (Difference_In_Days == 0) {
                 //if the duedate is today, create a notification taht will remind user to return the book today
@@ -739,6 +746,8 @@ exports.checkPenalty = async (req, res, next) => {
                     deliveryStatus: 'Delivered',
                     notificationWebDate: formatDate
                 })
+                const userId = data.userId;
+                const newBorrower = await User.findById(userId)
 
                 //email send
                 const emailData = {
@@ -748,7 +757,7 @@ exports.checkPenalty = async (req, res, next) => {
                     html: 
                     `
                         <h1>Email received from TUPT Library</h1>
-                        <h3>This is a reminder that you have a borrowed book(s) that must be returned Today. Please return today to avoid any penalties, Thank you!
+                        <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${notif_dueDate}
                         <h4>${formatDate}</h4>
                         <hr />
                         <p>This email may contain sensitive information</p>
@@ -772,21 +781,24 @@ exports.checkPenalty = async (req, res, next) => {
                     notificationWebDate: formatDate
                 })
 
-                //email send
-                const emailData = {
-                    from: "tuptlibrary.dev@gmail.com",
-                    to: newBorrower.email,
-                    subject: "Penalty",
-                    html: 
-                    `
-                        <h1>Email received from TUPT Library</h1>
-                        <h3>This is to reminder that you have a pending penalty. Kindly check the penalty tab.
-                        <h4>${formatDate}</h4>
-                        <hr />
-                        <p>This email may contain sensitive information</p>
-                    `,
-                };
-                sendEmailWithNodemailer(req, res, emailData);
+                const userId = data.userId;
+                    const newBorrower = await User.findById(userId)
+
+                    //email send
+                    const emailData = {
+                        from: "tuptlibrary.dev@gmail.com",
+                        to: newBorrower.email,
+                        subject: "Penalty",
+                        html: 
+                        `
+                            <h1>Email received from TUPT Library</h1>
+                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
+                            <h4>${formatDate}</h4>
+                            <hr />
+                            <p>This email may contain sensitive information</p>
+                        `,
+                    };
+                    sendEmailWithNodemailer(req, res, emailData);
             }
         } else {
             //if there is existing notification for penalty, deteremine if that notification is created today or not
@@ -801,11 +813,14 @@ exports.checkPenalty = async (req, res, next) => {
                         sender: req.user.id,
                         receiver: data.userId,
                         notificationType: 'Penalty',
-                        notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on ' + data.dueDate.getMonth + " " + data.dueDate.getDay + " " + data.dueDate.getFullYear,
+                        notificationText: 'This is a reminder that you have a borrowed book(s) that must be returned on '+ notif_dueDate,
                         notificationDate: today,
                         deliveryStatus: 'Delivered',
                         notificationWebDate: formatDate
                     })
+         
+                    const userId = data.userId;
+                    const newBorrower = await User.findById(userId)
 
                     //email send
                     const emailData = {
@@ -815,7 +830,7 @@ exports.checkPenalty = async (req, res, next) => {
                         html: 
                         `
                             <h1>Email received from TUPT Library</h1>
-                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
+                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${notif_dueDate}
                             <h4>${formatDate}</h4>
                             <hr />
                             <p>This email may contain sensitive information</p>
@@ -834,6 +849,9 @@ exports.checkPenalty = async (req, res, next) => {
                         notificationWebDate: formatDate
                     })
 
+                    const userId = data.userId;
+                    const newBorrower = await User.findById(userId)
+
                     //email send
                     const emailData = {
                         from: "tuptlibrary.dev@gmail.com",
@@ -842,7 +860,7 @@ exports.checkPenalty = async (req, res, next) => {
                         html: 
                         `
                             <h1>Email received from TUPT Library</h1>
-                            <h3>This is a reminder that you have a borrowed book(s) that must be returned Today. Please return today to avoid any penalties, Thank you!
+                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
                             <h4>${formatDate}</h4>
                             <hr />
                             <p>This email may contain sensitive information</p>
@@ -861,6 +879,9 @@ exports.checkPenalty = async (req, res, next) => {
                         notificationWebDate: formatDate
                     })
 
+                    const userId = data.userId;
+                    const newBorrower = await User.findById(userId)
+
                     //email send
                     const emailData = {
                         from: "tuptlibrary.dev@gmail.com",
@@ -869,7 +890,7 @@ exports.checkPenalty = async (req, res, next) => {
                         html: 
                         `
                             <h1>Email received from TUPT Library</h1>
-                            <h3>This is to remind that you have a pending penalty. Kindly check the penalty tab.
+                            <h3>This is to reminder that you have a borrowed book(s) that must be returned on ${data.dueDate.getMonth} ${data.dueDate.getDay} ${data.dueDate.getFullYear}
                             <h4>${formatDate}</h4>
                             <hr />
                             <p>This email may contain sensitive information</p>
