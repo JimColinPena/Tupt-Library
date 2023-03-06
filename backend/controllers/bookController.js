@@ -45,11 +45,15 @@ exports.getBooks = async (req, res, next) => {
     const highestYearPub = Math.max(...formattedYearPubArr)
     console.log(highestYearPub)
 
+    const bookSubjects = await Book.distinct('subjects')
+    console.log(bookSubjects)
+
     res.status(200).json({
         success: true,
         book,
         lowestYearPub,
-        highestYearPub
+        highestYearPub,
+        bookSubjects
     })
 }
 
@@ -308,6 +312,37 @@ exports.createBookAccession = async (req, res, next) => {
     })
 }
 
+exports.updateBookAccession = async (req, res, next) => {
+    if (req.body.func == 'give') {
+        const userId = await User.findOne({id_number: req.body.tuptId}).select('_id')
+        if (!userId) {
+            return res.status(401).json({success: false, message: 'No User Found!'})
+        }
+        await Accession.findOneAndUpdate(
+            { _id: req.body.accession },
+            {
+                on_shelf: 0,
+                out: 1,
+                userId: userId
+            }
+        )
+
+    } else if (req.body.func == 'retrieve') {
+        await Accession.findOneAndUpdate(
+            { _id: req.body.accession },
+            {
+                on_shelf: 1,
+                out: 0,
+                userId: null
+            }
+        )
+    }
+
+    res.status(200).json({
+        success: true,
+        // accessions
+    })
+}
 
 exports.singleBookAccession = async (req, res, next) => {
     const getbook_accessions = await Book.findById(req.params.id).populate({
@@ -316,10 +351,13 @@ exports.singleBookAccession = async (req, res, next) => {
 
     const bookAccessions = getbook_accessions.accession_numbers
 
+    const bookDetails = await Book.findById(req.params.id).select('title -_id')
+
 
     res.status(200).json({
         success: true,
-        bookAccessions
+        bookAccessions,
+        bookDetails
     })
 }
 

@@ -27,6 +27,11 @@ import {
     ADD_BOOK_ACCESSION_RESET,
     ADD_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_BOOK_REQUEST,
+    ACCESSION_BOOK_SUCCESS,
+    ACCESSION_BOOK_FAIL,
+    ACCESSION_BOOK_RESET,
+
     ACCESSION_DETAILS_REQUEST,
     ACCESSION_DETAILS_SUCCESS,
     ACCESSION_DETAILS_FAIL,
@@ -217,7 +222,7 @@ export const addBookAccessionReducer = (state = { accession: {} }, action) => {
         case ADD_BOOK_ACCESSION_FAIL:
             return {
                 ...state,
-                error: action.payload
+                add_book_error: action.payload
             }
 
         case ADD_BOOK_ACCESSION_RESET:
@@ -229,7 +234,42 @@ export const addBookAccessionReducer = (state = { accession: {} }, action) => {
         case CLEAR_ERRORS:
             return {
                 ...state,
-                error: null
+                add_book_error: null
+            }
+
+        default:
+            return state
+    }
+}
+
+export const bookAccessionReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case ACCESSION_BOOK_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case ACCESSION_BOOK_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                bookAccession: action.payload
+            }
+        case ACCESSION_BOOK_FAIL:
+            return {
+                ...state,
+                accession_book_error: action.payload
+            }
+        case ACCESSION_BOOK_RESET:
+            return {
+                ...state,
+                bookAccession: false
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                accession_book_error: null
             }
 
         default:
@@ -291,7 +331,7 @@ export const accessionReducer = (state = {}, action) => {
         case EDIT_BOOK_ACCESSION_FAIL:
             return {
                 ...state,
-                error: action.payload
+                accession_error: action.payload
             }
         case DELETE_BOOK_ACCESSION_RESET:
             return {
@@ -306,7 +346,7 @@ export const accessionReducer = (state = {}, action) => {
         case CLEAR_ERRORS:
             return {
                 ...state,
-                error: null
+                accession_error: null
             }
         default:
             return state

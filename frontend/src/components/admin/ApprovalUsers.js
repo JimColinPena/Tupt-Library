@@ -339,7 +339,7 @@ const PersonnelManagement = () => {
                         <div className="">
                             <h1 className="text-center">Approval of Users
                             </h1>
-                            {loading ? <Loader /> : (
+                            {loading || loading === undefined ? <Loader /> : (
                                 <MDBDataTable
                                     data={setInactiveStudents()}
                                     className="px-3"

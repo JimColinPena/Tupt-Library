@@ -11,7 +11,7 @@ const UserDashboard = () => {
 
     return (
         <Fragment>
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
                     <div className="management-content">
                         {(user.course === undefined | null) ?

@@ -45,7 +45,7 @@ const AdminDashboard = () => {
     return (
         <Fragment>
             {/* <Loader /> */}
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
                     <div className="dashboard_header"><h1 className="overview">Dashboard</h1></div>
                     {/* <hr className='dashboard_hr'/> */}

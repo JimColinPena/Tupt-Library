@@ -27,15 +27,18 @@ const BookSearch = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const newYearStart = studentbooks.lowestYearPub;
-    const newYearEnd = studentbooks.highestYearPub;
+    // const newYearStart = studentbooks.lowestYearPub;
+    // const newYearEnd = studentbooks.highestYearPub;
 
-    console.log(newYearStart)
-    console.log(newYearEnd)
+    // console.log(newYearStart)
+    // console.log(newYearEnd)
 
-    const [yearPubStart, setyearPubStart] = useState(newYearStart);
-    const [yearPubEnd, setyearPubEnd] = useState(newYearEnd);
+    const subjectArr = studentbooks.bookSubjects
+
+    const [yearPubStart, setyearPubStart] = useState(0);
+    const [yearPubEnd, setyearPubEnd] = useState(3000);
     const [new_yearValue, setnew_yearValue] = useState([yearPubStart, yearPubEnd]);
+    const [subjectFilter, setSubjectFilter] = useState('');
 
     console.log(yearPubStart)
     console.log(yearPubEnd)
@@ -43,14 +46,14 @@ const BookSearch = () => {
     const defaultMaterialTheme = createTheme({});
 
     useEffect(() => {
-        dispatch(allStudentBooks(new_yearValue));
+        dispatch(allStudentBooks(new_yearValue, subjectFilter));
 
         if (error) {
             alert.error(error);
             dispatch(clearErrors())
         }
 
-    }, [dispatch, new_yearValue, alert, error, navigate])
+    }, [dispatch, new_yearValue, subjectFilter, alert, error, navigate])
 
     const filterYearPub = (e) => {
         setyearPubStart(yearPubStart)
@@ -61,10 +64,11 @@ const BookSearch = () => {
       };
     
       const clearYearPub = (e) => {
-        setyearPubStart(newYearStart)
-        setyearPubEnd(newYearEnd)
+        setyearPubStart(studentbooks.lowestYearPub)
+        setyearPubEnd(studentbooks.highestYearPub)
 
         setnew_yearValue([yearPubStart, yearPubEnd])
+        setSubjectFilter('')
         console.log(new_yearValue)
       };
 
@@ -91,7 +95,7 @@ const BookSearch = () => {
                 <Fragment>
                 <div>
                     {
-                        <Link to={`/admin/single/book/${rowData._id}`}>{rowData.title} </Link>
+                        <Link to={`/book/${rowData._id}`}>{rowData.title} </Link>
                     }
 
                     </div>
@@ -142,7 +146,7 @@ const BookSearch = () => {
         <Fragment>
             <MetaData title={'Books'} />
             <SideNavbarUser />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <Fragment>                                  
                     <div className="management-content">
                         {(user.course === undefined | null) ?
@@ -167,8 +171,31 @@ const BookSearch = () => {
 
                                 <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{display: 'block', margin: '0 auto', marginLeft: '0px'}}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
                     </div>
+                    
+                                    <div>
+                                        <h4 className='text-center'>Filter by Subject</h4>
+                                        <div className='row'>
+                                            {studentbooks.bookSubjects && studentbooks.bookSubjects.length > 0 ? (
 
-                        {loading ? <Loader /> : (
+                                                subjectArr.map((subject) => {
+                                                    return (
+                                                        <div className='col-sm-2' key={subject}>
+                                                            {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                            {/* {console.log(subjectFilter)} */}
+
+                                                            <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                            {/* {console.log(subjectFilter)} */}
+                                                        </div>
+                                                    )
+                                                })
+
+                                            ) : (
+                                                <li>Subject not Found</li>
+                                            )}
+                                        </div>
+                                    </div>
+
+                        {loading || loading === undefined ? <Loader /> : (
                         <ThemeProvider theme={defaultMaterialTheme}>
                             <MaterialTable
                                 title='Books List'

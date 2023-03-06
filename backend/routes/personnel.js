@@ -16,7 +16,7 @@ const {
 	acceptAppointment,
 	declineAppointment,
 	getBorrowedBoooks,
-	getAccession,
+	// getAccession,
 	updateAccession,
 	returnBook,
 	declineBook,

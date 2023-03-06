@@ -1060,12 +1060,12 @@ ul.form-stepper li a .form-stepper-circle {
     margin-bottom: 1em;
 } */
 
-.active{
+.active {
     background-color: var(--color-dark);
     color: var(--color-light);
 }
 
-.profile-leaderboards .flex{
+.profile-leaderboards .flex {
     display: flex;
     justify-content: space-between;
     gap: 1em;
@@ -1073,12 +1073,12 @@ ul.form-stepper li a .form-stepper-circle {
     /* margin-bottom: 2em; */
 }
 
-.profile-leaderboards .flex .item{
+.profile-leaderboards .flex .item {
     display: flex;
     align-items: center;
 }
 
-.profile-leaderboards-img{
+.profile-leaderboards-img {
     width: 80px;
     min-height: 80px;
     max-height: auto;
@@ -1087,17 +1087,17 @@ ul.form-stepper li a .form-stepper-circle {
     padding: 3px;
 }
 
-.profile-leaderboards .flex img{
+.profile-leaderboards .flex img {
     max-width: 100%;
     height: auto;
     border-radius: 50%;
 }
 
-.profile-leaderboards .flex .info{
-   padding: 1em;
+.profile-leaderboards .flex .info {
+    padding: 1em;
 }
 
-.text-dark{
+.text-dark {
     color: var(--color-dark);
     font-size: medium;
     max-width: 500px;
@@ -1106,16 +1106,17 @@ ul.form-stepper li a .form-stepper-circle {
     white-space: nowrap;
 }
 
-.endterm{
+.endterm {
     position: relative;
     left: 45%;
     margin-top: 30px;
 }
 
-.reason{
+.reason {
     font-weight: 900;
     color: red;
 }
+
 /* .accessionButton {
     background: none;
 	color: inherit;
@@ -1125,3 +1126,261 @@ ul.form-stepper li a .form-stepper-circle {
 	cursor: pointer;
 	outline: inherit;
 } */
+
+/* STUDENT EVALUATION  */
+
+
+.evaluation-ul {
+    list-style-type: none;
+    border: 2px solid black;
+    border-top: none;
+    grid-row: 1/2;
+    margin-right: -1.7px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.evaluation-ul li {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.evaluation-ul li:not(:last-child) {
+    border-bottom: 2px solid black;
+}
+
+.evaluation-container {
+    margin: 50px auto;
+    width: 800px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.rating-shit {
+    display: grid;
+    grid-template-columns: repeat(5, 90px);
+    grid-template-rows: repeat(18, 40px);
+}
+
+.rating {
+    grid-column: 1/-1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    margin-bottom: 0;
+}
+
+.rating-shit {
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.rating-numbers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    line-height: normal;
+}
+
+.rating-numbers {
+    border-right: none;
+    /* border-bottom: none; */
+}
+
+.rating-numbers span {
+    grid-column: 1/2;
+    text-align: center;
+}
+
+.five {
+    grid-column: 1/2;
+    border-left: none;
+}
+
+.four {
+    grid-column: 2/3;
+}
+
+.three {
+    grid-column: 3/4;
+}
+
+.two {
+    grid-column: 4/5;
+}
+
+.one {
+    grid-column: 5/6;
+}
+
+.descriptions {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 2px solid black;
+    /* border-right: none; */
+}
+
+.gagotalaga {
+    display: grid;
+    grid-template-columns: repeat(5, 90px);
+    grid-column: 2/3;
+    grid-row: 4/5;
+}
+
+.radiogaga {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    border-bottom: none;
+    border-left: none;
+    margin-top: -1.6px
+}
+
+.radiogaga li:last-child {
+    border-right: none;
+}
+
+.pota1,
+.pota2,
+.pota3,
+.pota4,
+.pota5 {
+    grid-row: 4/5;
+}
+
+.pota2 {
+    grid-column: 2/3;
+}
+
+.pota6,
+.pota7,
+.pota8,
+.pota9,
+.pota10 {
+    grid-row: 5/6;
+}
+
+.pota11,
+.pota12,
+.pota13,
+.pota14,
+.pota15 {
+    grid-row: 6/7;
+    border-bottom: 2px solid black;
+}
+
+.pota16,
+.pota17,
+.pota18,
+.pota19,
+.pota20 {
+    grid-row: 8/9;
+}
+
+.pota21,
+.pota22,
+.pota23,
+.pota24,
+.pota25 {
+    grid-row: 9/10;
+}
+
+.pota26,
+.pota27,
+.pota28,
+.pota29,
+.pota30 {
+    grid-row: 10/11;
+    border-bottom: 2px solid black;
+}
+
+.pota31,
+.pota32,
+.pota33,
+.pota34,
+.pota35 {
+    grid-row: 12/13;
+}
+
+.pota36,
+.pota37,
+.pota38,
+.pota39,
+.pota40 {
+    grid-row: 13/14;
+}
+
+.pota41,
+.pota42,
+.pota43,
+.pota44,
+.pota45 {
+    grid-row: 14/15;
+}
+
+.pota46,
+.pota47,
+.pota48,
+.pota49,
+.pota50 {
+    grid-row: 15/16;
+    border-bottom: 2px solid black;
+}
+
+.pota51,
+.pota52,
+.pota53,
+.pota54,
+.pota55 {
+    grid-row: 17/18;
+}
+
+.pota56,
+.pota57,
+.pota58,
+.pota59,
+.pota60 {
+    grid-row: 18/19;
+}
+
+.pota5,
+.pota10,
+.pota15,
+.pota20,
+.pota25,
+.pota30,
+.pota35,
+.pota40,
+.pota45,
+.pota50,
+.pota55,
+.pota60 {
+    border-right: none;
+}
+
+
+input[type='radio'] {
+    width: 13px;
+    height: 13px;
+}
+
+.evaluation_btn {
+    float: right;
+}
+
+
+/* END STUDENT EVALUATION  */

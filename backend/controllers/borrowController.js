@@ -123,6 +123,7 @@ exports.cancelBorrowBook = async (req, res, next) => {
 };
 
 exports.confirmBorrowBook = async (req, res, next) => {
+    // console.log(req.body.appointmentDate, req.body.dueDate)
 
     const borrowbook = await Borrow.updateOne(
         { userId: req.body.userId },

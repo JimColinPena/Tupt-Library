@@ -18,7 +18,7 @@ router.route('/books').get(isAuthenticatedUser, getStudentBooks);
 router.route('/book/:id').get(getSingleStudentBook);
 router.route('/borrow/request').get(isAuthenticatedUser, getStudentBorrowBook);
 router.route('/borrow/books').get(isAuthenticatedUser, getStudentAppointmentBook);
-router.route('/penalty').get(isAuthenticatedUser, studentPenalty);
+router.route('/profile/penalty').get(isAuthenticatedUser, studentPenalty);
 
 
 module.exports = router;

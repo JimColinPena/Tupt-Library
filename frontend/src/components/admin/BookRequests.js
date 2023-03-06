@@ -21,50 +21,50 @@ const Appointments = () => {
     let navigate = useNavigate();
 
     const { isDeclined } = useSelector(state => state.declineBorrower)
-	const { isAccepted } = useSelector(state => state.acceptBorrower)
+    const { isAccepted } = useSelector(state => state.acceptBorrower)
 
-	const { loading, error, borrowers } = useSelector(state => state.allBorrow);
+    const { loading, error, borrowers } = useSelector(state => state.allBorrow);
 
-	const declinedHandler = (id) => {
-		dispatch(declineBorrow(id))
-	}
+    const declinedHandler = (id) => {
+        dispatch(declineBorrow(id))
+    }
 
-	const acceptedHandler = (id) => {
-		dispatch(acceptBorrow(id))
-	}
+    const acceptedHandler = (id) => {
+        dispatch(acceptBorrow(id))
+    }
 
     const defaultMaterialTheme = createTheme({});
 
     useEffect(() => {
-		dispatch(allBorrow());
+        dispatch(allBorrow());
 
-		if (error) {
-			alert.error(error);
-			dispatch(clearErrors())
-		}
-		if (isDeclined) {
-			alert.success('Appointment Declined');
-			navigate('/appointments');
-			dispatch({ type: DECLINE_BORROW_RESET })
-		}
-		if (isAccepted) {
-			alert.success('Appointment Accepted');
-			navigate('/appointments');
-			dispatch({ type: ACCEPT_BORROW_RESET })
-		}
+        if (error) {
+            alert.error(error);
+            dispatch(clearErrors())
+        }
+        if (isDeclined) {
+            alert.success('Appointment Declined');
+            navigate('/appointments');
+            dispatch({ type: DECLINE_BORROW_RESET })
+        }
+        if (isAccepted) {
+            alert.success('Appointment Accepted');
+            navigate('/appointments');
+            dispatch({ type: ACCEPT_BORROW_RESET })
+        }
 
-	}, [dispatch, alert, error, navigate, isDeclined, isAccepted])
+    }, [dispatch, alert, error, navigate, isDeclined, isAccepted])
 
     const col = [
         {
             title: 'Name',
             field: 'userId.name',
-			render: rowData => (
-						<Fragment>
-							<div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
-						</Fragment>
-              ),
-              cellStyle: {
+            render: rowData => (
+                <Fragment>
+                    <div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
+                </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left"
             }
         },
@@ -72,29 +72,42 @@ const Appointments = () => {
             title: 'Book',
             field: 'bookId.title',
             // width: '10%',
-			render: rowData => (
-				rowData.bookId.map((item, index) => (
-					<Fragment>
-							<div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
-					</Fragment>
-				))
-	  ),
-      cellStyle: {
-        textAlign: "left"
-    }
+            render: rowData => (
+                rowData.bookId.map((item, index) => (
+                    <Fragment>
+                        <div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
+                    </Fragment>
+                ))
+            ),
+            cellStyle: {
+                textAlign: "left"
+            }
         },
         {
             title: 'Appointment',
             field: 'borrower_appointment',
             // width: '20%',
-			render: rowData => (
-				<Fragment>
-					<div><p>{dateFormat(rowData.appointmentDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
-				</Fragment>
-	  ),
-      cellStyle: {
-        textAlign: "left"
-    }
+            render: rowData => (
+                <Fragment>
+                    <div><p>{dateFormat(rowData.appointmentDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
+                </Fragment>
+            ),
+            cellStyle: {
+                textAlign: "left"
+            }
+        },
+        {
+            title: 'Due Date',
+            field: 'borrower_dueDate',
+            // width: '20%',
+            render: rowData => (
+                <Fragment>
+                    <div><p>{dateFormat(rowData.dueDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
+                </Fragment>
+            ),
+            cellStyle: {
+                textAlign: "left"
+            }
         },
         {
             title: 'Status',
@@ -112,28 +125,28 @@ const Appointments = () => {
                 <Fragment>
                     {/* <div className="icon-buttons"> */}
                     <Tooltip title="Accept">
-					<button className="btn btn-success py-1 px-2 ml-2 fa-regular fa-circle-check fa-2x" onClick={() => acceptedHandler(rowData._id)}>
-					</button>
+                        <button className="btn btn-success py-1 px-2 ml-2 fa-regular fa-circle-check fa-2x" onClick={() => acceptedHandler(rowData._id)}>
+                        </button>
                     </Tooltip>
 
                     <Tooltip title="Decline">
-					<button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" onClick={() => declinedHandler(rowData._id)}>
-					</button>
+                        <button className="btn btn-danger py-1 px-2 ml-2 fa-regular fa-circle-xmark fa-2x" onClick={() => declinedHandler(rowData._id)}>
+                        </button>
                     </Tooltip>
                     {/* </div> */}
-                    </Fragment>
-              ),
-              searchable: false,
-              cellStyle: {
+                </Fragment>
+            ),
+            searchable: false,
+            cellStyle: {
                 textAlign: "left",
             },
             headerStyle: {
                 textAlign: 'center'
             }
         },
-        
+
     ]
-      
+
     return (
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
@@ -145,38 +158,38 @@ const Appointments = () => {
                     <div className="management-body">
 
                         {loading ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Book Requests'
-                                data={borrowers}
-                                columns={col}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'Name...' 
-                                        } 
+                            <ThemeProvider theme={defaultMaterialTheme}>
+                                <MaterialTable
+                                    title='Book Requests'
+                                    data={borrowers}
+                                    columns={col}
+                                    localization={
+                                        {
+                                            toolbar: {
+                                                searchPlaceholder: 'Name...'
+                                            }
+                                        }
                                     }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false
-                                  }}
-                            />
+                                    options={{
+                                        pageSize: 10,
+                                        headerStyle: {
+                                            fontSize: 16,
+                                            fontWeight: 'bold',
+                                            backgroundColor: '#BA0202',
+                                            color: '#ffffff',
+                                        },
+                                        rowStyle: {
+                                            fontSize: 15,
+                                            backgroundColor: '#F9F5F5',
+                                        },
+                                        emptyRowsWhenPaging: false
+                                    }}
+                                />
                             </ThemeProvider>
                         )}
                     </div>
                 </div>
-          )}
+            )}
         </Fragment>
     )
 }

@@ -23,23 +23,18 @@ const BookManagement = () => {
     const { loading, error, books } = useSelector(state => state.allBooks);
     const { isDeleted } = useSelector(state => state.book)
 
-    const newYearStart = books.lowestYearPub;
-    const newYearEnd = books.highestYearPub;
+    const subjectArr = books.bookSubjects
 
-    console.log(newYearStart)
-    console.log(newYearEnd)
+    const [yearPubStart, setyearPubStart] = useState(0);
+    const [yearPubEnd, setyearPubEnd] = useState(3000);
 
-    const [yearPubStart, setyearPubStart] = useState(newYearStart);
-    const [yearPubEnd, setyearPubEnd] = useState(newYearEnd);
     const [new_yearValue, setnew_yearValue] = useState([yearPubStart, yearPubEnd]);
-
-    console.log(yearPubStart)
-    console.log(yearPubEnd)
+    const [subjectFilter, setSubjectFilter] = useState('');
 
     const defaultMaterialTheme = createTheme({});
 
     useEffect(() => {
-        dispatch(allBooks(new_yearValue));
+        dispatch(allBooks(new_yearValue, subjectFilter))
 
         if (error) {
             alert.error(error);
@@ -52,7 +47,10 @@ const BookManagement = () => {
             dispatch({ type: DELETE_BOOK_RESET })
         }
 
-    }, [dispatch, new_yearValue, alert, error, isDeleted, navigate])
+    }, [dispatch, alert, error, navigate, new_yearValue, subjectFilter, isDeleted])
+
+    // setyearPubStart({ ...books.lowestYearPub })
+    // setyearPubEnd({ ...books.highestYearPub })
 
     const deleteBookHandler = (id) => {
         dispatch(deleteBook(id))
@@ -64,27 +62,29 @@ const BookManagement = () => {
 
         setnew_yearValue([yearPubStart, yearPubEnd])
         console.log(new_yearValue)
-      };
-    
-      const clearYearPub = (e) => {
-        setyearPubStart(newYearStart)
-        setyearPubEnd(newYearEnd)
+        // dispatch(allBooks(new_yearValue));
+    };
+
+    const clearYearPub = (e) => {
+        setyearPubStart(books.lowestYearPub)
+        setyearPubEnd(books.highestYearPub)
 
         setnew_yearValue([yearPubStart, yearPubEnd])
-        console.log(new_yearValue)
-      };
-    
+        setSubjectFilter('')
+        // console.log(new_yearValue)
+    };
+
     const col = [
         {
             title: 'Call Number',
             field: 'call_number',
             searchable: false,
             render: rowData => (
-                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div>:
-                (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div>:
-                (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div>:
-                (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div>:
-                <div><p>{"N/A " + rowData.call_number}</p></div>
+                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
+                    (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
+                        (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
+                            (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
+                                <div><p>{"N/A " + rowData.call_number}</p></div>
             ),
             cellStyle: {
                 textAlign: "left",
@@ -95,15 +95,15 @@ const BookManagement = () => {
             field: 'title',
             render: rowData => (
                 <Fragment>
-                <div>
-                    {
-                        <Link to={`/admin/single/book/${rowData._id}`}>{rowData.title} </Link>
-                    }
+                    <div>
+                        {
+                            <Link to={`/admin/single/book/${rowData._id}`}>{rowData.title} </Link>
+                        }
 
                     </div>
-                    </Fragment>
-              ),
-              cellStyle: {
+                </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left",
             },
         },
@@ -112,18 +112,18 @@ const BookManagement = () => {
             field: 'main_author',
             render: rowData => (
                 <Fragment>
-                <div><p>{rowData.main_author}</p></div>
+                    <div><p>{rowData.main_author}</p></div>
                 </Fragment>
-              ),
-              cellStyle: {
+            ),
+            cellStyle: {
                 textAlign: "left",
             },
-            
+
         },
         {
-            title: 'Year Pub',
+            title: 'Year',
             field: 'yearPub',
-            emptyValue:()=><em>null</em>,
+            emptyValue: () => <em>null</em>,
             cellStyle: {
                 textAlign: "left",
             },
@@ -134,11 +134,14 @@ const BookManagement = () => {
             // emptyValue:()=><em>null</em>,
             render: rowData => (
                 (rowData.subjects === null || rowData.subjects === undefined) ? <em>null</em> :
-                <Fragment>
-                <div>{rowData.subjects.map((item) => (<p>{item}</p>)) }</div>
-                </Fragment>
-              ),
-              cellStyle: {
+                    <Fragment>
+                        <div>{rowData.subjects.map((item) => (
+                            // <Link to={`/book/category/${item}`}>{item} </Link>
+                            <p>{item}</p>
+                        ))}</div>
+                    </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left",
             },
         },
@@ -147,7 +150,7 @@ const BookManagement = () => {
             field: 'copy',
             searchable: false,
             width: '50',
-            emptyValue:()=><em>null</em>,
+            emptyValue: () => <em>null</em>,
             cellStyle: {
                 textAlign: "left",
             },
@@ -157,7 +160,7 @@ const BookManagement = () => {
             field: 'on_shelf',
             searchable: false,
             width: '50',
-            emptyValue:()=><em>null</em>,
+            emptyValue: () => <em>null</em>,
             cellStyle: {
                 textAlign: "left",
             },
@@ -167,7 +170,7 @@ const BookManagement = () => {
             field: 'out',
             searchable: false,
             width: '50',
-            emptyValue:()=><em>null</em>,
+            emptyValue: () => <em>null</em>,
             cellStyle: {
                 textAlign: "left",
             },
@@ -178,15 +181,15 @@ const BookManagement = () => {
             searchable: false,
             render: rowData => (
                 <Fragment>
-                <div className="icon-buttons">
-                        <Link to={`/book/single/accession/${rowData._id}`} className="btn btn-info py-1 px-2">
+                    <div className="icon-buttons">
+                        <Link to={`/accession/detail/${rowData._id}`} className="btn btn-info py-1 px-2">
                             View Details
                         </Link>
                     </div>
-                    </Fragment>
-              ),
-              searchable: false,
-              cellStyle: {
+                </Fragment>
+            ),
+            searchable: false,
+            cellStyle: {
                 textAlign: "left",
             },
             headerStyle: {
@@ -199,19 +202,19 @@ const BookManagement = () => {
             render: rowData => (
                 <Fragment>
                     <div className="icon-buttons">
-                    <Tooltip title="Edit">
-                        <Link to={`/admin/book/${rowData._id}`} className="btn btn-warning py-1 px-2">
-                            <i className="fa fa-pencil"></i>
-                        </Link>
-                    </Tooltip>
+                        <Tooltip className="" title="Edit">
+                            <Link to={`/admin/book/${rowData._id}`} className="btn btn-warning py-1 px-2">
+                                <i className="fa fa-pencil"></i>
+                            </Link>
+                        </Tooltip>
 
-                    <Tooltip title="Delete">
-                        <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteBookModal" + rowData._id}>
-                            <i className="fa fa-trash"></i>
-                        </button>
-                    </Tooltip>
+                        <Tooltip className="" title="Delete">
+                            <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteBookModal" + rowData._id}>
+                                <i className="fa fa-trash"></i>
+                            </button>
+                        </Tooltip>
                     </div>
-                    
+
                     <div className="modal fade" data-backdrop="false" id={"DeleteBookModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
@@ -231,17 +234,17 @@ const BookManagement = () => {
                             </div>
                         </div>
                     </div>
-                    </Fragment>
-              ),
-              searchable: false,
-              headerStyle: {
+                </Fragment>
+            ),
+            searchable: false,
+            headerStyle: {
                 textAlign: 'center'
             }
         },
-        
-        
+
+
     ]
-      
+
     return (
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
@@ -254,54 +257,77 @@ const BookManagement = () => {
                         </Link>
                     </h1>
                     <div className="management-body">
-                    <h4 className='text-center'>Year Published</h4>
-                    <div className='row' style={{marginBottom: 10}}>
-                                <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto',marginRight: '20px'}}/>
+                        <h4 className='text-center'>Year Published</h4>
+                        <div className='row' style={{ marginBottom: 10 }}>
+                            <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '20px' }} />
 
-                                    <span style={{paddingTop: '1em'}}>&#8212;</span>
-                                    
-                                <TextField id="yearEnd" label="End Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto', marginLeft: '20px'}}/>
-                    </div>
+                            <span style={{ paddingTop: '1em' }}>&#8212;</span>
 
-                    <div className='row' style={{marginBottom: 10}}>
-                                <button type="button" className="btn btn-primary col-md-1" onClick={filterYearPub} style={{display: 'block', margin: '0 auto',marginRight: '0px'}}>Filter  <i class="fa-solid fa-filter"></i></button>
+                            <TextField id="yearEnd" label="End Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '20px' }} />
+                        </div>
 
-                                <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{display: 'block', margin: '0 auto', marginLeft: '0px'}}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
-                    </div>
+                        <div className='row' style={{ marginBottom: 10 }}>
+                            <button type="button" className="btn btn-primary col-md-1" onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '0px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
+
+                            <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '0px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                        </div>
+
+                        <div>
+                            <h4 className='text-center'>Filter by Subject</h4>
+                            <div className='row'>
+                                {books.bookSubjects && books.bookSubjects.length > 0 ? (
+
+                                    subjectArr.map((subject) => {
+                                        return (
+                                            <div className='col-sm-2' key={subject}>
+                                                {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                {/* {console.log(subjectFilter)} */}
+
+                                                <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                {/* {console.log(subjectFilter)} */}
+                                            </div>
+                                        )
+                                    })
+
+                                ) : (
+                                    <li>Subject not Found</li>
+                                )}
+                            </div>
+                        </div>
 
                         {loading ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Books List'
-                                data={books.book}
-                                columns={col}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'Book,Year,Author,Subject...' 
-                                        } 
+                            <ThemeProvider theme={defaultMaterialTheme}>
+                                <MaterialTable
+                                    title='Books List'
+                                    data={books.book}
+                                    columns={col}
+                                    localization={
+                                        {
+                                            toolbar: {
+                                                searchPlaceholder: 'Book,Year,Author,Subject...'
+                                            }
+                                        }
                                     }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false
-                                  }}
-                            />
+                                    options={{
+                                        pageSize: 10,
+                                        headerStyle: {
+                                            fontSize: 16,
+                                            fontWeight: 'bold',
+                                            backgroundColor: '#BA0202',
+                                            color: '#ffffff',
+                                        },
+                                        rowStyle: {
+                                            fontSize: 15,
+                                            backgroundColor: '#F9F5F5',
+                                        },
+                                        emptyRowsWhenPaging: false
+                                    }}
+                                />
                             </ThemeProvider>
                         )}
                     </div>
                 </div>
-          )}
+            )}
         </Fragment>
     )
 }

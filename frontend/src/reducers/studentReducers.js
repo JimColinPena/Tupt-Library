@@ -24,6 +24,10 @@ import {
     APPOINTMENTBOOK_SUCCESS,
     APPOINTMENTBOOK_FAIL,
 
+    PENALTYSLIP_REQUEST,
+    PENALTYSLIP_SUCCESS,
+    PENALTYSLIP_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/studentConstants'
 
@@ -204,6 +208,39 @@ export const allStudentAppointmentBookReducer = (state = { studentappointmentboo
             }
 
         case APPOINTMENTBOOK_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const penaltySlipReducer = (state = { penalty: {} }, action) => {
+    switch (action.type) {
+
+        case PENALTYSLIP_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case PENALTYSLIP_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                penalty: action.payload
+            }
+
+        case PENALTYSLIP_FAIL:
             return {
                 ...state,
                 loading: false,

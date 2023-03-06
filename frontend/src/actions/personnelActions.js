@@ -486,7 +486,7 @@ export const allReturned = () => async (dispatch) => {
     }
 }
 
-export const borrowedAccession = (accessionData) => async (dispatch) => {
+export const borrowedAcc = (accessionData) => async (dispatch) => {
     try {
 
         dispatch({ type: ACCESSION_BORROWED_REQUEST })

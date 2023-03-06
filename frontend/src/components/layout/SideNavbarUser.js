@@ -50,11 +50,12 @@ const SideNavbarUser = () => {
                                 </li>
                                 <li>
                                     <Link to={"/notification/"+user._id} onClick={() => seenHandler(notification._id)} className="sidenav-links">
-                                        <h5>{notification}</h5>
+                                        {/* <h5>{notification}</h5> */}
                                         <span className="material-symbols-rounded">
                                             mark_email_unread
                                         </span>
                                         Notifications
+                                        <span className='badge badge-light'>{notification}</span>
                                     </Link>
                                 </li>
                                 <li>
@@ -91,7 +92,7 @@ const SideNavbarUser = () => {
                                 </li>
 
                                 <li>
-                                    <Link to="/" className="sidenav-links">
+                                    <Link to="/profile/penalty" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             account_balance_wallet
                                         </span>
@@ -99,14 +100,14 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
 
-                                <li>
+                                {/* <li>
                                     <Link to="/student/evaluation" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             account_balance_wallet
                                         </span>
                                         Evaluation
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                         <div className="profile">

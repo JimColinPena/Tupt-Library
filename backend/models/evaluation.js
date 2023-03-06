@@ -1,60 +1,326 @@
 const mongoose = require('mongoose')
 
 const evaluationSchema = new mongoose.Schema({
+    school_year: {
+        type: String
+    },
+    status: {
+        type: String,
+        enum: {
+            values: ['Active', 'Not Active'],
+            message: 'There is error on proccessing this input for Evaluation Model "status" Element'
+        }
+    },
     ia: {
         type: Boolean,
-        required: true,
+        // required: true,
     },
     dv: {
         type: Date,
     },
     tr: {
         type: String,
+        enum: {
+            values: ['Student'],
+            message: 'There is error on proccessing this input for Evaluation Model "tr" Element'
+        }
     },
     yl: {
-        type: String,
+        first_year: {
+            type: Number,
+        },
+        second_year: {
+            type: Number,
+        },
+        third_year: {
+            type: Number,
+        },
+        fourth_year: {
+            type: Number,
+        }
     },
     course: {
-        type: String,
+        BETAT: {
+            type: Number,
+        },
+        BETChT: {
+            type: Number,
+        },
+        BETCT: {
+            type: Number,
+        },
+        BETET: {
+            type: Number,
+        },
+        BETEMT: {
+            type: Number,
+        },
+        BETElxT: {
+            type: Number,
+        },
+        BETInCT: {
+            type: Number,
+        },
+        BETMT: {
+            type: Number,
+        },
+        BETMecT: {
+            type: Number,
+        },
+        BETNDTT: {
+            type: Number,
+        },
+        BETDMT: {
+            type: Number,
+        },
+        BETHVACRT: {
+            type: Number,
+        },
+        BSCESEP: {
+            type: Number,
+        },
+        BSEESEP: {
+            type: Number,
+        },
+        BSECESEP: {
+            type: Number,
+        },
+        BSMESEP: {
+            type: Number,
+        },
+        BSIT: {
+            type: Number,
+        },
+        BSIS: {
+            type: Number,
+        },
+        BSESSDP: {
+            type: Number,
+        },
+        BGTAT: {
+            type: Number,
+        },
+        BTVTEdET: {
+            type: Number,
+        },
+        BTVTEdLXt: {
+            type: Number,
+        },
+        BTVTEdICT: {
+            type: Number,
+        }
     },
     gender: {
-        type: String,
+        male: {
+            type: Number,
+        },
+        female: {
+            type: Number,
+        }
     },
     sra: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     lav: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     clean: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     ho: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     brb: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     opac: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     bc: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     pc: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     tps: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     er: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     skaq: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
     css: {
-        type: String,
+        excellent: {
+            type: Number,
+        },
+        good: {
+            type: Number,
+        },
+        average: {
+            type: Number,
+        },
+        poor: {
+            type: Number,
+        },
+        very_poor: {
+            type: Number,
+        }
     },
 
 })

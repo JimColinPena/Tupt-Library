@@ -5,6 +5,7 @@ const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const Book = require('../models/book');
 const Borrow = require('../models/borrow');
 const User = require('../models/user');
+const Penalty = require('../models/penalty');
 
 exports.getStudentDetails = async (req, res, next) => {
     const student = await User.findById(req.params.id);
@@ -72,11 +73,16 @@ exports.getStudentBooks = async (req, res, next) => {
     const highestYearPub = Math.max(...formattedYearPubArr)
     console.log(highestYearPub)
 
+    const bookSubjects = await Book.distinct('subjects')
+
+    console.log(bookSubjects)
+
     res.status(200).json({
         success: true,
         studentbook,
         lowestYearPub,
-        highestYearPub
+        highestYearPub,
+        bookSubjects
     })
 }
 
@@ -129,10 +135,10 @@ exports.getStudentAppointmentBook = async (req, res, next) => {
 }
 
 exports.studentPenalty = async (req, res, next) => {
-    const penalty = await Penalty.find({userId: req.user.id}).populate({path: 'userId'});
+    const penalties = await Penalty.findOne({userId: req.user.id}).populate({path: 'userId'});
 
     res.status(200).json({
         success: true,
-        penalty
+        penalties
     })
 }

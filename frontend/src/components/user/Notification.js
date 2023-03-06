@@ -68,7 +68,7 @@ const Notification = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - User'} />
             <SideNavbarUser />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <div className="management-content">
                     {/* <button onClick={buttonClick} className="button">
                         Hello world.

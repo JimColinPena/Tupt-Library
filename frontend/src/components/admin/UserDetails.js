@@ -33,7 +33,7 @@ const UserDetails = () => {
                         {userdetail.returnedBooks && userdetail.returnedBooks.map(data => (
                             // console.log(data)
                             <Fragment>
-                                <h1>Date Returned: {data.returnedDate}</h1>
+                                <h1>Date Returned: {data.returnedDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</h1>
                                 <div>
                                     {data.bookId.map(datanew => (
                                         <h3>{datanew.title}</h3>

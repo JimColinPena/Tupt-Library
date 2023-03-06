@@ -9,6 +9,7 @@ import {
 	bookDetailsReducer,
 	bookReducer,
 	addBookAccessionReducer,
+	bookAccessionReducer,
 	accessionDetailsReducer,
 	accessionReducer,
 } from './reducers/bookReducers'
@@ -53,6 +54,7 @@ import {
 	studentBookDetailsReducer,
 	allStudentBorrowBookReducer,
 	allStudentAppointmentBookReducer,
+	penaltySlipReducer,
 } from './reducers/studentReducers'
 
 import { 
@@ -85,8 +87,11 @@ import {
 } from './reducers/userReducers'
 
 import {
+	checkEvaluationsReducer,
 	allEvaluationsReducer,
 	newEvaluationReducer,
+	evaluationReducer,
+	studentEvaluationReducer,
 } from './reducers/evaluationReducers'
 
 const reducer = combineReducers({
@@ -97,6 +102,7 @@ const reducer = combineReducers({
 	newBook: newBookReducer,
 	book: bookReducer,
 	addBookAccession: addBookAccessionReducer,
+	bookAccession: bookAccessionReducer,
 	accessionReducer: accessionReducer,
 	accessionDetails: accessionDetailsReducer,
 	allResearches: allResearchesReducer,
@@ -113,6 +119,7 @@ const reducer = combineReducers({
 	studentBookDetails: studentBookDetailsReducer,
 	allStudentBorrowBook: allStudentBorrowBookReducer,
 	allStudentAppointmentBook: allStudentAppointmentBookReducer,
+	penaltySlip: penaltySlipReducer,
 	borrowBook: borrowBookReducer,
 	checkBorrowBook: checkBorrowBookReducer,
 	cancelBorrowBook: cancelBorrowBookReducer,
@@ -142,8 +149,11 @@ const reducer = combineReducers({
 	historylog: historylogReducer,
 	changeDueDate: changeDueDateReducer,
 	penaltyCheck: penaltyCheckReducer,
+	checkEvaluations: checkEvaluationsReducer,
 	allevaluation: allEvaluationsReducer,
 	newevaluation: newEvaluationReducer,
+	evaluationReducer: evaluationReducer,
+	studentEvaluation: studentEvaluationReducer,
 	allUsers: allUsersReducer,
 	activateUser: activateUserReducer,
 	deactivateUser: deactivatedUserReducer,

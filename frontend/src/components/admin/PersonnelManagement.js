@@ -11,9 +11,19 @@ import SideNavbarAdmin from '../layout/SideNavbarAdmin'
 import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { allPersonnels, deletePersonnel, getAllActiveStudents, getAllInactiveStudents, approveStudent, deleteStudent, clearErrors } from '../../actions/personnelActions'
-
+import {
+    allPersonnels,
+    deletePersonnel,
+    getAllActiveStudents,
+    getAllInactiveStudents,
+    // approveStudent,
+    deleteStudent,
+    clearErrors
+} from '../../actions/personnelActions'
 import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET, UPDATE_PERSONNEL_RESET } from '../../constants/personnelConstants'
+
+import { allUsers, activateUsers, deactivatedUsers, endterm } from '../../actions/userActions'
+import { ACTIVATE_USER_RESET, DEACTIVATED_USER_RESET, END_TERM_USER_RESET } from '../../constants/userConstants'
 
 const PersonnelManagement = () => {
 
@@ -25,6 +35,9 @@ const PersonnelManagement = () => {
     const { active_students } = useSelector(state => state.allActiveStudents);
     const { PersonnelDeleted } = useSelector(state => state.personnel);
     const { StudentDeleted, isUpdated } = useSelector(state => state.student);
+    const { isActivated } = useSelector(state => state.activateUser);
+    const { isDeactivated } = useSelector(state => state.deactivateUser);
+    const { isEndterm } = useSelector(state => state.endtermuser)
 
     const defaultMaterialTheme = createTheme({});
 
@@ -58,7 +71,25 @@ const PersonnelManagement = () => {
             dispatch({ type: DELETE_STUDENT_RESET })
         }
 
-    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted, navigate])
+        if (isActivated) {
+            alert.success('Student account has been activated');
+            navigate('/admin/personnels');
+            dispatch({ type: ACTIVATE_USER_RESET })
+        }
+
+        if (isDeactivated) {
+            alert.error('Student account has been deactivated');
+            navigate('/admin/personnels');
+            dispatch({ type: DEACTIVATED_USER_RESET })
+        }
+
+        if (isEndterm) {
+            alert.error('All student account has been deactivated');
+            navigate('/admin/personnels');
+            dispatch({ type: END_TERM_USER_RESET })
+        }
+
+    }, [dispatch, alert, error, PersonnelDeleted, isUpdated, StudentDeleted, isActivated, isDeactivated, isEndterm, navigate])
 
     const deletePersonnelHandler = (id) => {
         dispatch(deletePersonnel(id))
@@ -66,6 +97,18 @@ const PersonnelManagement = () => {
 
     const deleteStudentHandler = (id) => {
         dispatch(deleteStudent(id))
+    }
+
+    const acvateUserHandler = (id) => {
+        dispatch(activateUsers(id))
+    }
+
+    const deacvateUserHandler = (id) => {
+        dispatch(deactivatedUsers(id))
+    }
+
+    const endtermhandler = () => {
+        dispatch(endterm())
     }
 
     const colPersonnels = [
@@ -101,19 +144,19 @@ const PersonnelManagement = () => {
             render: rowData => (
                 <Fragment>
                     <div className="icon-buttons">
-                    <Tooltip title="Edit">
-                    <Link to={`/admin/personnel/${rowData._id}`} className="btn btn-primary py-1 px-2">
-                        <i className="fa fa-pencil"></i>
-                    </Link>
-                    </Tooltip>
+                        <Tooltip title="Edit">
+                            <Link to={`/admin/personnel/${rowData._id}`} className="btn btn-primary py-1 px-2">
+                                <i className="fa fa-pencil"></i>
+                            </Link>
+                        </Tooltip>
 
-                    <Tooltip title="Delete">
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeletePersonnelModal" + rowData._id}>
-                        <i className="fa fa-trash"></i>
-                    </button>
-                    </Tooltip>
+                        <Tooltip title="Delete">
+                            <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeletePersonnelModal" + rowData._id}>
+                                <i className="fa fa-trash"></i>
+                            </button>
+                        </Tooltip>
                     </div>
-                    
+
                     <div className="modal fade" data-backdrop="false" id={"DeletePersonnelModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
@@ -133,13 +176,13 @@ const PersonnelManagement = () => {
                             </div>
                         </div>
                     </div>
-                    </Fragment>
-              ),
-              searchable: false
+                </Fragment>
+            ),
+            searchable: false
         },
-        
+
     ]
-    
+
     const colStudents = [
         {
             title: 'ID',
@@ -155,10 +198,10 @@ const PersonnelManagement = () => {
                 <Fragment>
                     <div><p><Link to={`/detail/student/${rowData._id}`}>{rowData.name} </Link></p></div>
                 </Fragment>
-      ),
-      cellStyle: {
-        textAlign: "left",
-    },
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
         },
         {
             title: 'Contact',
@@ -177,13 +220,27 @@ const PersonnelManagement = () => {
             render: rowData => (
                 <Fragment>
                     <div className="icon-buttons">
-                    <Tooltip title="Delete">
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal" + rowData._id}>
-                        <i className="fa fa-trash"></i>
-                    </button>
-                    </Tooltip>
+                        <Tooltip title="Delete">
+                            <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal" + rowData._id}>
+                                <i className="fa fa-trash"></i>
+                            </button>
+                        </Tooltip>
+                        {rowData.status == 'active' ?
+                            <Tooltip title="Deactivate">
+                                <button className="btn btn-success py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeactivateModal" + rowData._id}>
+                                    <i className="fa fa-unlock"></i>
+                                </button>
+                            </Tooltip>
+
+                            :
+                            <Tooltip title="Activate">
+                                <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#ActivateModal" + rowData._id}>
+                                    <i className="fa fa-lock"></i>
+                                </button>
+                            </Tooltip>
+                        }
                     </div>
-                    
+
                     <div className="modal fade" data-backdrop="false" id={"DeleteActiveModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
@@ -203,11 +260,48 @@ const PersonnelManagement = () => {
                             </div>
                         </div>
                     </div>
-                    </Fragment>
-              ),
-              searchable: false
+
+                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal"+rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeactivateModalLabel">Deactivate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to deactivate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deacvateUserHandler(rowData._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" data-backdrop="false" id={"ActivateModal"+rowData._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="ActivateModalLabel">Activate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to activate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={() => acvateUserHandler(rowData._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Fragment>
+            ),
+            searchable: false
         },
-        
+
     ]
 
     // console.log(personnels)
@@ -218,89 +312,89 @@ const PersonnelManagement = () => {
             {loading ? <Loader /> : (
                 <div className="management-content">
                     <div className="row">
-                    <div className="col-md-6">
+                        <div className="col-md-6">
                             <div className="">
-                            <h1 className="text-center">
+                                <h1 className="text-center">
                                     <Link to={"/personnel/new"}>
                                         <i className="fa-solid fa-circle-plus"></i>
                                     </Link>
                                     Personnel
                                 </h1>
                                 {loading ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Personnels List'
-                                data={personnels}
-                                columns={colPersonnels}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'ID, Name...' 
-                                        } 
-                                    }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false,
-                                      
-                                  }}
-                            />
-                            </ThemeProvider>
-                        )}
+                                    <ThemeProvider theme={defaultMaterialTheme}>
+                                        <MaterialTable
+                                            title='Personnels List'
+                                            data={personnels}
+                                            columns={colPersonnels}
+                                            localization={
+                                                {
+                                                    toolbar: {
+                                                        searchPlaceholder: 'ID, Name...'
+                                                    }
+                                                }
+                                            }
+                                            options={{
+                                                pageSize: 10,
+                                                headerStyle: {
+                                                    fontSize: 16,
+                                                    fontWeight: 'bold',
+                                                    backgroundColor: '#BA0202',
+                                                    color: '#ffffff',
+                                                },
+                                                rowStyle: {
+                                                    fontSize: 15,
+                                                    backgroundColor: '#F9F5F5',
+                                                },
+                                                emptyRowsWhenPaging: false,
+
+                                            }}
+                                        />
+                                    </ThemeProvider>
+                                )}
                             </div>
                         </div>
-                        
+
                         <div className="col-md-6">
                             <div className="">
-                            <h1 className="text-center">
+                                <h1 className="text-center">
                                     Students
                                 </h1>
                                 {loading ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Students List'
-                                data={active_students}
-                                columns={colStudents}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'ID, Name...' 
-                                        } 
-                                    }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false,
-                                  }}
-                            />
-                            </ThemeProvider>
-                        )}
+                                    <ThemeProvider theme={defaultMaterialTheme}>
+                                        <MaterialTable
+                                            title='Students List'
+                                            data={active_students}
+                                            columns={colStudents}
+                                            localization={
+                                                {
+                                                    toolbar: {
+                                                        searchPlaceholder: 'ID, Name...'
+                                                    }
+                                                }
+                                            }
+                                            options={{
+                                                pageSize: 10,
+                                                headerStyle: {
+                                                    fontSize: 16,
+                                                    fontWeight: 'bold',
+                                                    backgroundColor: '#BA0202',
+                                                    color: '#ffffff',
+                                                },
+                                                rowStyle: {
+                                                    fontSize: 15,
+                                                    backgroundColor: '#F9F5F5',
+                                                },
+                                                emptyRowsWhenPaging: false,
+                                            }}
+                                        />
+                                    </ThemeProvider>
+                                )}
                             </div>
                         </div>
 
                     </div>
                 </div>
-          )}
+            )}
         </Fragment>
     )
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { 
+import {
     GET_STUDENT_REQUEST,
     GET_STUDENT_SUCCESS,
     GET_STUDENT_FAIL,
@@ -24,7 +24,11 @@ import {
     APPOINTMENTBOOK_SUCCESS,
     APPOINTMENTBOOK_FAIL,
 
-    CLEAR_ERRORS 
+    PENALTYSLIP_REQUEST,
+    PENALTYSLIP_SUCCESS,
+    PENALTYSLIP_FAIL,
+
+    CLEAR_ERRORS
 } from '../constants/studentConstants'
 
 export const getStudentDetails = (id) => async (dispatch) => {
@@ -69,13 +73,16 @@ export const updateStudent = (id, studentData) => async (dispatch) => {
     }
 }
 
-export const allStudentBooks = (yearPub) => async (dispatch) => {
+export const allStudentBooks = (yearPub, subjects) => async (dispatch) => {
     try {
 
         dispatch({ type: ALL_STUDENTBOOKS_REQUEST })
 
         let link = `/api/v1/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
-        
+
+        if (subjects) {
+            link = `/api/v1/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}&subjects=${subjects}`
+        }
         // const { data } = await axios.get('/api/v1/admin/books')
 
         const { data } = await axios.get(link)
@@ -149,8 +156,28 @@ export const allStudentAppointmentBook = () => async (dispatch) => {
     }
 }
 
+export const getPenaltySlip = () => async (dispatch) => {
+    try {
 
-export const clearErrors = () => async (dispatch) =>{
+        dispatch({ type: PENALTYSLIP_REQUEST })
+
+        const { data } = await axios.get('/api/v1/profile/penalty')
+
+        dispatch({
+            type: PENALTYSLIP_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: PENALTYSLIP_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+
+export const clearErrors = () => async (dispatch) => {
     dispatch({
         type: CLEAR_ERRORS
     })

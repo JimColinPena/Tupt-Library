@@ -679,7 +679,7 @@ export const borrowedBookAccessionReducer = (state = {}, action) => {
             return {
                 ...state,
                 loading: false,
-                bookAccession: action.payload
+                borrowedAccession: action.payload
             }
         case ACCESSION_BORROWED_FAIL:
             return {
@@ -689,7 +689,7 @@ export const borrowedBookAccessionReducer = (state = {}, action) => {
         case ACCESSION_BORROWED_RESET:
             return {
                 ...state,
-                bookAccession: false
+                borrowedAccession: false
             }
         case CLEAR_ERRORS:
             return {

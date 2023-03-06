@@ -94,6 +94,14 @@ const SideNavbarAdmin = () => {
                                         Penalty clearance
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link to="/admin/evaluation" className="sidenav-links">
+                                        <span className="material-symbols-rounded">
+                                            account_balance_wallet
+                                        </span>
+                                        Evaluation
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                         <div className="profile">

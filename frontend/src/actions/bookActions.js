@@ -24,6 +24,10 @@ import {
     ADD_BOOK_ACCESSION_SUCCESS,
     ADD_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_BOOK_REQUEST,
+    ACCESSION_BOOK_SUCCESS,
+    ACCESSION_BOOK_FAIL,
+
     ACCESSION_DETAILS_REQUEST,
     ACCESSION_DETAILS_SUCCESS,
     ACCESSION_DETAILS_FAIL,
@@ -39,14 +43,16 @@ import {
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 
-export const allBooks = (yearPub) => async (dispatch) => {
+export const allBooks = (yearPub, subjects) => async (dispatch) => {
     try {
 
         dispatch({ type: ALL_BOOKS_REQUEST })
 
         let link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
-        
-        // const { data } = await axios.get('/api/v1/admin/books')
+
+        if (subjects){
+            link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}&subjects=${subjects}`
+        }
 
         const { data } = await axios.get(link)
 
@@ -179,13 +185,38 @@ export const addBookAccession = (bookData) => async (dispatch) => {
     }
 }
 
+export const changeBookAccession = (accessionData) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ACCESSION_BOOK_REQUEST })
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+                // "Content-Type": "application/json"
+            }
+        }
+        const { data } = await axios.post(`/api/v1/edit/accession`, accessionData, config)
+
+        dispatch({
+            type: ACCESSION_BOOK_SUCCESS,
+            payload: data.success
+        })
+    } catch (error) {
+        dispatch({
+            type: ACCESSION_BOOK_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
 export const getBookAccession = (id) => async (dispatch) => {
     try {
         dispatch({ type: ACCESSION_DETAILS_REQUEST })
         const { data } = await axios.get(`/api/v1/accession/detail/${id}`)
         dispatch({
             type: ACCESSION_DETAILS_SUCCESS,
-            payload: data.bookAccessions
+            payload: data
         })
     } catch (error) {
         dispatch({

@@ -35,13 +35,15 @@ import HistoryLog from './components/admin/HistoryLog'
 
 import Notification from './components/user/Notification'
 
-import StudentEvaluation  from './components/user/StudentEvaluation'
+import StudentEvaluation  from './components/admin/evaluation/StudentEvaluation'
+import EvaluationManagement  from './components/admin/evaluation/EvaluationManagement'
 
 import Penalty from './components/admin/Penalties'
 
 import Home from './components/Home'
 import Login from './components/credential/Login'
 import Profile from './components/credential/Profile'
+import PenaltySlip from './components/user/PenatySlip'
 
 import ProtectedRoute from './components/route/ProtectedRoute'
 import './App.css';
@@ -80,6 +82,9 @@ function App() {
 					<Route path="/returned/books" element={<ProtectedRoute isAdmin={true}><ReturnedBooks /></ProtectedRoute>} />
 					<Route path="/appointments" element={<ProtectedRoute isAdmin={true}><BookRequests /></ProtectedRoute>} />
 
+					<Route path="/student/evaluation" element={<ProtectedRoute isAdmin={true}><StudentEvaluation /></ProtectedRoute>} />
+					<Route path="/admin/evaluation" element={<ProtectedRoute isAdmin={true}><EvaluationManagement /></ProtectedRoute>} />
+
 					<Route path="/historyLog" element={<ProtectedRoute isAdmin={true}><HistoryLog /></ProtectedRoute>} />
 
 					<Route path="/notification/:id" element={<ProtectedRoute isAdmin={false}><Notification /></ProtectedRoute>} />
@@ -89,8 +94,9 @@ function App() {
 					<Route path="/borrow/request" element={<ProtectedRoute isAdmin={false}><BorrowDetails /></ProtectedRoute>} />
 					<Route path="/borrow/books" element={<ProtectedRoute isAdmin={false}><AppointmentDetails /></ProtectedRoute>} />
 					<Route path="/profile/update/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />
+					<Route path="/profile/penalty" element={<ProtectedRoute isAdmin={false}><PenaltySlip /></ProtectedRoute>} />
 					
-					<Route path="/student/evaluation" element={<StudentEvaluation />} />
+					
 
 					<Route path='/admin/penalty' element={<Penalty />} />
 				</Routes>
