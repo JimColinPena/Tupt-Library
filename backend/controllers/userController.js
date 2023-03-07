@@ -33,6 +33,17 @@ exports.allUsers = async (req, res, next) => {
     })
 }
 
+exports.setRole = async (req, res, next) => {
+    if (req.body.role == 'student'){
+        await Users.findByIdAndUpdate(req.body.userId, {role: req.body.role});
+    }else if (req.body.role == 'faculty'){
+        await Users.findByIdAndUpdate(req.body.userId, {role: req.body.role, course: 'Faculty', section: 'Faculty'})
+    }
+    res.status(200).json({
+        success: true,
+    })
+}
+
 exports.deactivateUser = async (req,res,next) => {
     try{
         Users.findOneAndUpdate({

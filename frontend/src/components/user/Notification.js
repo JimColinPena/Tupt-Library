@@ -17,6 +17,7 @@ const Notification = () => {
     let navigate = useNavigate();
     const { id } = useParams();
 
+    const { user  } = useSelector(state => state.auth);
     const { loading, error, notification  } = useSelector(state => state.notifications);
     const { notificationDeleted } = useSelector(state => state.singleDeleteNotification);
     const { notificationAllDeleted } = useSelector(state => state.allDeleteNotification);

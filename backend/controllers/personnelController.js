@@ -15,7 +15,7 @@ const Penalty = require('../models/penalty');
 const { sendEmailWithNodemailer } = require("../helpers/email");
 
 exports.getPersonnel = async (req, res, next) => {
-    const personnel = await User.find({ $or: [{ role: 'admin' }, { role: 'personnel' }] });
+    const personnel = await User.find({ $or: [{ role: 'admin' }, { role: 'personnel' },  { role: 'unset' }] });
     res.status(200).json({
         success: true,
         personnel
@@ -715,6 +715,9 @@ exports.changeDueDate = async (req, res, next) => {
 }
 
 exports.checkPenalty = async (req, res, next) => {
+    const all_penalty = await Penalty.find()
+    const penalty_count = all_penalty.length
+
     let penalty = {}
     // const borrower = await Borrow.findById(req.params.id);
     const today = new Date().getTime()
@@ -729,10 +732,9 @@ exports.checkPenalty = async (req, res, next) => {
 
     //loop borrow collection 
     borrow.forEach(async data => {
+        // const check_role = await User.findOne({_id: data.userId}).select([''])
+        // console.log(check_role)
         var notif_dueDate = format(data.dueDate, 'MMMM dd, yyyy')
-
-        // const new_data = notif_dueDate.setDate(data.dueDate)
-
         //check if there is existing penalty of user
         const penalty = await Penalty.findOne({ userId: data.userId })
 
@@ -744,13 +746,17 @@ exports.checkPenalty = async (req, res, next) => {
         const time_due = today - due_date
         var Difference_In_Days = Math.round((time_due / (1000 * 3600 * 24) + 1));
 
+        const numBooks = data.bookId.length
+
+        // console.log(numBooks)
+
         if (!penalty) {
             //if there's no penalty object, determine if the due date is over due
             if (Difference_In_Days > 0) {
                 //if the due date is indeed overdue, create a penalty object else, do nothing
                 await Penalty.create({
                     userId: data.userId,
-                    penalty: Difference_In_Days * 5,
+                    penalty: (Difference_In_Days * 5) * numBooks,
                     status: 'Unpaid'
                 })
             }
@@ -975,7 +981,7 @@ exports.checkPenalty = async (req, res, next) => {
     });
     res.status(200).json({
         success: true,
-        penalty
+        penalty_count
 
     })
 }

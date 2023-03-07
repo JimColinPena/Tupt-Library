@@ -29,9 +29,7 @@ const StudentBookDetails = () => {
     const { isCancel } = useSelector(state => state.cancelBorrowBook);
 
     useEffect(() => {
-
         dispatch(checkBorrowBooks(user._id, id));
-
         dispatch(getStudentBookDetails(id));
 
         if (error) {

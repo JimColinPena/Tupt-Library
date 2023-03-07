@@ -5,7 +5,7 @@ const Return = require('../models/return');
 
 exports.borrowBook = async (req, res, next) => {
     // console.log(req.body);
-    const checkAvailability = await Borrow.find({ userId: req.body.userId});
+    const checkAvailability = await Borrow.find({ userId: req.body.userId });
 
     if (checkAvailability.length == 0) {
         //if user has no book request, create borrow object and decrement on_shelf value while increment out value
@@ -50,6 +50,7 @@ exports.checkBorrowBook = async (req, res, next) => {
     const borrow = await Borrow.find({ userId: currentUserId, bookId: currrentBookId });
     const approveBook = await Borrow.find({ userId: currentUserId, status: "Accepted" });
     const pendingBook = await Borrow.find({ userId: currentUserId }, 'bookId');
+    const user = await User.findOne({ _id: currentUserId })
 
     // query to check if the book is currently requested or in possession of the user
     if (borrow.length == 0) {
@@ -70,11 +71,21 @@ exports.checkBorrowBook = async (req, res, next) => {
     // query to check if the user have more than 2 books
     // console.log(pendingBook.length)
     if (pendingBook.length > 0) {
-        if (pendingBook[0].bookId.length < 2) {
-            pendingvar = false;
-        }
-        else {
-            pendingvar = true;
+        if (user.role == 'faculty') {
+            if (pendingBook[0].bookId.length < 5) {
+                pendingvar = false;
+            }
+            else {
+                pendingvar = true;
+            }
+
+        } else if (user.role == 'student') {
+            if (pendingBook[0].bookId.length < 2) {
+                pendingvar = false;
+            }
+            else {
+                pendingvar = true;
+            }
         }
     }
     else {
@@ -97,7 +108,7 @@ exports.checkBorrowBook = async (req, res, next) => {
 exports.cancelBorrowBook = async (req, res, next) => {
     const borrow = await Borrow.findOne({ userId: req.body.userId });
     const borrowcount = borrow.bookId.length
-    
+
     if (borrowcount <= 1) {
         //if book in user borrow is only one, and increment on_shelf value while decrement out value
         await Book.findByIdAndUpdate(req.body.bookId, { $inc: { on_shelf: 1, out: -1 } })
@@ -157,8 +168,8 @@ exports.cancelAllBorrowBook = async (req, res, next) => {
 
 };
 
-exports.getBorrowedBooksLength = async (req,res,next) => {
-    const test = await Borrow.find({status: 'Accepted'});
+exports.getBorrowedBooksLength = async (req, res, next) => {
+    const test = await Borrow.find({ status: 'Accepted' });
     const borrowedbooksLength = test.length;
 
     res.status(200).json({
@@ -167,9 +178,9 @@ exports.getBorrowedBooksLength = async (req,res,next) => {
     })
 }
 
-exports.getPendingRequests = async (req,res,next) => {
-    const test = await Borrow.find({status: 'Pending'});
-	const pendingRequests = test.length;
+exports.getPendingRequests = async (req, res, next) => {
+    const test = await Borrow.find({ status: 'Pending' });
+    const pendingRequests = test.length;
 
     res.status(200).json({
         success: true,
@@ -177,9 +188,9 @@ exports.getPendingRequests = async (req,res,next) => {
     })
 }
 
-exports.getPendingUsersLength = async (req,res,next) => {
-    const test = await User.find({status: 'inactive'});
-	const pendingUsers = test.length;
+exports.getPendingUsersLength = async (req, res, next) => {
+    const test = await User.find({ status: 'inactive' });
+    const pendingUsers = test.length;
 
     res.status(200).json({
         success: true,
@@ -210,7 +221,7 @@ exports.SectionBorrowedChart = async (req, res, next) => {
         // let obj = {}
         // obj.keys = NumberOfSection[i].userId.course
         // obj.values = NumberOfSection[i].returnedDate
-        sectionArr.push({section: NumberOfSection[i].userId.course, returnedDate: NumberOfSection[i].returnedDate})
+        sectionArr.push({ section: NumberOfSection[i].userId.course, returnedDate: NumberOfSection[i].returnedDate })
     }
     // console.log(sectionArr);
     res.status(200).json({
@@ -247,7 +258,7 @@ exports.BookLeaderboards = async (req, res, next) => {
     //     // bookGroup[_id] = bookArr._id;
     //     bookGroup[title] = (bookGroup[title] || 0) + 1;
     // });
-    
+
     // // bookArr.forEach(({ _id }) => {
     // //     // bookGroup[_id] = bookGroup._id;
     // //     bookGroup[_id] = bookGroup._id;
@@ -262,43 +273,43 @@ exports.BookLeaderboards = async (req, res, next) => {
 
     const bookCounts = await Return.aggregate([
         {
-          "$lookup": {
-            "from": "books",
-            "localField": "bookId",
-            "foreignField": "_id",
-            "pipeline": [
-              {
-                $project: {
-                  _id: 1,
-                  title: 1,
-                }
-              }
-            ],
-            "as": "bookId"
-          }
+            "$lookup": {
+                "from": "books",
+                "localField": "bookId",
+                "foreignField": "_id",
+                "pipeline": [
+                    {
+                        $project: {
+                            _id: 1,
+                            title: 1,
+                        }
+                    }
+                ],
+                "as": "bookId"
+            }
 
         },
         {
-          $unwind: "$bookId"
+            $unwind: "$bookId"
         },
         {
-          $group: {
-            _id: "$bookId",
-            count: {
-              $sum: 1
+            $group: {
+                _id: "$bookId",
+                count: {
+                    $sum: 1
+                }
             }
-          }
         },
         {
-          $project: {
-            _id: 1,
-            title: "$_id.title",
-            count: 1
-          }
+            $project: {
+                _id: 1,
+                title: "$_id.title",
+                count: 1
+            }
         },
-        {$sort: { count: -1 }}
-      ])
-      
+        { $sort: { count: -1 } }
+    ])
+
 
     console.log(bookCounts)
     res.status(200).json({
@@ -312,51 +323,51 @@ exports.BorrowerLeaderboards = async (req, res, next) => {
 
     const borrowerRanking = await Return.aggregate([
         {
-          "$lookup": {
-            "from": "users",
-            "localField": "userId",
-            "foreignField": "_id",
-            "pipeline": [
-              {
-                $project: {
-                  _id: 1,
-                  name: 1,
-                  course: 1,
-                  avatar: 1
-                }
-              }
-            ],
-            "as": "userId"
-          }
+            "$lookup": {
+                "from": "users",
+                "localField": "userId",
+                "foreignField": "_id",
+                "pipeline": [
+                    {
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            course: 1,
+                            avatar: 1
+                        }
+                    }
+                ],
+                "as": "userId"
+            }
 
         },
         {
-          $unwind: "$userId"
+            $unwind: "$userId"
         },
         {
-          $group: {
-            _id: "$userId",
-            count: {
-              $sum: 1
-            },
-            returnedDate: {
-                $first: "$returnedDate"
-              },
-          }
+            $group: {
+                _id: "$userId",
+                count: {
+                    $sum: 1
+                },
+                returnedDate: {
+                    $first: "$returnedDate"
+                },
+            }
         },
         {
-          $project: {
-            _id: 1,
-            name: "$_id.name",
-            course: "$_id.course",
-            avatar: "$_id.avatar.url",
-            returnedDate: 1,
-            count: 1
-          }
+            $project: {
+                _id: 1,
+                name: "$_id.name",
+                course: "$_id.course",
+                avatar: "$_id.avatar.url",
+                returnedDate: 1,
+                count: 1
+            }
         },
-        {$sort: { count: -1 }}
-      ])
-      
+        { $sort: { count: -1 } }
+    ])
+
     res.status(200).json({
         success: true,
         borrowerRanking,

@@ -61,28 +61,28 @@ const BookSearch = () => {
 
         setnew_yearValue([yearPubStart, yearPubEnd])
         console.log(new_yearValue)
-      };
-    
-      const clearYearPub = (e) => {
+    };
+
+    const clearYearPub = (e) => {
         setyearPubStart(studentbooks.lowestYearPub)
         setyearPubEnd(studentbooks.highestYearPub)
 
         setnew_yearValue([yearPubStart, yearPubEnd])
         setSubjectFilter('')
         console.log(new_yearValue)
-      };
+    };
 
-      const col = [
+    const col = [
         {
             title: 'Call Number',
             field: 'call_number',
             searchable: false,
             render: rowData => (
-                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div>:
-                (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div>:
-                (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div>:
-                (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div>:
-                <div><p>{"N/A " + rowData.call_number}</p></div>
+                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
+                    (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
+                        (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
+                            (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
+                                <div><p>{"N/A " + rowData.call_number}</p></div>
             ),
             cellStyle: {
                 textAlign: "left",
@@ -93,16 +93,17 @@ const BookSearch = () => {
             field: 'title',
             render: rowData => (
                 <Fragment>
-                <div>
-                    {
-                        <Link to={`/book/${rowData._id}`}>{rowData.title} </Link>
-                    }
+                    <div>
+                        {
+                            <Link to={`/book/${rowData._id}`}>{rowData.title} </Link>
+                        }
 
                     </div>
-                    </Fragment>
-              ),
-              cellStyle: {
+                </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left",
+                width: "500px"
             },
         },
         {
@@ -110,18 +111,18 @@ const BookSearch = () => {
             field: 'main_author',
             render: rowData => (
                 <Fragment>
-                <div><p>{rowData.main_author}</p></div>
+                    <div><p>{rowData.main_author}</p></div>
                 </Fragment>
-              ),
-              cellStyle: {
+            ),
+            cellStyle: {
                 textAlign: "left",
             },
-            
+
         },
         {
             title: 'Year Pub',
             field: 'yearPub',
-            emptyValue:()=><em>null</em>,
+            emptyValue: () => <em>null</em>,
             cellStyle: {
                 textAlign: "left",
             },
@@ -132,12 +133,13 @@ const BookSearch = () => {
             // emptyValue:()=><em>null</em>,
             render: rowData => (
                 (rowData.subjects === null || rowData.subjects === undefined) ? <em>null</em> :
-                <Fragment>
-                <div>{rowData.subjects.map((item) => (<p>{item}</p>)) }</div>
-                </Fragment>
-              ),
-              cellStyle: {
+                    <Fragment>
+                        <div>{rowData.subjects.map((item) => (<p>{item}</p>))}</div>
+                    </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left",
+                
             },
         },
     ]
@@ -147,7 +149,7 @@ const BookSearch = () => {
             <MetaData title={'Books'} />
             <SideNavbarUser />
             {loading || loading === undefined ? <Loader /> : (
-                <Fragment>                                  
+                <Fragment>
                     <div className="management-content">
                         {(user.course === undefined | null) ?
                             <DeactivatedUser />
@@ -155,76 +157,81 @@ const BookSearch = () => {
                                 <h1>Books <span></span>
                                 </h1>
                                 <hr />
-                                {/* </div> */}
                                 <div className="management-body">
-                                <h4 className='text-center'>Year Published</h4>
-                    <div className='row' style={{marginBottom: 10}}>
-                                <TextField id="yearStart" label="Start Year" defaultValue={studentbooks.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto',marginRight: '20px'}}/>
+                                    <div className='row'>
+                                        <div className='col-md-3'>
+                                            <h4 className='text-center'>Year Published</h4>
+                                            <div className='row' style={{ marginBottom: 10 }}>
+                                                <TextField id="yearStart" label="Start Year" defaultValue={studentbooks.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '10px', width: '80px'  }} />
 
-                                    <span style={{paddingTop: '1em'}}>&#8212;</span>
-                                    
-                                <TextField id="yearEnd" label="End Year" defaultValue={studentbooks.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{display: 'block', margin: '0 auto', marginLeft: '20px'}}/>
-                    </div>
+                                                <span style={{ paddingTop: '1em' }}>&#8212;</span>
 
-                    <div className='row' style={{marginBottom: 10}}>
-                                <button type="button" className="btn btn-primary col-md-1" onClick={filterYearPub} style={{display: 'block', margin: '0 auto',marginRight: '0px'}}>Filter  <i class="fa-solid fa-filter"></i></button>
+                                                <TextField id="yearEnd" label="End Year" defaultValue={studentbooks.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '10px', width: '80px' }} />
+                                            </div>
 
-                                <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{display: 'block', margin: '0 auto', marginLeft: '0px'}}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
-                    </div>
-                    
-                                    <div>
-                                        <h4 className='text-center'>Filter by Subject</h4>
-                                        <div className='row'>
-                                            {studentbooks.bookSubjects && studentbooks.bookSubjects.length > 0 ? (
+                                            <div className='row' style={{ marginBottom: 10 }}>
+                                                <button type="button" className="btn btn-primary " onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '5px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
 
-                                                subjectArr.map((subject) => {
-                                                    return (
-                                                        <div className='col-sm-2' key={subject}>
-                                                            {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
-                                                            {/* {console.log(subjectFilter)} */}
-
-                                                            <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
-                                                            {/* {console.log(subjectFilter)} */}
-                                                        </div>
-                                                    )
-                                                })
-
-                                            ) : (
-                                                <li>Subject not Found</li>
-                                            )}
+                                                <button type="button" className="btn btn-danger " onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '5px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                                            </div>
                                         </div>
+                                        <div className='col-md-9'>
+                                            <h4 className='text-center'>Filter by Subject</h4>
+                                            <div className='row'>
+                                                {studentbooks.bookSubjects && studentbooks.bookSubjects.length > 0 ? (
+
+                                                    subjectArr.map((subject) => {
+                                                        return (
+                                                            <div className='col-sm-2' key={subject}>
+                                                                {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                                {/* {console.log(subjectFilter)} */}
+
+                                                                <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                                {/* {console.log(subjectFilter)} */}
+                                                            </div>
+                                                        )
+                                                    })
+
+                                                ) : (
+                                                    <li>Subject not Found</li>
+                                                )}
+                                            </div>
+                                        </div>
+
                                     </div>
 
-                        {loading || loading === undefined ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Books List'
-                                data={studentbooks.studentbook}
-                                columns={col}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'Book,Year,Author,Subject...' 
-                                        } 
-                                    }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false
-                                  }}
-                            />
-                            </ThemeProvider>
-                        )}
+
+
+                                    {loading || loading === undefined ? <Loader /> : (
+                                        <ThemeProvider theme={defaultMaterialTheme}>
+                                            <MaterialTable
+                                                title='Books List'
+                                                data={studentbooks.studentbook}
+                                                columns={col}
+                                                localization={
+                                                    {
+                                                        toolbar: {
+                                                            searchPlaceholder: 'Book,Year,Author,Subject...'
+                                                        }
+                                                    }
+                                                }
+                                                options={{
+                                                    pageSize: 10,
+                                                    headerStyle: {
+                                                        fontSize: 16,
+                                                        fontWeight: 'bold',
+                                                        backgroundColor: '#BA0202',
+                                                        color: '#ffffff',
+                                                    },
+                                                    rowStyle: {
+                                                        fontSize: 15,
+                                                        backgroundColor: '#F9F5F5',
+                                                    },
+                                                    emptyRowsWhenPaging: false
+                                                }}
+                                            />
+                                        </ThemeProvider>
+                                    )}
                                 </div>
                             </div>
                         }

@@ -49,7 +49,7 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to={"/notification/"+user._id} onClick={() => seenHandler(notification._id)} className="sidenav-links">
+                                    <Link to={"/notification/" + user._id} onClick={() => seenHandler(notification._id)} className="sidenav-links">
                                         {/* <h5>{notification}</h5> */}
                                         <span className="material-symbols-rounded">
                                             mark_email_unread
@@ -91,14 +91,31 @@ const SideNavbarUser = () => {
                                     </Link>
                                 </li>
 
-                                <li>
+                                {(user.role == 'student') ?
+                                    (
+                                        // <div></div>
+                                        <li>
+                                            <Link to="/profile/penalty" className="sidenav-links">
+                                                <span className="material-symbols-rounded">
+                                                    account_balance_wallet
+                                                </span>
+                                                Penalties
+                                            </Link>
+                                        </li>
+                                    )
+                                    : (
+                                        <div></div>
+                                    )
+                                }
+
+                                {/* <li>
                                     <Link to="/profile/penalty" className="sidenav-links">
                                         <span className="material-symbols-rounded">
                                             account_balance_wallet
                                         </span>
                                         Penalties
                                     </Link>
-                                </li>
+                                </li> */}
 
                                 {/* <li>
                                     <Link to="/student/evaluation" className="sidenav-links">

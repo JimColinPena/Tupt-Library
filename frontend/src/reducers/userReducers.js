@@ -45,6 +45,11 @@ import {
     ALL_USERS_SUCCESS,
     ALL_USERS_FAIL,
 
+    UPDATE_ROLE_REQUEST,
+    UPDATE_ROLE_SUCCESS,
+    UPDATE_ROLE_RESET,
+    UPDATE_ROLE_FAIL,
+
     ACTIVATE_USER_REQUEST,
     ACTIVATE_USER_SUCCESS,
     ACTIVATE_USER_RESET,
@@ -348,6 +353,44 @@ export const allUsersReducer = (state = { users: [] }, action) => {
             }
 
         case ALL_USERS_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            }
+
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const updateUserRoleReducer = (state = {}, action) => {
+    switch (action.type) {
+        case UPDATE_ROLE_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case UPDATE_ROLE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                roleUpdated: action.payload
+            }
+
+        case UPDATE_ROLE_RESET:
+            return {
+                ...state,
+                roleUpdated: false
+            }
+
+        case UPDATE_ROLE_FAIL:
             return {
                 ...state,
                 error: action.payload

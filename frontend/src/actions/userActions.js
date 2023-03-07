@@ -43,6 +43,10 @@ import {
     ALL_USERS_SUCCESS,
     ALL_USERS_FAIL,
 
+    UPDATE_ROLE_REQUEST,
+    UPDATE_ROLE_SUCCESS,
+    UPDATE_ROLE_FAIL,
+
     ACTIVATE_USER_REQUEST,
     ACTIVATE_USER_SUCCESS,
     ACTIVATE_USER_FAIL,
@@ -174,7 +178,7 @@ export const allNotification = (id) => async (dispatch) => {
 export const counterNotification = (id) => async (dispatch) => {
     try {
 
-        dispatch ({ type: COUNTER_NOTIFICATION_REQUEST })
+        dispatch({ type: COUNTER_NOTIFICATION_REQUEST })
 
         const { data } = await axios.get(`/api/v1/counter/notification`)
 
@@ -267,7 +271,7 @@ export const logout = () => async (dispatch) => {
 
 export const allUsers = () => async (dispatch) => {
     try {
-        
+
         dispatch({ type: ALL_USERS_REQUEST })
 
         const { data } = await axios.get('/api/v1/users')
@@ -280,6 +284,33 @@ export const allUsers = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: ALL_USERS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const updateRole = (userData) => async (dispatch) => {
+    try {
+
+        dispatch({ type: UPDATE_ROLE_REQUEST })
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+                // "Content-Type": "application/json"
+            }
+        }
+
+        const { data } = await axios.post(`/api/v1/updateuser/role`, userData, config)
+
+        dispatch({
+            type: UPDATE_ROLE_SUCCESS,
+            payload: data.success
+        })
+
+    } catch (error) {
+        dispatch({
+            type: UPDATE_ROLE_FAIL,
             payload: error.response.data.message
         })
     }

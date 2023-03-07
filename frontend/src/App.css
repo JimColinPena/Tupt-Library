@@ -120,6 +120,46 @@ body {
     }
 }
 
+.button_row{
+    padding: 10px;
+}
+
+.btn-student {
+    background-color: #0e9594;
+    border-radius: 2rem;
+    color: white;
+    font-size: xx-large;
+    font-family: sans-serif;
+    height: 20rem;
+    width: 20rem;
+}
+
+.btn-student:hover {
+    background-color: #10adad;
+    color: white;
+}
+
+.student_icon{
+    width: 15rem;
+}
+
+.btn-faculty {
+    background-color: #b62727;
+    border-radius: 2rem;
+    color: white;
+    font-size: xx-large;
+    font-family: sans-serif;
+    height: 20rem;
+    width: 20rem;
+}
+
+.btn-faculty:hover {
+    background-color: #df3f3f;
+    color: white;
+}
+.faculty_icon{
+    width: 15rem;
+}
 
 .google_button {
     text-align: center
@@ -135,6 +175,11 @@ body {
 .footer a {
     text-decoration: none;
     color: var(--text-color);
+}
+
+.nav-text{
+    color: white;
+    
 }
 
 .header span {
@@ -609,7 +654,17 @@ footer {
     width: 82%;
 }
 
+.management-header h1 {
+    margin: 10px 10px;
+}
+
+.management-header h1 i {
+    color: #830001;
+    border-radius: 50%;
+    background-color: white;
+}
 .management-content {
+    color: black;
     margin-left: 17%;
     width: 82%;
     height: 100%;
@@ -622,19 +677,17 @@ footer {
     padding: 1.1rem 0 0 10px;
 }
 
-.management-header h1 {
-    margin: 10px 10px;
-}
-
-.management-header h1 i {
-    color: #830001;
-    border-radius: 50%;
-    background-color: white;
-}
-
 .management-body {
     position: relative;
     width: 100%;
+}
+
+.content-center {
+    color : black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .Modal-Schedule {

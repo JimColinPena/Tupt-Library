@@ -100,10 +100,12 @@ const userSchema = new mongoose.Schema({
     ],
     role: {
         type: String,
-        default: 'student',
-        position: {
-            type: String,
+        default: 'unset',
+        enum: {
+            values: ['admin', 'faculty', 'student', 'unset'],
+            message: 'There is error on proccessing this input'
         }
+
     },
     status: {
         type: String,

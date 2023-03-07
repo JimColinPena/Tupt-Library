@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import MaterialTable from 'material-table'
 import { ThemeProvider, createTheme } from '@mui/material';
+
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import MetaData from '../layout/MetaData'
@@ -252,46 +253,47 @@ const BookManagement = () => {
             {loading ? <Loader /> : (
                 <div className="management-content">
                     <h1>Add Book <span></span>
-                        <Link to={"/book/new"}>
-                            <i className="fa-solid fa-circle-plus"></i>
-                        </Link>
+                        <Link to={"/book/new"}><i className="fa-solid fa-circle-plus"></i></Link>
                     </h1>
                     <div className="management-body">
-                        <h4 className='text-center'>Year Published</h4>
-                        <div className='row' style={{ marginBottom: 10 }}>
-                            <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '20px' }} />
+                        <div className='row'>
+                            <div className='col-md-3'>
+                                <h4 className='text-center'>Year Published</h4>
+                                <div className='row' style={{ marginBottom: 10 }}>
+                                    <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '10px', width: '80px' }} />
 
-                            <span style={{ paddingTop: '1em' }}>&#8212;</span>
+                                    <span style={{ paddingTop: '1em' }}>&#8212;</span>
 
-                            <TextField id="yearEnd" label="End Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '20px' }} />
-                        </div>
+                                    <TextField id="yearEnd" label="End Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '10px', width: '80px'}} />
+                                </div>
 
-                        <div className='row' style={{ marginBottom: 10 }}>
-                            <button type="button" className="btn btn-primary col-md-1" onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '0px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
+                                <div className='row' style={{ marginBottom: 10 }}>
+                                    <button type="button" className="btn btn-primary" onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '5px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
 
-                            <button type="button" className="btn btn-danger col-md-1" onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '0px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
-                        </div>
+                                    <button type="button" className="btn btn-danger" onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '5px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div className='col-md-9'>
+                                <h4 className='text-center'>Filter by Subject</h4>
+                                <div className='row'>
+                                    {books.bookSubjects && books.bookSubjects.length > 0 ? (
 
-                        <div>
-                            <h4 className='text-center'>Filter by Subject</h4>
-                            <div className='row'>
-                                {books.bookSubjects && books.bookSubjects.length > 0 ? (
+                                        subjectArr.map((subject) => {
+                                            return (
+                                                <div className='col-sm-2' key={subject}>
+                                                    {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                    {/* {console.log(subjectFilter)} */}
 
-                                    subjectArr.map((subject) => {
-                                        return (
-                                            <div className='col-sm-2' key={subject}>
-                                                {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
-                                                {/* {console.log(subjectFilter)} */}
+                                                    <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                    {/* {console.log(subjectFilter)} */}
+                                                </div>
+                                            )
+                                        })
 
-                                                <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
-                                                {/* {console.log(subjectFilter)} */}
-                                            </div>
-                                        )
-                                    })
-
-                                ) : (
-                                    <li>Subject not Found</li>
-                                )}
+                                    ) : (
+                                        <li>Subject not Found</li>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

@@ -8,6 +8,7 @@ const {
     activateUser,
     updatepasswordUser,
     allUsers,
+    setRole,
     endTerm
 } = require('../controllers/userController');
 
@@ -15,6 +16,7 @@ router.route('/user/updatepassword/:id').put(isAuthenticatedUser, updatepassword
 router.route('/user/deactivate/:id').put(isAuthenticatedUser, deactivateUser);
 router.route('/user/activate/:id').put(activateUser);
 router.route('/users').get(isAuthenticatedUser, allUsers);
+router.route('/updateuser/role').post(isAuthenticatedUser, setRole);
 router.route('/user/endterm').put(isAuthenticatedUser, endTerm)
 
 module.exports = router;

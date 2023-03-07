@@ -72,12 +72,12 @@ const AdminDashboard = () => {
                         <div className="dashboard_pending-userapproval dash-item">
 
                             <div className="icon">
-                                <p>{pendingUsersRequests}</p>
+                                <p>{penalties.penalty_count}</p>
                                 <span className="material-symbols-outlined">
                                     how_to_reg
                                 </span>
                             </div>
-                            <Link to="/admin/personnels"><h3 href="/">Penalties</h3></Link>
+                            <Link to="/admin/penalty"><h3 href="/">Penalties</h3></Link>
                         </div>
 
 

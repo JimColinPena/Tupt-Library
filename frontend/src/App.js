@@ -25,7 +25,7 @@ import ReturnedBooks from './components/admin/ReturnedBooks'
 
 import BookSearch from './components/user/BookSearch'
 import UpdateProfile from './components/user/UpdateProfile'
-import StudentBookDetails from './components/user/StudentBookDetails'
+import UserBookDetails from './components/user/UserBookDetails'
 import BorrowDetails from './components/user/BorrowDetails'
 import AppointmentDetails from './components/user/AppointmentDetails'
 
@@ -90,7 +90,7 @@ function App() {
 					<Route path="/notification/:id" element={<ProtectedRoute isAdmin={false}><Notification /></ProtectedRoute>} />
 
 					<Route path="/books" element={<ProtectedRoute isAdmin={false}><BookSearch /></ProtectedRoute>} />
-					<Route path="/book/:id" element={<ProtectedRoute isAdmin={false}><StudentBookDetails /></ProtectedRoute>} />
+					<Route path="/book/:id" element={<ProtectedRoute isAdmin={false}><UserBookDetails /></ProtectedRoute>} />
 					<Route path="/borrow/request" element={<ProtectedRoute isAdmin={false}><BorrowDetails /></ProtectedRoute>} />
 					<Route path="/borrow/books" element={<ProtectedRoute isAdmin={false}><AppointmentDetails /></ProtectedRoute>} />
 					<Route path="/profile/update/:id" element={<ProtectedRoute isAdmin={false}><UpdateProfile /></ProtectedRoute>} />

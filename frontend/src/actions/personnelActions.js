@@ -621,7 +621,7 @@ export const getPenaltyCheck = () => async (dispatch) => {
         const { data } = await axios.get(`/api/v1/penalty/check/`)
         dispatch({
             type: PENATY_CHECK_SUCCESS,
-            payload: data.penalties
+            payload: data
         })
     } catch (error) {
         dispatch({

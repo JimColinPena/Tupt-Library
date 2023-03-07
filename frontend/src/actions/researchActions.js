@@ -54,10 +54,6 @@ export const newResearches = (researchData) => async (dispatch) => {
                  // "Content-Type": "application/json"
             }
         }
-        // for(var pair of researchData.entries()) {
-        //    console.log(pair[0]+ ', '+ pair[1]); 
-        // }
-
         const { data } = await axios.post('/api/v1/research/new', researchData, config)
 
         dispatch({
