@@ -9,11 +9,14 @@ const borrowSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Book'
     }],
-
     accessions: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Accession'
     }],
+    borrower_role: {
+        type: String,
+
+    },
     appointmentDate: {
         type: Date,
     },

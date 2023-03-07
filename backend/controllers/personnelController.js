@@ -728,7 +728,7 @@ exports.checkPenalty = async (req, res, next) => {
 
 
     //fetching all borrow object with status 'Accepted'
-    const borrow = await Borrow.find({ status: 'Accepted' })
+    const borrow = await Borrow.find({ status: 'Accepted', borrower_role: 'student'})
 
     //loop borrow collection 
     borrow.forEach(async data => {

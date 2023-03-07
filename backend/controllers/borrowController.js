@@ -6,6 +6,7 @@ const Return = require('../models/return');
 exports.borrowBook = async (req, res, next) => {
     // console.log(req.body);
     const checkAvailability = await Borrow.find({ userId: req.body.userId });
+    const user = await User.findOne({ _id: req.body.userId });
 
     if (checkAvailability.length == 0) {
         //if user has no book request, create borrow object and decrement on_shelf value while increment out value
@@ -13,7 +14,8 @@ exports.borrowBook = async (req, res, next) => {
         const newBorrowData = {
             userId: req.body.userId,
             bookId: req.body.bookId,
-            status: "To Confirm"
+            status: "To Confirm",
+            borrower_role: user.role
         }
         // console.log(newBorrowData)
         const borrowbook = await Borrow.create(newBorrowData);
@@ -68,8 +70,7 @@ exports.checkBorrowBook = async (req, res, next) => {
         approvevar = true;
     }
 
-    // query to check if the user have more than 2 books
-    // console.log(pendingBook.length)
+    // query to check the user role and limit the books that can be borrowed
     if (pendingBook.length > 0) {
         if (user.role == 'faculty') {
             if (pendingBook[0].bookId.length < 5) {
@@ -86,6 +87,8 @@ exports.checkBorrowBook = async (req, res, next) => {
             else {
                 pendingvar = true;
             }
+        } else {
+            console.log('error console on borroweController at line 91')
         }
     }
     else {
