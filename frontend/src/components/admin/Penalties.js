@@ -120,16 +120,15 @@ const Penalties = () => {
             <MetaData title={'TUP-T Online Library - Penalties'} />
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <div className="management-content">
-                    <div className="management-body">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <h1 className="text-center">Penalties</h1>
+                <div className="dashboard-container">
+                    <div className="table-container">
+                            <div className="col-12">
+                                <h1 className="text-left">Penalties</h1>
 
                                 {loading ? <Loader /> : (
                                     <MDBDataTable
                                         data={setAllPenalties()}
-                                        className="px-3"
+                                        className="px-5 "
                                         bordered
                                         noBottomColumns
                                     />
@@ -137,7 +136,6 @@ const Penalties = () => {
                             </div>
                         </div>
                     </div>
-                </div>
             )}
         </Fragment>
     )

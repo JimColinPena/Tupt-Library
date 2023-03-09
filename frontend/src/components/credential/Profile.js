@@ -53,7 +53,7 @@ const Profile = () => {
                                     )}
                                     {' '}|{' '}
                                     <i className="fa fa-envelope"></i>{(user.email != null || user.email != undefined) ? (
-                                        <Fragment>{" "+user.email}</Fragment>
+                                        <Fragment>{" " + user.email}</Fragment>
                                     ) : (
                                         <div>not set</div>
                                     )}
@@ -61,7 +61,7 @@ const Profile = () => {
                                     <br />
                                     {/* <i className="fa fa-home"></i> {user.address} */}
                                     <i className="fa fa-home"></i>{(user.address != null || user.address != undefined) ? (
-                                        <Fragment>{" "+user.address}</Fragment>
+                                        <Fragment>{" " + user.address}</Fragment>
                                     ) : (
                                         <div>not set</div>
                                     )}

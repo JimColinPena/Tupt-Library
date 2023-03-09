@@ -205,7 +205,7 @@ const BorrowedBooks = () => {
 					<Fragment>
 						<div>
 							<button className="btn btn-primary py-1 px-2 ml-2" data-toggle="modal" data-target={"#AccessionBorrowModal" + accession_item._id}>
-								<i className="fa fa-plus"></i>
+								Add Accession
 							</button>
 							<div className="modal fade" data-backdrop="false" id={"AccessionBorrowModal" + accession_item._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 								<div className="modal-dialog" role="document">
@@ -271,25 +271,34 @@ const BorrowedBooks = () => {
 			field: '_id',
 			render: rowData => (
 				<Fragment>
-					<div className="icon-buttons">
-						<Tooltip title="Return">
-							<button type="button" className="btn btn-success" onClick={() => returnedHandler(rowData._id)}>
-								Returned
-							</button>
-						</Tooltip>
+					<div className="dropleft show text-center">
+						<a className="btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fa-solid fa-ellipsis-vertical"></i>
+						</a>
+						<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<div className="d-flex flex-column">
+								<Tooltip title="Return">
+									<button type="button" className="btn" onClick={() => returnedHandler(rowData._id)}>
+										Returned
+									</button>
+								</Tooltip>
 
-						<Tooltip title="Edit">
-							<button className="btn btn-warning py-1 px-2 ml-2" data-toggle="modal" data-target={"#EditBorrowModal" + rowData._id}>
-								<i className="fa fa-pencil"></i>
-							</button>
-						</Tooltip>
+								<Tooltip title="Edit">
+									<button className="btn" data-toggle="modal" data-target={"#EditBorrowModal" + rowData._id}>
+										Edit
+									</button>
+								</Tooltip>
 
-						<Tooltip title="Decline">
-							<button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeclineBookModal" + rowData._id}>
-								<i className="fa fa-trash"></i>
-							</button>
-						</Tooltip>
+								<Tooltip title="Decline">
+									<button className="btn" data-toggle="modal" data-target={"#DeclineBookModal" + rowData._id}>
+										Decline
+									</button>
+								</Tooltip>
+							</div>
+						</div>
 					</div>
+
+
 
 					<div className="modal fade" data-backdrop="false" id={"EditBorrowModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 						<div className="modal-dialog" role="document">
@@ -374,7 +383,7 @@ const BorrowedBooks = () => {
 									</button>
 								</div>
 								<div className='modal-body'>
-									<h1>Do you really want to decline this appointment?</h1>
+									<h4>Do you really want to decline this appointment?</h4>
 								</div>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-danger" onClick={() => declineHandler(rowData._id)} data-dismiss="modal">Confirm</button>
@@ -399,20 +408,10 @@ const BorrowedBooks = () => {
 		<Fragment>
 			<MetaData title={'TUP-T Online Library - Admin'} />
 			<SideNavbarAdmin />
-			{loading ? <Loader /> : (
-				<div className="management-content">
-					<div className="management-body">
-						<div className="row">
-							<div className="col-md-12">
-								<div className="next">
-									<Link to="/returned/books">
-										<span className='span1'>Returned Books</span>
-										<span className="material-symbols-outlined returned_books">
-											navigate_next
-										</span>
-									</Link>
-								</div>
-								<h1 className="text-center">Borrowed</h1>
+				{loading ? <Loader /> : (
+					<div className="dashboard-container">
+						<div className="table-container">
+							<div className="col-12">
 								{loading ? <Loader /> : (
 									<ThemeProvider theme={defaultMaterialTheme}>
 										<MaterialTable
@@ -446,8 +445,7 @@ const BorrowedBooks = () => {
 							</div>
 						</div>
 					</div>
-				</div>
-			)}
+				)}
 		</Fragment>
 	)
 }

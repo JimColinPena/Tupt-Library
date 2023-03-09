@@ -52,16 +52,16 @@ const ReturnedBooks = () => {
             title: 'TUPT-ID',
             field: 'userId.id_number',
             render: rowData => (
-                        <Fragment>
-                            <div><p>{rowData.userId.id_number}</p></div>
-                        </Fragment>
-              ),
-              cellStyle: {
+                <Fragment>
+                    <div><p>{rowData.userId.id_number}</p></div>
+                </Fragment>
+            ),
+            cellStyle: {
                 textAlign: "left",
             },
-			headerStyle: {
-				textAlign: 'center'
-			}
+            headerStyle: {
+                textAlign: 'center'
+            }
         },
         {
             title: 'Name',
@@ -70,10 +70,10 @@ const ReturnedBooks = () => {
                 <Fragment>
                     <div><p><Link to={`/detail/student/${rowData.userId._id}`}>{rowData.userId.name} </Link></p></div>
                 </Fragment>
-      ),
-      cellStyle: {
-        textAlign: "left",
-    },
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
         },
         {
             title: 'E-mail',
@@ -83,10 +83,10 @@ const ReturnedBooks = () => {
                 <Fragment>
                     <div><p>{rowData.userId.email}</p></div>
                 </Fragment>
-         ),
-          cellStyle: {
-            textAlign: "left",
-        },
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
         },
         {
             title: 'Contact',
@@ -97,10 +97,10 @@ const ReturnedBooks = () => {
                 <Fragment>
                     <div><p>{rowData.userId.contact}</p></div>
                 </Fragment>
-         ),
-          cellStyle: {
-            textAlign: "left",
-        },
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
         },
         {
             title: 'Book',
@@ -108,13 +108,13 @@ const ReturnedBooks = () => {
             render: rowData => (
                 rowData.bookId.map((item, index) => (
                     <Fragment>
-                            <div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
+                        <div><p><Link to={`/admin/single/book/${item._id}`}>{item.title} </Link></p></div>
                     </Fragment>
                 ))
-      ),
-      cellStyle: {
-        textAlign: "left",
-    },
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
         },
         {
             title: 'Due Date',
@@ -124,80 +124,69 @@ const ReturnedBooks = () => {
                 <Fragment>
                     <div><p>{dateFormat(rowData.returnedDate.split('T')[0], "mmmm dd, yyyy")}</p></div>
                 </Fragment>
-      ),
-      cellStyle: {
-        textAlign: "left",
-    },
-	headerStyle: {
-		textAlign: 'center'
-	}
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
+            headerStyle: {
+                textAlign: 'center'
+            }
         },
         {
             title: 'Returned To',
             field: 'returnedTo.name',
             searchable: false,
-      cellStyle: {
-        textAlign: "left",
-    },
-	headerStyle: {
-		textAlign: 'center'
-	}
+            cellStyle: {
+                textAlign: "left",
+            },
+            headerStyle: {
+                textAlign: 'center'
+            }
         },
     ]
-      
+
     return (
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <div className="management-content">
-                    <div className="management-body">
-                    <div className="row">
-                    <div className="col-md-12">
-                                    <div className="previous">
-                                        <Link to="/books/borrowed">
-                                            <span className='span2'>Borrowed Books</span>
-                                            <span className="material-symbols-outlined borroweed_books">
-                                                navigate_before
-                                            </span>
-                                        </Link>
-                                    </div>
-                                    <h1 className="text-center">Returned</h1>
-                                    {loading ? <Loader /> : (
-                        <ThemeProvider theme={defaultMaterialTheme}>
-                            <MaterialTable
-                                title='Returned Books List'
-                                data={returnedbooks}
-                                columns={col}
-                                localization={
-                                    { 
-                                        toolbar: { 
-                                            searchPlaceholder: 'ID, Name...' 
-                                        } 
-                                    }
-                                }
-                                options={{
-                                    pageSize:10, 
-                                    headerStyle: {
-                                      fontSize: 16,
-                                      fontWeight: 'bold',
-                                      backgroundColor: '#BA0202',
-                                      color: '#ffffff',
-                                    },
-                                    rowStyle: {
-                                        fontSize: 15,
-                                        backgroundColor: '#F9F5F5',
-                                      },
-                                      emptyRowsWhenPaging: false
-                                  }}
-                            />
-                            </ThemeProvider>
-                        )}
-                                </div>
+                <div className="dashboard-container">
+                    <div className="table-container">
+                        <div className="col-12">
+                            {loading ? <Loader /> : (
+                                <ThemeProvider theme={defaultMaterialTheme}>
+                                    <MaterialTable
+                                        title='Returned Books List'
+                                        data={returnedbooks}
+                                        columns={col}
+                                        localization={
+                                            {
+                                                toolbar: {
+                                                    searchPlaceholder: 'ID, Name...'
+                                                }
+                                            }
+                                        }
+                                        options={{
+                                            pageSize: 10,
+                                            headerStyle: {
+                                                fontSize: 16,
+                                                fontWeight: 'bold',
+                                                backgroundColor: '#BA0202',
+                                                color: '#ffffff',
+                                            },
+                                            rowStyle: {
+                                                fontSize: 15,
+                                                backgroundColor: '#F9F5F5',
+                                            },
+                                            emptyRowsWhenPaging: false
+                                        }}
+                                    />
+                                </ThemeProvider>
+                            )}
+                        </div>
+                    </div>
                 </div>
-                </div>
-                </div>
-          )}
+            )}
         </Fragment>
     )
 }

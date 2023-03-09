@@ -44,30 +44,24 @@ const AppointmentDetails = () => {
                 <Fragment>
                     {studentappointmentbook ? (
                         <Fragment>
-                            <div className="management-content">
+                            <div className="dashboard-container">
                                 <h1>Borrowed Books</h1>
-                                <hr />
-                                <div className="management-body">
-                                    <div className='row'>
-                                        {studentappointmentbook.bookId && studentappointmentbook.bookId.map(data => (
-                                            <div className='col-md-4'>
-                                                <div className='card-header'>
-                                                    {(data.book_image.url == null || undefined) ?
-                                                        <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
-                                                        :
-                                                        <img alt="" src={data.book_image.url} />
-                                                    }
-                                                </div>
-                                                <div className='card-body'>
-                                                    <h3>{data.title}</h3>
-                                                </div>
+                                <div className="borrowed-card">
+                                    {studentappointmentbook.bookId && studentappointmentbook.bookId.map(data => (
+                                        <div className=''>
+                                            <div className='card-header'>
+                                                {(data.book_image.url == null || undefined) ?
+                                                    <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
+                                                    :
+                                                    <img alt="" src={data.book_image.url} />
+                                                }
                                             </div>
-                                        ))}
-                                    </div>
-                                    <hr />
-                                    <h2>Schedule: {(studentappointmentbook.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.appointmentDate, "mmmm dd, yyyy")}</h2>
-                                    <h2>Duedate: {(studentappointmentbook.dueDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.dueDate, "mmmm dd, yyyy")}</h2>
-                                    <h2>Status: {studentappointmentbook.status}</h2>
+                                            <h3>{data.title}</h3>
+                                        </div>
+                                    ))}
+                                    <span>Schedule: {(studentappointmentbook.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.appointmentDate, "mmmm dd, yyyy")}</span>
+                                    <span>Duedate: {(studentappointmentbook.dueDate == null || undefined) ? 'not set' : dateFormat(studentappointmentbook.dueDate, "mmmm dd, yyyy")}</span>
+                                    <span>Status: {studentappointmentbook.status}</span>
                                 </div>
                             </div>
                         </Fragment>

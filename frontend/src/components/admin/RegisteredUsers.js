@@ -1,6 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import { MDBDataTable } from 'mdbreact'
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import { ThemeProvider, createTheme } from '@mui/material';
+import MaterialTable from 'material-table'
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -12,7 +16,7 @@ import { useAlert } from 'react-alert'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { allPersonnels, deletePersonnel, getAllActiveStudents, getAllInactiveStudents, approveStudent, deleteStudent, clearErrors } from '../../actions/personnelActions'
-
+import { allUsers, activateUsers, deactivatedUsers, endterm } from '../../actions/userActions'
 import { DELETE_PERSONNEL_RESET, DELETE_STUDENT_RESET, APPROVE_STUDENT_RESET } from '../../constants/personnelConstants'
 const PersonnelManagement = () => {
 
@@ -25,6 +29,8 @@ const PersonnelManagement = () => {
     const { inactive_students } = useSelector(state => state.allInactiveStudents);
     const { PersonnelDeleted } = useSelector(state => state.personnel);
     const { StudentDeleted, isApproved } = useSelector(state => state.student);
+
+    const defaultMaterialTheme = createTheme({});
 
     useEffect(() => {
         dispatch(allPersonnels());
@@ -67,54 +73,77 @@ const PersonnelManagement = () => {
         dispatch(approveStudent(id))
     }
 
-    const setPersonnels = () => {
-        const data = {
-            columns: [
-                {
-                    label: 'ID',
-                    field: 'id_number',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Name',
-                    field: 'name',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Contact No.',
-                    field: 'contact',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Actions',
-                    field: 'actions',
-                },
-            ],
-            rows: []
-        }
+    const acvateUserHandler = (id) => {
+        dispatch(activateUsers(id))
+    }
 
-        personnels.forEach(personnels => {
-            data.rows.push({
-                id_number: personnels.id_number,
-                name: personnels.name,
-                contact: personnels.contact,
-                // yearPub: personnels.yearPub,
-                actions: <Fragment>
-                    <Link to={`/admin/personnel/${personnels._id}`} className="btn btn-primary py-1 px-2">
-                        <i className="fa fa-pencil"></i>
-                    </Link>
-                    <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target="#DeletePersonnelModal">
-                        <i className="fa fa-trash"></i>
-                    </button>
-                    {/*<button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deletePersonnelHandler(personnels._id)}>
-                        <i className="fa fa-trash"></i>
-                    </button>*/}
+    const deacvateUserHandler = (id) => {
+        dispatch(deactivatedUsers(id))
+    }
 
-                    <div className="modal fade" id="DeletePersonnelModal" tabindex="-1" role="dialog" aria-labelledby="DeletePersonnelModalLabel" aria-hidden="true">
+    const colStudents = [
+        {
+            title: 'ID',
+            field: 'id_number',
+            cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Name',
+            field: 'name',
+            render: rowData => (
+                <Fragment>
+                    <div><p><Link to={`/detail/student/${rowData._id}`}>{rowData.name} </Link></p></div>
+                </Fragment>
+            ),
+            cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Contact',
+            field: 'contact',
+            searchable: false,
+            cellStyle: {
+                textAlign: "left",
+            },
+        },
+        {
+            title: 'Actions',
+            field: '_id',
+            cellStyle: {
+                textAlign: "left",
+            },
+            render: rowData => (
+                <Fragment>
+                    <div className="icon-buttons">
+                        <Tooltip title="Delete">
+                            <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeleteActiveModal" + rowData._id}>
+                                <i className="fa fa-trash"></i>
+                            </button>
+                        </Tooltip>
+                        {rowData.status == 'active' ?
+                            <Tooltip title="Deactivate">
+                                <button className="btn btn-success py-1 px-2 ml-2" data-toggle="modal" data-target={"#DeactivateModal" + rowData._id}>
+                                    <i className="fa fa-unlock"></i>
+                                </button>
+                            </Tooltip>
+
+                            :
+                            <Tooltip title="Activate">
+                                <button className="btn btn-danger py-1 px-2 ml-2" data-toggle="modal" data-target={"#ActivateModal" + rowData._id}>
+                                    <i className="fa fa-lock"></i>
+                                </button>
+                            </Tooltip>
+                        }
+                    </div>
+
+                    <div className="modal fade" data-backdrop="false" id={"DeleteActiveModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h3 className="modal-title" id="DeletePersonnelModalLabel">Delete User</h3>
+                                    <h3 className="modal-title" id="DeleteActiveModalLabel">Delete User</h3>
                                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -123,19 +152,55 @@ const PersonnelManagement = () => {
                                     Are you sure you want to delete this user?
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" onClick={() => deletePersonnelHandler(personnels._id)} data-dismiss="modal">Delete</button>
+                                    <button type="button" className="btn btn-danger" onClick={() => deleteStudentHandler(rowData._id)} data-dismiss="modal">Delete</button>
                                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="DeactivateModalLabel">Deactivate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to deactivate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={() => deacvateUserHandler(rowData._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" data-backdrop="false" id={"ActivateModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title" id="ActivateModalLabel">Activate User</h3>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div className="modal-body">
+                                    Are you sure you want to activate this User?
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-primary" onClick={() => acvateUserHandler(rowData._id)} data-dismiss="modal">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Fragment>
-            })
-        })
+            ),
+            searchable: false
+        },
 
-        return data;
-    }
+    ]
 
     const setActiveStudents = () => {
         const data = {
@@ -334,44 +399,45 @@ const PersonnelManagement = () => {
             <MetaData title={'TUP-T Online Library - Admin'} />
             {/*<div className="row">*/}
             <SideNavbarAdmin />
-
-            <div className="management-content">
-                {/*<div className="management-header">
-                        <h1>Personnels <span></span>
-                            <Link to={"/personnel/new"}>
-                                <i className="fa-solid fa-circle-plus"></i>
-                            </Link> 
-                        </h1>
-                    </div>*/}
-                <div className="row">
-                    <div className="col-md-10 table-section">
-                        <div className="">
-                            <h1 className="text-center">Registered Users</h1>
-                            {loading ? <Loader /> : (
-                                <MDBDataTable
-                                    data={setActiveStudents()}
-                                    className="px-3"
-                                    bordered
-                                    noBottomColumns
-                                    hover
-                                />
-                            )}
+            <div className="col-12">
+                {loading ? <Loader /> : (
+                    <div className="dashboard-container">
+                        <div className='table-container'>
+                            <div className="col-12">
+                                {loading ? <Loader /> : (
+                                    <ThemeProvider theme={defaultMaterialTheme}>
+                                        <MaterialTable
+                                            title='Students List'
+                                            data={active_students}
+                                            columns={colStudents}
+                                            localization={
+                                                {
+                                                    toolbar: {
+                                                        searchPlaceholder: 'ID, Name...'
+                                                    }
+                                                }
+                                            }
+                                            options={{
+                                                pageSize: 10,
+                                                headerStyle: {
+                                                    fontSize: 16,
+                                                    fontWeight: 'bold',
+                                                    backgroundColor: '#BA0202',
+                                                    color: '#ffffff',
+                                                },
+                                                rowStyle: {
+                                                    fontSize: 15,
+                                                    backgroundColor: '#F9F5F5',
+                                                },
+                                                emptyRowsWhenPaging: false,
+                                            }}
+                                        />
+                                    </ThemeProvider>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="tab-container">
-                    <ul className="tabs">
-                        <Link className="tab-link" to={"/admin/personnels"}>
-                            Personnel
-                        </Link> 
-                        <Link className="tab-link" to={"/active/student"}>
-                            Registered Users
-                        </Link> 
-                        <Link className="tab-link" to={"/inactive/student"}>
-                            Approval of Users
-                        </Link> 
-                    </ul>
-                </div>
+                )}
             </div>
         </Fragment>
     )

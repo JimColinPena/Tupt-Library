@@ -111,8 +111,8 @@ const StudentEvaluation = () => {
 	return (
 		<Fragment>
 			<MetaData title={'TUPT-T Online Library - Evaluation'} />
-			<SideNavbarEmpty />
-			{loading || loading === undefined  ? <Loader /> :
+			{/* <SideNavbarEmpty /> */}
+			{loading? <Loader /> :
 				<Fragment>
 					<div className="management-content">
 						<div className="dashboard-page">

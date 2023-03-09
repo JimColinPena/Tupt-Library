@@ -261,7 +261,7 @@ const PersonnelManagement = () => {
                         </div>
                     </div>
 
-                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal"+rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
+                    <div className="modal fade" data-backdrop="false" id={"DeactivateModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeactivateModal" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -279,7 +279,7 @@ const PersonnelManagement = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="modal fade" data-backdrop="false" id={"ActivateModal"+rowData._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
+                    <div className="modal fade" data-backdrop="false" id={"ActivateModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="ActivateModal" aria-hidden="true">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
@@ -310,16 +310,16 @@ const PersonnelManagement = () => {
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <div className="management-content">
-                    <div className="row">
-                        <div className="col-md-6">
-                            <div className="">
-                                <h1 className="text-center">
+                <div className='col-12'>
+                    <div className="dashboard-container">
+                        <div className="table-container">
+                            <div className="col-12">
+                                <div className='personnel-button'>
                                     <Link to={"/personnel/new"}>
                                         <i className="fa-solid fa-circle-plus"></i>
+                                        Personnel   
                                     </Link>
-                                    Personnel
-                                </h1>
+                                </div>
                                 {loading ? <Loader /> : (
                                     <ThemeProvider theme={defaultMaterialTheme}>
                                         <MaterialTable
@@ -353,45 +353,6 @@ const PersonnelManagement = () => {
                                 )}
                             </div>
                         </div>
-
-                        <div className="col-md-6">
-                            <div className="">
-                                <h1 className="text-center">
-                                    Students
-                                </h1>
-                                {loading ? <Loader /> : (
-                                    <ThemeProvider theme={defaultMaterialTheme}>
-                                        <MaterialTable
-                                            title='Students List'
-                                            data={active_students}
-                                            columns={colStudents}
-                                            localization={
-                                                {
-                                                    toolbar: {
-                                                        searchPlaceholder: 'ID, Name...'
-                                                    }
-                                                }
-                                            }
-                                            options={{
-                                                pageSize: 10,
-                                                headerStyle: {
-                                                    fontSize: 16,
-                                                    fontWeight: 'bold',
-                                                    backgroundColor: '#BA0202',
-                                                    color: '#ffffff',
-                                                },
-                                                rowStyle: {
-                                                    fontSize: 15,
-                                                    backgroundColor: '#F9F5F5',
-                                                },
-                                                emptyRowsWhenPaging: false,
-                                            }}
-                                        />
-                                    </ThemeProvider>
-                                )}
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             )}

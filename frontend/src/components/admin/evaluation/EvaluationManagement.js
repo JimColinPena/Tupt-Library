@@ -75,7 +75,7 @@ const EvaluationManagement = () => {
     const [school_year, setSchool_year] = useState('')
     const [edit_school_year, setEdit_school_year] = useState('')
 
-    const checkEvaluationHandler  = () => {
+    const checkEvaluationHandler = () => {
         // console.log('checkEvaluationHandler')
         dispatch(checkEvaluation());
     }
@@ -95,7 +95,7 @@ const EvaluationManagement = () => {
         dispatch(editEvaluations(evaluationId, formData));
     }
 
-    const deleteEvaluationHandler  = (deleteId) => {
+    const deleteEvaluationHandler = (deleteId) => {
         dispatch(deleteEvaluations(deleteId));
     }
 
@@ -148,15 +148,12 @@ const EvaluationManagement = () => {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h3 className="modal-title" id="EditEvaluationModalLabel">Edit Evaluation Form</h3>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
                                 </div>
                                 <div className="modal-body">
                                     <div className='row'>
                                         <div className='col-md-12'>
-                                            <label htmlFor="edit_school_year_field" className="col-sm-6 col-form-label">School Year</label>
-                                            <div className="col-sm-8">
+                                            <label htmlFor="edit_school_year_field">School Year</label>
+                                            <div>
                                                 <input
                                                     type="text"
                                                     id="edit_school_year_field"
@@ -205,84 +202,89 @@ const EvaluationManagement = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
-            <div className="management-content">
-                <h1>Evaluation <span></span>
-                    <button className="btn btn-primary" data-toggle="modal" data-target={"#AddEvaluationModal"}>
-                        <i className="fa-solid fa-circle-plus"></i>
-                    </button>
-                    <div className="modal fade" id={"AddEvaluationModal"} tabindex="-1" role="dialog" aria-labelledby="AddEvaluationModalLabel" aria-hidden="true">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h3 className="modal-title" id="AddEvaluationModalLabel">Add Evalation</h3>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <form className="EvaluationForm">
-                                        <div className="modal-body">
-                                            <label htmlFor="accession_field" className="col-sm-2 col-form-label">School Year</label>
-                                            <div className="col-sm-10">
-                                                <input
-                                                    type="text"
-                                                    id="accession_field"
-                                                    className="form-control"
-                                                    name='accession'
-                                                    value={school_year}
-                                                    placeholder='S.Y XX-XX'
-                                                    onChange={(e) => setSchool_year(e.target.value)}
-                                                />
+            <div className='col-12'>
+                <div className="dashboard-container">
+                    <div className='table-container'>
+                        <div className='eval-button-table mt-5'>
+                            <button className="btn btn-primary" data-toggle="modal" data-target={"#AddEvaluationModal"}>
+                                Add
+                            </button>
+                            <button type="button" className="btn btn-danger" onClick={() => checkEvaluationHandler()}>
+                                Student Evaluation
+                            </button>
+                        </div>
+                        <div className="modal fade" id={"AddEvaluationModal"} tabindex="-1" role="dialog" aria-labelledby="AddEvaluationModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h3 className="modal-title" id="AddEvaluationModalLabel">Add Evaluation</h3>
+                                        {/* <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button> */}
+                                    </div>
+                                    <div>
+                                        <form className="EvaluationForm">
+                                            <div className="modal-body">
+                                                <label htmlFor="accession_field">School Year</label>
+                                                <div>
+                                                    <input
+                                                        type="text"
+                                                        id="accession_field"
+                                                        className="form-control"
+                                                        name='accession'
+                                                        value={school_year}
+                                                        placeholder='S.Y XX-XX'
+                                                        onChange={(e) => setSchool_year(e.target.value)}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-primary" onClick={submitHandler} data-dismiss="modal">Add</button>
-                                            <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
-                                        </div>
-                                    </form>
+                                            <div className="modal-footer">  
+                                                <button type="button" className="btn btn-primary" onClick={submitHandler} data-dismiss="modal">Add</button>
+                                                <button type="button" className="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {/* <Link to="/student/evaluation" className="evaluation_btn"> */}
-                        <button type="button" className="evaluation_btn btn btn-danger" onClick={() => checkEvaluationHandler()}>
-                            Student Evaluation 
-                        </button>
-                    {/* </Link> */}
-                    <div className='management-body'>
-                        {loading || loading === undefined ? <Loader /> : (
-                            <ThemeProvider theme={defaultMaterialTheme}>
-                                <MaterialTable
-                                    title='Evaluations List'
-                                    data={evaluations.evaluation}
-                                    columns={col}
-                                    localization={
-                                        {
-                                            toolbar: {
-                                                searchPlaceholder: 'School Year, Status...'
+                        {/* <Link to="/student/evaluation" className="evaluation_btn"> */}
+
+                        {/* </Link> */}
+                        <div className=''>
+                            {loading || loading === undefined ? <Loader /> : (
+                                <ThemeProvider theme={defaultMaterialTheme}>
+                                    <MaterialTable
+                                        title='Evaluations List'
+                                        data={evaluations.evaluation}
+                                        columns={col}
+                                        localization={
+                                            {
+                                                toolbar: {
+                                                    searchPlaceholder: 'School Year, Status...'
+                                                }
                                             }
                                         }
-                                    }
-                                    options={{
-                                        pageSize: 10,
-                                        headerStyle: {
-                                            fontSize: 16,
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#BA0202',
-                                            color: '#ffffff',
-                                        },
-                                        rowStyle: {
-                                            fontSize: 15,
-                                            backgroundColor: '#F9F5F5',
-                                        },
-                                        emptyRowsWhenPaging: false
-                                    }}
-                                />
-                            </ThemeProvider>
-                        )}
-                    </div>
+                                        options={{
+                                            pageSize: 10,
+                                            headerStyle: {
+                                                fontSize: 16,
+                                                fontWeight: 'bold',
+                                                backgroundColor: '#BA0202',
+                                                color: '#ffffff',
+                                            },
+                                            rowStyle: {
+                                                fontSize: 15,
+                                                backgroundColor: '#F9F5F5',
+                                            },
+                                            emptyRowsWhenPaging: false
+                                        }}
+                                    />
+                                </ThemeProvider>
+                            )}
+                        </div>
 
-                </h1>
+                    </div>
+                </div>
             </div>
         </Fragment>
     )

@@ -152,11 +152,9 @@ const Appointments = () => {
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
             {loading ? <Loader /> : (
-                <div className="management-content">
-                    <h1>Book Requests <span></span>
-                    </h1>
-                    <div className="management-body">
-
+                <div className="dashboard-container">
+                    <div className="table-container">
+                    <div className="col-12">
                         {loading ? <Loader /> : (
                             <ThemeProvider theme={defaultMaterialTheme}>
                                 <MaterialTable
@@ -187,6 +185,7 @@ const Appointments = () => {
                                 />
                             </ThemeProvider>
                         )}
+                        </div>
                     </div>
                 </div>
             )}

@@ -183,8 +183,8 @@ const BookManagement = () => {
             render: rowData => (
                 <Fragment>
                     <div className="icon-buttons">
-                        <Link to={`/accession/detail/${rowData._id}`} className="btn btn-info py-1 px-2">
-                            View Details
+                        <Link to={`/accession/detail/${rowData._id}`} className="btn btn-primary py-1 px-2">
+                            <i class="fa-regular fa-eye"></i>
                         </Link>
                     </div>
                 </Fragment>
@@ -250,86 +250,93 @@ const BookManagement = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
-            {loading ? <Loader /> : (
-                <div className="management-content">
-                    <h1>Add Book <span></span>
-                        <Link to={"/book/new"}><i className="fa-solid fa-circle-plus"></i></Link>
-                    </h1>
-                    <div className="management-body">
-                        <div className='row'>
-                            <div className='col-md-3'>
-                                <h4 className='text-center'>Year Published</h4>
-                                <div className='row' style={{ marginBottom: 10 }}>
-                                    <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '10px', width: '80px' }} />
+            <div className='col-12'>
+                {loading ? <Loader /> : (
+                    <div className="dashboard-container">
+                        <div className='table-container'>
+                            <div className='book-align'>
 
-                                    <span style={{ paddingTop: '1em' }}>&#8212;</span>
+                                <div className='book-add'>
+                                    <h1 className='m-0'>
+                                        <Link to={"/book/new"}><i className="fa-solid fa-circle-plus"></i></Link>
+                                        Add Book
+                                    </h1>
+                                </div>
+                                <div className='col-4 year-published'>
+                                    <h4 className='text-center'>Year Published</h4>
+                                    <div className='row' style={{ marginBottom: 10 }}>
+                                        <TextField id="yearStart" label="Start Year" defaultValue={books.lowestYearPub} value={yearPubStart} onChange={(e) => setyearPubStart(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginRight: '10px', width: '80px' }} />
 
-                                    <TextField id="yearEnd" label="End Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '10px', width: '80px'}} />
+                                        <span style={{ paddingTop: '1em' }}>&#8212;</span>
+
+                                        <TextField id="yearEnd" label="End  Year" defaultValue={books.highestYearPub} value={yearPubEnd} onChange={(e) => setyearPubEnd(e.target.value)} variant="outlined" style={{ display: 'block', margin: '0 auto', marginLeft: '10px', width: '80px' }} />
+                                    </div>
+
+                                    <div className='row' style={{ marginBottom: 10 }}>
+                                        <button type="button" className="btn btn-primary" onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '5px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
+
+                                        <button type="button" className="btn btn-danger" onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '5px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                                    </div>
                                 </div>
 
-                                <div className='row' style={{ marginBottom: 10 }}>
-                                    <button type="button" className="btn btn-primary" onClick={filterYearPub} style={{ display: 'block', margin: '0 auto', marginRight: '5px' }}>Filter  <i class="fa-solid fa-filter"></i></button>
+                                <div className='col-md-10 filter-subject'>
+                                    <h4 className='text-center'>Filter by Subject</h4>
+                                    <div className='row'>
+                                        {books.bookSubjects && books.bookSubjects.length > 0 ? (
 
-                                    <button type="button" className="btn btn-danger" onClick={clearYearPub} style={{ display: 'block', margin: '0 auto', marginLeft: '5px' }}>Clear  <i class="fa-solid fa-filter-circle-xmark"></i></button>
+                                            subjectArr.map((subject) => {
+                                                return (
+                                                    <div className='col-sm-2' key={subject}>
+                                                        {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                        {/* {console.log(subjectFilter)} */}
+
+                                                        <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                        {/* {console.log(subjectFilter)} */}
+                                                    </div>
+                                                )
+                                            })
+
+                                        ) : (
+                                            <li>Subject not Found</li>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                            <div className='col-md-9'>
-                                <h4 className='text-center'>Filter by Subject</h4>
-                                <div className='row'>
-                                    {books.bookSubjects && books.bookSubjects.length > 0 ? (
 
-                                        subjectArr.map((subject) => {
-                                            return (
-                                                <div className='col-sm-2' key={subject}>
-                                                    {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
-                                                    {/* {console.log(subjectFilter)} */}
-
-                                                    <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
-                                                    {/* {console.log(subjectFilter)} */}
-                                                </div>
-                                            )
-                                        })
-
-                                    ) : (
-                                        <li>Subject not Found</li>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {loading ? <Loader /> : (
-                            <ThemeProvider theme={defaultMaterialTheme}>
-                                <MaterialTable
-                                    title='Books List'
-                                    data={books.book}
-                                    columns={col}
-                                    localization={
-                                        {
-                                            toolbar: {
-                                                searchPlaceholder: 'Book,Year,Author,Subject...'
+                            {loading ? <Loader /> : (
+                                <ThemeProvider theme={defaultMaterialTheme}>
+                                    <MaterialTable
+                                        title='Books List'
+                                        data={books.book}
+                                        columns={col}
+                                        localization={
+                                            {
+                                                toolbar: {
+                                                    searchPlaceholder: 'Book,Year,Author,Subject...'
+                                                }
                                             }
                                         }
-                                    }
-                                    options={{
-                                        pageSize: 10,
-                                        headerStyle: {
-                                            fontSize: 16,
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#BA0202',
-                                            color: '#ffffff',
-                                        },
-                                        rowStyle: {
-                                            fontSize: 15,
-                                            backgroundColor: '#F9F5F5',
-                                        },
-                                        emptyRowsWhenPaging: false
-                                    }}
-                                />
-                            </ThemeProvider>
-                        )}
+                                        options={{
+                                            pageSize: 10,
+                                            headerStyle: {
+                                                fontSize: 16,
+                                                fontWeight: 'bold',
+                                                backgroundColor: '#BA0202',
+                                                color: '#ffffff',
+                                            },
+                                            rowStyle: {
+                                                fontSize: 15,
+                                                backgroundColor: '#F9F5F5',
+                                            },
+                                            emptyRowsWhenPaging: false
+                                        }}
+                                    />
+                                </ThemeProvider>
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </Fragment>
     )
 }

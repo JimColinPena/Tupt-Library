@@ -72,12 +72,12 @@ const BorrowDetails = () => {
             if ((startDate.getDay() === 5)) {
                 var days = 3;
                 // dueDate.setDate(startDate.getDate() + days)
-                dueDate.setTime(startDate.getTime()+(3*24*3600000));
+                dueDate.setTime(startDate.getTime() + (3 * 24 * 3600000));
             }
             else {
                 var days = 1;
                 // dueDate.setDate(startDate.getDate() + days)
-                dueDate.setTime(startDate.getTime()+(24*3600000));
+                dueDate.setTime(startDate.getTime() + (24 * 3600000));
             }
 
             const formData = new FormData();
@@ -118,36 +118,27 @@ const BorrowDetails = () => {
                     {studentborrowbooks ? (
                         <Fragment>
 
-                            <div className="management-content">
-                                <h1>Book Requests</h1>
-                                <hr />
-                                {/* </div> */}
-                                <div className="management-body">
-                                    <div className='row'>
-                                        {studentborrowbooks.bookId && studentborrowbooks.bookId.map(data => (
-                                            <div className='col-md-4' key={studentborrowbooks.bookId}>
-                                                <div className='card-header'>
-                                                    {/* {console.log(data.book_image.url)} */}
-                                                    {(data.book_image.url == null || undefined) ?
-                                                        <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
-                                                        :
-                                                        <img alt="" src={data.book_image.url} />
-                                                    }
-                                                </div>
-                                                <div className='card-body'>
-                                                    <h3>{data.title}</h3>
-                                                </div>
+                            <div className="dashboard-container">
+                                <h1 className='text-center'>Book Requests</h1>
+                                <div className="book-card">
+                                    {studentborrowbooks.bookId && studentborrowbooks.bookId.map(data => (
+                                        <div key={studentborrowbooks.bookId}>
+                                            <div className='card-header'>
+                                                {/* {console.log(data.book_image.url)} */}
+                                                {(data.book_image.url == null || undefined) ?
+                                                    <img alt="" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1671458821/TUPT_Library/Resources/default-book_p70mge.png" />
+                                                    :
+                                                    <img alt="" src={data.book_image.url} />
+                                                }
                                             </div>
-                                        ))}
-                                    </div>
-                                    {/* {studentborrowbooks.appointmentDate} */}
-
-                                    <hr />
-                                    <h2>Schedule: {(studentborrowbooks.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.appointmentDate, "mmmm dd, yyyy")}</h2>
-                                    <h2>Duedate: {(studentborrowbooks.dueDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.dueDate, "mmmm dd, yyyy")}</h2>
-                                    <h2>Status: {studentborrowbooks.status}</h2>
+                                            <h3>{data.title}</h3>
+                                        </div>
+                                    ))}
+                                    <span>Schedule: {(studentborrowbooks.appointmentDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.appointmentDate, "mmmm dd, yyyy")}</span>
+                                    <span>Duedate: {(studentborrowbooks.dueDate == null || undefined) ? 'not set' : dateFormat(studentborrowbooks.dueDate, "mmmm dd, yyyy")}</span>
+                                    <span>Status: {studentborrowbooks.status}</span>
                                     {studentborrowbooks.status === "To Confirm" ? (
-                                        <div>
+                                        <div className='book-request-buttons'>
                                             <button id="confirm_btn" className="btn btn-primary py-1 px-2 ml-2" onClick={handleShow1}>Borrow Schedule
                                             </button>
                                             <button id="confirm_btn" className="btn btn-danger py-1 px-2 ml-2" onClick={handleShow2}>Cancel Schedule

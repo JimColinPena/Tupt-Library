@@ -2,10 +2,9 @@ import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useAlert } from 'react-alert'
-
 import { logout } from '../../actions/userActions'
-
 import Loader from '../layout/Loader'
+
 const SideNavbarAdmin = () => {
     const alert = useAlert();
     const dispatch = useDispatch();
@@ -20,105 +19,95 @@ const SideNavbarAdmin = () => {
         <Fragment>
             {loading || loading === undefined ? <Loader /> : (
                 <Fragment>
-                    <nav className="sidenav-container">
-                        <header className="sidenav-header">
-                            <Link to="/" className="sidenav-logo">
-                                <img className="sidenav-logo" src="/images/TUPT-Logo.png" alt="tupt-logo"></img>
-                            </Link>
-                            <span className='sidenav__header'>Technological University of the Philippines - Taguig Campus</span>
-                            <span className='sidenav__sub_header'>Learning Resource Center</span>
-                        </header>
-                        <div className="flex-container">
-                            {/* <br />
-                            <div className="nav-icons">
-                                <div className='row'>
-                                    <div className='col-md-8'>
-
+                    <nav className="sidenav">
+                        <div className="header-nav">
+                            <img src="/images/TUPT-Logo.png" alt="logo" />
+                            <h1>Technological University of the Philippines - Taguig Campus</h1>
+                            <p>Learning Resource Center</p>
+                        </div>
+                        <ul>
+                            <li>
+                                <Link to="/dashboard" className="sidenav-links">
+                                    <i class="fa-solid fa-gauge"></i>
+                                    dashboard
+                                </Link>
+                            </li>
+                            <li>
+                                <div class="dropdown">
+                                    <Link to='/' className='btn disabled'>
+                                        <i class="fa-solid fa-user-gear"></i>
+                                        User Management
+                                        <i class="fa-solid fa-angle-right"></i>
+                                    </Link>
+                                    <div class="dropdown-content">
+                                        <Link to="/admin/personnels">Personnels</Link>
+                                        <Link to="/active/student">Registered Users</Link>
                                     </div>
                                 </div>
-                            </div> */}
-                            <ul className="sidenav-items">
-                                <li>
-                                    <Link to="/dashboard" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            dashboard
-                                        </span>
-                                        dashboard
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/admin/personnels" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            manage_accounts
-                                        </span>
-                                        user management
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/admin/books" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            menu_book
-                                        </span>
-                                        books management
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/appointments" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            edit_calendar
-                                        </span>
-                                        book requests
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/books/borrowed" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            checklist_rtl
-                                        </span>
-                                        borrowed books
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/historyLog" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            restore
-                                        </span>
-                                        History Logs
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/admin/penalty" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            payment
-                                        </span>
-                                        Penalty clearance
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/admin/evaluation" className="sidenav-links">
-                                        <span className="material-symbols-rounded">
-                                            account_balance_wallet
-                                        </span>
-                                        Evaluation
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="profile">
-                            {user.avatar.url == null | undefined ? (
-                                <img className="profile-img" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1670251835/TUPT_Library/Resources/profile_image_mvaoy5.png" alt=""></img>
-                            ) : (
-                                <img className="profile-img" src={user.avatar.url} alt=""></img>
-                            )}
-                            <div className="text-flex">
-                                {/* <h4>Sample</h4> */}
-                                <Link to="/profile" className="sidenav-links">
-                                    Profile
+                            </li>
+                            <li>
+                                <Link to="/admin/books" className="sidenav-links">
+                                    <i class="fa-solid fa-book-open-reader"></i>
+                                    books management
                                 </Link>
-                                <span>{user.name}</span>
+                            </li>
+                            <li>
+                                <Link to="/appointments" className="sidenav-links">
+                                    <i class="fa-solid fa-book-open"></i>
+                                    book requests
+                                </Link>
+                            </li>
+                            <li>
+                                <div class="dropdown">
+                                    <Link to='/' className='btn disabled'>
+                                        <i class="fa-solid fa-book"></i>
+                                        Borrowed Books
+                                        <i class="fa-solid fa-angle-right"></i>
+                                    </Link>
+                                    <div class="dropdown-content">
+                                        <Link to="/books/borrowed">
+                                            Borrowed Books
+                                        </Link>
+                                        <Link to="/returned/books" href="#">Returned Books
+                                        </Link>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <Link to="/historyLog" className="sidenav-links">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    history logs
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/admin/penalty" className="sidenav-links">
+                                    <i class="fa-solid fa-coins"></i>
+                                    penalty clearance
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/admin/evaluation" className="sidenav-links">
+                                    <i class="fa-solid fa-coins"></i>
+                                    evaluation
+                                </Link>
+                            </li>
+                        </ul>
+                        <div className="profile">
+                            {
+                                user.avatar.url == null | undefined ?
+                                    (
+                                        <img className="profile-img" src="https://res.cloudinary.com/dxcrzvpbz/image/upload/v1670251835/TUPT_Library/Resources/profile_image_mvaoy5.png" alt="">
+                                        </img>
+                                    ) :
+                                    (
+                                        <img className="profile-img" src={user.avatar.url} alt=""></img>
+                                    )
+                            }
+                            <div className="click-profile">
+                                <span>Administrator</span>
                             </div>
-                            <Link className="" to="/" onClick={logoutHandler}>
-                                <img className="logout" src="/images/logout_btn.png" alt=""></img>
+                            <Link to="/" class="logout-button" onClick={logoutHandler}>
+                                <i class="fa-solid fa-right-from-bracket"></i>
                             </Link>
                         </div>
                     </nav>
@@ -126,5 +115,7 @@ const SideNavbarAdmin = () => {
             )}
         </Fragment>
     )
+
 }
+
 export default SideNavbarAdmin

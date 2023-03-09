@@ -1,18 +1,9 @@
 import React, { Fragment, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { borrowedBooksLength, pendingBookRequests, pendingUserRequests, clearErrors } from '../../actions/borrowActions'
+// import { allBorrowed, clearErrors } from '../../actions/personnelActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAlert } from 'react-alert'
-
-import {
-    borrowedBooksLength,
-    pendingBookRequests,
-    pendingUserRequests,
-    clearErrors
-} from '../../actions/borrowActions'
-import {
-    getPenaltyCheck,
-} from '../../actions/personnelActions'
-
 import ReturnedBooksCharts from './ReturnedBooksChart'
 import SectionBorrowedCharts from './SectionBorrowedChart'
 import BookLeaderboards from './BookLeaderboards'
@@ -28,10 +19,8 @@ const AdminDashboard = () => {
     const { loading, error, borrowedbooksLength } = useSelector(state => state.borrowedBooksLength);
     const { pendingBooksRequests } = useSelector(state => state.pendingBookRequests);
     const { pendingUsersRequests } = useSelector(state => state.pendingUserRequests);
-    const { penalties } = useSelector(state => state.penaltyCheck);
 
     useEffect(() => {
-        dispatch(getPenaltyCheck());
         dispatch(borrowedBooksLength());
         dispatch(pendingBookRequests());
         dispatch(pendingUserRequests());
@@ -44,59 +33,51 @@ const AdminDashboard = () => {
 
     return (
         <Fragment>
-            {/* <Loader /> */}
-            {loading || loading === undefined ? <Loader /> : (
+            {loading ? <Loader /> : (
                 <Fragment>
-                    <div className="dashboard_header"><h1 className="overview">Dashboard</h1></div>
-                    {/* <hr className='dashboard_hr'/> */}
-                    <div className="dashboard_container">
-                        <div className="dashboard_borrowedbook dash-item">
-                            <div className="icon">
-                                <p>{borrowedbooksLength}</p>
-                                <span className="material-symbols-outlined">
-                                    book
-                                </span>
+                    <div className='dashboard-container'>
+                        <div className="dashboard-overview">
+                            <div className="dashboard-header">
+                                <h1 className='pt-2 pb-4'>Dashboard Overview</h1>
                             </div>
-                            <Link to="/books/borrowed"><h3 href="/">Borrowed Books</h3></Link>
-                        </div>
-                        <div className="dashboard_pending-bookapproval dash-item">
-
-                            <div className="icon">
-                                <p>{pendingBooksRequests}</p>
-                                <span className="material-symbols-outlined">
-                                    library_books
-                                </span>
+                            <div className="overview-cards">
+                                <Link to='/'>
+                                    <div className="card card1">
+                                        <div className="card-content">
+                                            <i className="fa-solid fa-book-open" id="fa-book-open"></i>
+                                            <span>{borrowedbooksLength}</span>
+                                            <h1>Borrowed Books</h1>
+                                        </div>
+                                    </div>
+                                </Link>
+                                <Link to='/'>
+                                    <div className="card card2">
+                                        <div className="card-content">
+                                            <i className="fa-solid fa-book-open-reader" id="fa-book-open-reader"></i>
+                                            <span>{pendingBooksRequests}</span>
+                                            <h1>Pending Book Approval</h1>
+                                        </div>
+                                    </div>
+                                </Link>
+                                <Link to='/'>
+                                    <div className="card card3">
+                                        <div className="card-content">
+                                            <i className="fa-solid fa-user" id="fa-user"></i>
+                                            <span>{pendingUsersRequests}</span>
+                                            <h1>Pending Users Request</h1>
+                                        </div>
+                                    </div>
+                                </Link>
                             </div>
-                            <Link to="/appointments"><h3 href="/">pending book approval</h3></Link>
-                        </div>
-                        <div className="dashboard_pending-userapproval dash-item">
-
-                            <div className="icon">
-                                <p>{penalties.penalty_count}</p>
-                                <span className="material-symbols-outlined">
-                                    how_to_reg
-                                </span>
+                            <div className="analytics">
+                                <h1 className="overview py-5 pl-1">Analytics</h1>
+                                {/* <BorrowerLeaderboards /> */}
+                                {/* <BookLeaderboards /> */}
+                                {/* <ReturnedBooksCharts /> */}
+                                {/* <SectionBorrowedCharts /> */}
                             </div>
-                            <Link to="/admin/penalty"><h3 href="/">Penalties</h3></Link>
-                        </div>
-
-
-                    </div>
-                    <hr />
-                    <div className="management-content"><h1 className="overview">Analytics</h1>
-                        <div className="row">
-                            {/* <div className='col-md-4'>
-
-                            </div> */}
-                            <ReturnedBooksCharts />
-                            <SectionBorrowedCharts />
-                        </div>
-                        <div className="row">
-                            <BorrowerLeaderboards />
-                            <BookLeaderboards />
                         </div>
                     </div>
-
                 </Fragment>
             )}
         </Fragment>
