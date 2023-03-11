@@ -12,6 +12,8 @@ import {
 	bookAccessionReducer,
 	accessionDetailsReducer,
 	accessionReducer,
+	bookReportsReducer,
+	bookAccreditationReducer
 } from './reducers/bookReducers'
 
 import { 
@@ -166,7 +168,9 @@ const reducer = combineReducers({
 	singleDeleteNotification: notificationDeleteReducer,
 	allDeleteNotification: notificationAllDeleteReducer,
 	counterNotification: counterNotificationReducer,
-	seenNotification: seenNotificationReducer
+	seenNotification: seenNotificationReducer,
+	getbookReports: bookReportsReducer,
+	bookAccreditationReports: bookAccreditationReducer
 })
 
 

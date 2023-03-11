@@ -558,3 +558,143 @@ exports.importMRC = async(req,res,next) => {
 
 
 }
+
+exports.getBookReports = async (req, res, next) => {
+    const book = await Book.aggregate([
+        {
+            "$lookup": {
+                "from": "accessions",
+                "localField": "accession_numbers",
+                "foreignField": "_id",
+                "pipeline": [
+                    {
+                        $project: {
+                            _id: 0,
+                            accession_number: 1,
+                        }
+                    }
+                ],
+                "as": "accession_numbers"
+            }
+
+        },
+        {
+            $project: {
+                _id: 1,
+                title: 1,
+                main_author: 1,
+                publisher: 1,
+                yearPub: 1,
+                isbn: 1,
+                Fil: 1,
+                Ref: 1,
+                Bio: 1,
+                Res: 1,
+                call_number: 1,
+                location: 1,
+                accession_numbers: { $first: "$accession_numbers.accession_number" },
+            }
+        }
+    ])
+
+    book.map(b => {
+        let new_callnumber = ""
+        if (b.Fil == true) {
+            new_callnumber = "FIL " + b.call_number
+        } else if (b.Ref == true) {
+            new_callnumber = "REF " + b.call_number
+        } else if (b.Bio == true) {
+            new_callnumber = "BIO " + b.call_number
+        } else if (b.Res == true) {
+            new_callnumber = "RES " + b.call_number
+        } else {
+            new_callnumber = "N/A " + b.call_number
+        }
+        b.call_number = new_callnumber
+    })
+
+    console.log(book)
+    res.status(200).json({
+        success: true,
+        book,
+    })
+}
+
+exports.getBookAccreditation = async (req, res, next) => {
+    let sub_arr = []
+    let subjects = req.body.subjects
+
+    if (subjects == undefined){
+        subjects = "No Subject"
+    }
+
+    const isArray = Array.isArray(subjects)
+    if (isArray == false){
+        sub_arr = [subjects]
+    } else {
+        sub_arr = subjects
+    }
+
+    const book = await Book.aggregate([
+        { $match: { "subjects": { "$in": sub_arr } } }, 
+        {
+            "$lookup": {
+                "from": "accessions",
+                "localField": "accession_numbers",
+                "foreignField": "_id",
+                "pipeline": [
+                    {
+                        $project: {
+                            _id: 0,
+                            accession_number: 1,
+                        }
+                    }
+                ],
+                "as": "accession_numbers"
+            }
+
+        },
+        {
+            $project: {
+                _id: 1,
+                title: 1,
+                main_author: 1,
+                publisher: 1,
+                yearPub: 1,
+                isbn: 1,
+                Fil: 1,
+                Ref: 1,
+                Bio: 1,
+                Res: 1,
+                call_number: 1,
+                location: 1,
+                accession_numbers: { $first: "$accession_numbers.accession_number" },
+            }
+        }
+    ])
+
+    book.map(b => {
+        let new_callnumber = ""
+        if (b.Fil == true) {
+            new_callnumber = "FIL " + b.call_number
+        } else if (b.Ref == true) {
+            new_callnumber = "REF " + b.call_number
+        } else if (b.Bio == true) {
+            new_callnumber = "BIO " + b.call_number
+        } else if (b.Res == true) {
+            new_callnumber = "RES " + b.call_number
+        } else {
+            new_callnumber = "N/A " + b.call_number
+        }
+        b.call_number = new_callnumber
+    })
+
+    const bookSubjects = await Book.distinct('subjects')
+
+    // console.log(book)
+    res.status(200).json({
+        success: true,
+        book,
+        bookSubjects,
+    })
+}

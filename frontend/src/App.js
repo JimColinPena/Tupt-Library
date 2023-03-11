@@ -39,7 +39,8 @@ import StudentEvaluation  from './components/admin/evaluation/StudentEvaluation'
 import EvaluationManagement  from './components/admin/evaluation/EvaluationManagement'
 
 import Penalty from './components/admin/Penalties'
-
+import BookAccessionReports from './components/admin/BookAccessionReports'
+import AccreditationReports from './components/admin/AccreditationReports'
 import Home from './components/Home'
 import Login from './components/credential/Login'
 import Profile from './components/credential/Profile'
@@ -87,6 +88,8 @@ function App() {
 
 					<Route path="/historyLog" element={<ProtectedRoute isAdmin={true}><HistoryLog /></ProtectedRoute>} />
 					<Route path='/admin/penalty' element={<ProtectedRoute isAdmin={true}><Penalty /></ProtectedRoute>} />
+					<Route path="/admin/accessionReport" element={<ProtectedRoute isAdmin={true}><BookAccessionReports /></ProtectedRoute>} />
+					<Route path="/admin/accreditationReport" element={<ProtectedRoute isAdmin={true}><AccreditationReports /></ProtectedRoute>} />
 
 					<Route path="/notification/:id" element={<ProtectedRoute isAdmin={false}><Notification /></ProtectedRoute>} />
 

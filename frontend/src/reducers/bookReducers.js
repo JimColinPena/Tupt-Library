@@ -46,6 +46,14 @@ import {
     DELETE_BOOK_ACCESSION_RESET,
     DELETE_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_REPORTS_REQUEST,
+    ACCESSION_REPORTS_SUCCESS,
+    ACCESSION_REPORTS_FAIL,
+
+    ACCREDITATION_REPORTS_REQUEST,
+    ACCREDITATION_REPORTS_SUCCESS,
+    ACCREDITATION_REPORTS_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 export const allBooksReducer = (state = { books: [] }, action) => {
@@ -350,5 +358,71 @@ export const accessionReducer = (state = {}, action) => {
             }
         default:
             return state
+    }
+}
+
+export const bookReportsReducer = (state = { books: [] }, action) => {
+    switch (action.type) {
+
+        case ACCESSION_REPORTS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case ACCESSION_REPORTS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                books: action.payload
+            }
+
+        case ACCESSION_REPORTS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
+    }
+}
+
+export const bookAccreditationReducer = (state = { books: [] }, action) => {
+    switch (action.type) {
+
+        case ACCREDITATION_REPORTS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case ACCREDITATION_REPORTS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                books: action.payload
+            }
+
+        case ACCREDITATION_REPORTS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+
+        default:
+            return state;
     }
 }

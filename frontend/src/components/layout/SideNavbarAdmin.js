@@ -80,6 +80,19 @@ const SideNavbarAdmin = () => {
                                 </Link>
                             </li>
                             <li>
+                                <div class="dropdown">
+                                    <Link to='/' className='btn disabled'>
+                                        <i class="fa-solid fa-user-gear"></i>
+                                        Reports
+                                        <i class="fa-solid fa-angle-right"></i>
+                                    </Link>
+                                    <div class="dropdown-content">
+                                        <Link to="/admin/accessionReport">Book Accession List</Link>
+                                        <Link to="/admin/accreditationReport">Accreditation List</Link>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
                                 <Link to="/admin/penalty" className="sidenav-links">
                                     <i class="fa-solid fa-coins"></i>
                                     penalty clearance

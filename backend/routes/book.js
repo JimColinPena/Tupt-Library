@@ -13,7 +13,9 @@ const {
 	singleBookAccession,
 	editBookAccession,
 	deleteBookAccession,
-	importMRC	
+	importMRC,
+	getBookReports,
+	getBookAccreditation		
 } = require('../controllers/bookController');
 
 router.route('/book/new').post(isAuthenticatedUser, createBook);
@@ -25,7 +27,8 @@ router.route('/edit/accession/').post(isAuthenticatedUser, updateBookAccession);
 router.route('/accession/detail/:id').get(isAuthenticatedUser, singleBookAccession);
 router.route('/book/accession/:id').put(isAuthenticatedUser, editBookAccession)
 router.route('/delete/accession/:id').put(isAuthenticatedUser, deleteBookAccession);
-
+router.route('/admin/accessionReport/books').get(isAuthenticatedUser, getBookReports);
+router.route('/admin/accreditationReport/books').post(isAuthenticatedUser, getBookAccreditation);
 // Testing only: Comment this later or delete altogether.
 router.route('/admin/book/importmrc').post(importMRC);
 // Uncomment below for Active:

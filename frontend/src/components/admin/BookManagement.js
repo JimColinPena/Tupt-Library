@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import MaterialTable from 'material-table'
 import { ThemeProvider, createTheme } from '@mui/material';
@@ -81,10 +81,10 @@ const BookManagement = () => {
             field: 'call_number',
             searchable: false,
             render: rowData => (
-                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
-                    (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
-                        (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
-                            (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
+                (rowData.Fil === true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
+                    (rowData.Ref === true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
+                        (rowData.Bio === true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
+                            (rowData.Res === true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
                                 <div><p>{"N/A " + rowData.call_number}</p></div>
             ),
             cellStyle: {
@@ -189,7 +189,6 @@ const BookManagement = () => {
                     </div>
                 </Fragment>
             ),
-            searchable: false,
             cellStyle: {
                 textAlign: "left",
             },

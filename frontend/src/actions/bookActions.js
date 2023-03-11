@@ -40,6 +40,14 @@ import {
     DELETE_BOOK_ACCESSION_SUCCESS,
     DELETE_BOOK_ACCESSION_FAIL,
 
+    ACCESSION_REPORTS_REQUEST,
+    ACCESSION_REPORTS_SUCCESS,
+    ACCESSION_REPORTS_FAIL,
+
+    ACCREDITATION_REPORTS_REQUEST,
+    ACCREDITATION_REPORTS_SUCCESS,
+    ACCREDITATION_REPORTS_FAIL,
+
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 
@@ -275,6 +283,59 @@ export const deleteBookAccession = (id, accessionData) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: DELETE_BOOK_ACCESSION_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const bookReports = () => async (dispatch) => {
+    try {
+
+        dispatch({ type: ACCESSION_REPORTS_REQUEST })
+
+        const { data } = await axios.get('/api/v1/admin/accessionReport/books')
+
+        dispatch({
+            type: ACCESSION_REPORTS_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ACCESSION_REPORTS_FAIL,
+            payload: error.response.data.message
+        })
+    }
+}
+
+export const bookAccreditation = (subjectsData) => async (dispatch) => {
+    try {
+
+        dispatch({ type: ACCREDITATION_REPORTS_REQUEST })
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        const { data } = await axios.post(`/api/v1/admin/accreditationReport/books`, subjectsData, config)
+
+        // let link = `/api/v1/admin/accreditationReport/books`
+
+        // if (subjects){
+            // link = (`/api/v1/admin/accreditationReport/books`, subjects, config)
+        // }
+
+        // const { data } = await axios.post(link)
+
+        dispatch({
+            type: ACCREDITATION_REPORTS_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: ACCREDITATION_REPORTS_FAIL,
             payload: error.response.data.message
         })
     }
