@@ -982,7 +982,6 @@ exports.checkPenalty = async (req, res, next) => {
     res.status(200).json({
         success: true,
         penalty_count
-
     })
 }
 
@@ -996,7 +995,7 @@ exports.getPenalties = async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        penalties
+        penalties,
     })
 }
 

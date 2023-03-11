@@ -28,7 +28,7 @@ const BorrowerLeaderboards  = () => {
     return (
     	<Fragment>
         <MetaData title={'Dashboard'} />
-    	{loading ? <Loader /> : (
+    	{loading || loading === undefined ? <Loader /> : (
            <div className="col-md-6">
            <div className='board'>
                <h2 className='leaderboard'>Frequent Borrowers</h2>

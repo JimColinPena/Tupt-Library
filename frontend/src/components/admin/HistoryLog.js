@@ -47,7 +47,7 @@ const HistoryLog = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <div className="dashboard-container">
                     <div className="wrapper-container">
                         <header className='d-flex align-items-center justify-content-between'>

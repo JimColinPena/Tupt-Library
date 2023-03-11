@@ -309,7 +309,7 @@ const PersonnelManagement = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <div className='col-12'>
                     <div className="dashboard-container">
                         <div className="table-container">

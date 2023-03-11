@@ -86,6 +86,7 @@ function App() {
 					<Route path="/admin/evaluation" element={<ProtectedRoute isAdmin={true}><EvaluationManagement /></ProtectedRoute>} />
 
 					<Route path="/historyLog" element={<ProtectedRoute isAdmin={true}><HistoryLog /></ProtectedRoute>} />
+					<Route path='/admin/penalty' element={<ProtectedRoute isAdmin={true}><Penalty /></ProtectedRoute>} />
 
 					<Route path="/notification/:id" element={<ProtectedRoute isAdmin={false}><Notification /></ProtectedRoute>} />
 
@@ -98,7 +99,7 @@ function App() {
 					
 					
 
-					<Route path='/admin/penalty' element={<Penalty />} />
+					
 				</Routes>
 			</div>
 		</Router>

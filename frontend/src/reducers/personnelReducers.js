@@ -881,7 +881,7 @@ export const changeDueDateReducer = (state = {}, action) => {
     }
 }
 
-export const penaltyCheckReducer = (state = { penalties: [] }, action) => {
+export const penaltyCheckReducer = (state = { penalty_count: [] }, action) => {
     switch (action.type) {
 
         case PENATY_CHECK_REQUEST:
@@ -894,7 +894,7 @@ export const penaltyCheckReducer = (state = { penalties: [] }, action) => {
             return {
                 ...state,
                 loading: false,
-                penalties: action.payload
+                penalty_count: action.payload
             }
 
         case PENATY_CHECK_FAIL:

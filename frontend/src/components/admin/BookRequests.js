@@ -151,7 +151,7 @@ const Appointments = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <div className="dashboard-container">
                     <div className="table-container">
                     <div className="col-12">

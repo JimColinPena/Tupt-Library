@@ -71,7 +71,7 @@ const Penalties = () => {
             rows: []
         }
 
-        penalties.forEach(penalty => {
+        penalties.penalties.forEach(penalty => {
             data.rows.push({
                 tupt_id: penalty.userId.id_number,
                 name: penalty.userId.name,
@@ -119,7 +119,7 @@ const Penalties = () => {
         <Fragment>
             <MetaData title={'TUP-T Online Library - Penalties'} />
             <SideNavbarAdmin />
-            {loading ? <Loader /> : (
+            {loading || loading === undefined ? <Loader /> : (
                 <div className="dashboard-container">
                     <div className="table-container">
                             <div className="col-12">

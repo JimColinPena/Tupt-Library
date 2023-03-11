@@ -251,7 +251,7 @@ const BookManagement = () => {
             <MetaData title={'TUP-T Online Library - Admin'} />
             <SideNavbarAdmin />
             <div className='col-12'>
-                {loading ? <Loader /> : (
+                {loading || loading === undefined ? <Loader /> : (
                     <div className="dashboard-container">
                         <div className='table-container'>
                             <div className='book-align'>
