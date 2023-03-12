@@ -9,6 +9,7 @@ const passport = require("passport");
 const cookieSession = require("cookie-session");
 const passportStrategy = require("./passport");
 const cors = require("cors")
+const path = require('path')
 
 const book = require('./routes/book');
 const research = require('./routes/research');
