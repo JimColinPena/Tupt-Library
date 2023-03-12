@@ -17,8 +17,6 @@ const AccreditationReports = () => {
     const dispatch = useDispatch();
 
     const { loading, error, books } = useSelector(state => state.bookAccreditationReports);
-    // const [subjects, setSubjects] = useState([]);
-
 
     const subjectArr = books.bookSubjects
 
@@ -192,6 +190,23 @@ const AccreditationReports = () => {
                                     <h3 className="text-center"><strong>BOOK ACCREDITATION LIST</strong></h3>
                                     <br />
                                     <h5 className="text-center">{formatDate}</h5>
+                                    <div className='row'>
+                                        <div className='col-1'>
+                                            <h6>Subjects: </h6>
+                                        </div>
+                                        <div className='col-11'>
+                                            <div className='row'>
+                                                {subjects.map((subject, index) => (
+                                                    <div className={'col-2'}>
+                                                        <div key={index}>
+                                                            {/* <input type="checkbox" id="checkbox" name="checkbox" value={subject} checked={subjects.includes(subject)} onChange={() => handleCheckedChanged(subject)} /> {subject} */}
+                                                            <h6>{subject}</h6>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
                                     <hr className="k-hr" />
                                     <Grid style={{
                                         // height: "400px",

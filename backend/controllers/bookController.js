@@ -9,44 +9,67 @@ const User = require('../models/user');
 const { findById } = require('../models/book');
 
 exports.getBooks = async (req, res, next) => {
-    // const book = await Book.find();
-    const apiFeatures = new APIFeatures(Book.find(),req.query).filter();
-    const book = await apiFeatures.query
-
-    book.map(b =>{
-        let new_callnumber = ""
-        if (b.Fil == true) { 
-            new_callnumber = "FIL "+ b.call_number
-        } else if (b.Ref == true) {
-            new_callnumber = "REF "+ b.call_number
-        } else if (b.Bio == true) {
-            new_callnumber = "BIO "+ b.call_number
-        } else if (b.Res == true) {
-            new_callnumber = "RES "+ b.call_number
-        } else {
-            new_callnumber = "N/A "+ b.call_number
-        }
-        // console.log(new_callnumber)
-        b.new_callnumber = new_callnumber
-    })
-
     const yearPub = await Book.find().select('yearPub -_id')
-
     let yearPub_val = []
     yearPub.forEach(y => {
         yearPub_val.push(y.yearPub)
     });
-
     let formattedYearPubArr = yearPub_val.map(Number)
-
     const lowestYearPub = Math.min(...formattedYearPubArr)
-    console.log(lowestYearPub)
-
     const highestYearPub = Math.max(...formattedYearPubArr)
-    console.log(highestYearPub)
-
     const bookSubjects = await Book.distinct('subjects')
-    console.log(bookSubjects)
+
+    let sub_arr = []
+    let subjects = req.body.subjects
+
+    const isArray = Array.isArray(subjects)
+    if (isArray == false) {
+        sub_arr = [subjects]
+    } else if (isArray == true) {
+        sub_arr = subjects
+    }
+
+    let min_year = ''
+    let max_year = ''
+
+    if (req.body.minYear != null || req.body.minYear != undefined ){
+        min_year = req.body.minYear
+    } else {
+        min_year = lowestYearPub.toString()
+    }
+
+    if (req.body.max_year != null || req.body.max_year != undefined){
+        max_year = req.body.max_year
+    } else {
+        max_year = highestYearPub.toString()
+    }
+
+    // console.log(min_year, max_year)
+    let book = {}
+
+    console.log(req.body.minYear, req.body.maxYear)
+
+    console.log(sub_arr)
+    console.log(min_year, max_year)
+    
+    if (sub_arr[0] != undefined || sub_arr[0] != null){
+        book = await Book.aggregate([
+            {
+                $match: {
+                    "subjects": { "$in": sub_arr },
+                    "yearPub": { '$gte': min_year, '$lte': max_year }
+                }
+            },
+        ])
+    } else {
+        book = await Book.aggregate([
+            {
+                $match: {
+                    "yearPub": { '$gte': min_year, '$lte': max_year }
+                }
+            },
+        ])
+    }
 
     res.status(200).json({
         success: true,
@@ -62,17 +85,17 @@ exports.createBook = async (req, res, next) => {
     let book = {}
     try {
         if (req.body.bookImage === '') {
-            if (req.body.callNumberPrefix == 'Fil'){
+            if (req.body.callNumberPrefix == 'Fil') {
                 req.body.Fil = true
-            } else if (req.body.callNumberPrefix == 'Ref'){
+            } else if (req.body.callNumberPrefix == 'Ref') {
                 req.body.Ref = true
-            } else if (req.body.callNumberPrefix == 'Bio'){
+            } else if (req.body.callNumberPrefix == 'Bio') {
                 req.body.Bio = true
-            } else if (req.body.callNumberPrefix == 'Fic'){
+            } else if (req.body.callNumberPrefix == 'Fic') {
                 req.body.Fic = true
-            } else if (req.body.callNumberPrefix == 'Res'){
+            } else if (req.body.callNumberPrefix == 'Res') {
                 req.body.Res = true
-            } else {}
+            } else { }
 
             const book = await Book.create(req.body);
 
@@ -83,23 +106,23 @@ exports.createBook = async (req, res, next) => {
                 height: 150,
                 crop: "scale"
             })
-            
+
             req.body.book_image = {
                 public_id: result.public_id,
-                    url: result.secure_url
+                url: result.secure_url
             }
 
-            if (req.body.callNumberPrefix == 'Fil'){
+            if (req.body.callNumberPrefix == 'Fil') {
                 req.body.Fil = true
-            } else if (req.body.callNumberPrefix == 'Ref'){
+            } else if (req.body.callNumberPrefix == 'Ref') {
                 req.body.Ref = true
-            } else if (req.body.callNumberPrefix == 'Bio'){
+            } else if (req.body.callNumberPrefix == 'Bio') {
                 req.body.Bio = true
-            } else if (req.body.callNumberPrefix == 'Fic'){
+            } else if (req.body.callNumberPrefix == 'Fic') {
                 req.body.Fic = true
-            } else if (req.body.callNumberPrefix == 'Res'){
+            } else if (req.body.callNumberPrefix == 'Res') {
                 req.body.Res = true
-            } else {}
+            } else { }
 
             const book = await Book.create(req.body);
         }
@@ -201,7 +224,7 @@ exports.updateBook = async (req, res, next) => {
 
             req.body.book_image = {
                 public_id: result.public_id,
-                    url: result.secure_url
+                url: result.secure_url
             }
 
             if (req.body.callNumberPrefix == "Fil") {
@@ -268,7 +291,7 @@ exports.updateBook = async (req, res, next) => {
 }
 
 exports.deleteBook = async (req, res, next) => {
-    
+
     const book = await Book.findById(req.params.id);
     if (!book) {
         return next(new ErrorHandler('Book not found', 404));
@@ -314,9 +337,9 @@ exports.createBookAccession = async (req, res, next) => {
 
 exports.updateBookAccession = async (req, res, next) => {
     if (req.body.func == 'give') {
-        const userId = await User.findOne({id_number: req.body.tuptId}).select('_id')
+        const userId = await User.findOne({ id_number: req.body.tuptId }).select('_id')
         if (!userId) {
-            return res.status(401).json({success: false, message: 'No User Found!'})
+            return res.status(401).json({ success: false, message: 'No User Found!' })
         }
         await Accession.findOneAndUpdate(
             { _id: req.body.accession },
@@ -362,7 +385,7 @@ exports.singleBookAccession = async (req, res, next) => {
 }
 
 exports.editBookAccession = async (req, res, next) => {
-    const accession = await Accession.findByIdAndUpdate(req.params.id, {accession_number: req.body.accession})
+    const accession = await Accession.findByIdAndUpdate(req.params.id, { accession_number: req.body.accession })
     console.log(req.body.bookId)
     const book = await Book.findById(req.body.bookId)
     const nowDate = new Date();
@@ -386,7 +409,7 @@ exports.editBookAccession = async (req, res, next) => {
 
 }
 
-exports.deleteBookAccession = async (req,res,next) => {
+exports.deleteBookAccession = async (req, res, next) => {
     const accession = await Accession.findById(req.params.id);
     if (!accession) {
         return next(new ErrorHandler('Accession Log not found', 404));
@@ -394,7 +417,7 @@ exports.deleteBookAccession = async (req,res,next) => {
     await Book.updateOne({ _id: req.body.bookId }, { $pull: { accession_numbers: accession._id } })
     await accession.remove();
 
-    const book =  await Book.findById(req.body.bookId)
+    const book = await Book.findById(req.body.bookId)
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
     const formatDate = nowDate.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', hour12: true })
@@ -421,9 +444,9 @@ exports.deleteBookAccession = async (req,res,next) => {
 const { Marc } = require('marcjs');
 const fs = require('fs');
 
-exports.importMRC = async(req,res,next) => {
+exports.importMRC = async (req, res, next) => {
     // Create the code necessary to upload the file in request to the temporary folder named tmp in the root directory
-    if (!req.files || req.files.file.mimetype !== 'application/marc'){
+    if (!req.files || req.files.file.mimetype !== 'application/marc') {
         return next(new ErrorHandler("No File Uploaded or Incorrect Extension", 404));
     }
     const fileData = req.files.file.data;
@@ -432,92 +455,92 @@ exports.importMRC = async(req,res,next) => {
     const filePath = process.cwd() + '/tmp/' + newFileName; // Set the file path
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (!err) {
-          // File already exists, delete it before overwriting
-        fs.unlink(filePath, (err) => {
-            if (err) {
-              return next(new ErrorHandler('File upload failed', 500));
-            }
-            console.log('Deleted existing file');
-            // Create the file through fs
-            fs.writeFile(filePath, fileData, (err) => {
-              if (err) {
-                return next(new ErrorHandler('File upload failed', 500));
-              }
-              // Now that the file has been created, we can now read it.
-            })
-            // Read the uploaded file using marcjs
-            const reader = Marc.stream(fs.createReadStream(filePath), 'Iso2709');
-            let Mrcbookdata;
-            reader.on('data', (record) => {
-                const MrcContent = JSON.parse(record.as('mij'));
-            
-                //  We can read the MRC content through the fields object as is below
-                //  code below reads the first field content assuming that all mrc is only one content/record
-                //  we then access the field through the key identifier such as '001'.
-                //  console.log(MrcContent.fields[0]['001']);
-                //  code outputs the value of the 001 field: 'UP-CODE'
-                //  Example:
-                //  ['040'] catalogue number
-                //  If you have trouble knowing which ID is which you can refer to this link: https://www.loc.gov/marc/bibliographic/
-
-                //  Code Below Finds the Field with the ID of '020' which correspondes to the International Standard Book Number (ISBN)
-                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']);
-                //  MrcContent.fields.find(field => field['020']) returns the data of the field with the ID of '020'
-                //  We still need to access said data through the addition of ['020'] at the end and as such:
-                //  MrcContent.fields.find(field => field['020'])['020'] <---- We can now access the data inside of the field ['020']
-                //  This has been done to use .subfields as is the structure of mrc files. and as such we can access the subfields of the field with the ID of '020'
-                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']); // This will output the value of the subfield with the ID of 'a'
-                //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['b']); // This will output the value of the subfield with the ID of 'b'
-                //  etc....
-                //  This has been made inline to ease code structurization.
-
-                //  Testing:
-                //  console.log( MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'] );
-
-                //  040 - Cataloging    // Cataloging Source
-                //  035 - UP system ID // System Control Number
-
-                Mrcbookdata = {
-                    // Using tertiary condition here just to ease code length
-                    title: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'],
-                    responsibility: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['c'])?.['c'],
-                    uniform_title: MrcContent.fields.find(field => field['240'])?.['240'].subfields.find(subfield => subfield['a'])?.['a'],
-                    main_author: MrcContent.fields.find(field => field['100'])?.['100'].subfields.find(subfield => subfield['a'])?.['a'],
-                    other_author: MrcContent.fields.find(field => field['700'])?.['700'].subfields.find(subfield => subfield['a'])?.['a'],
-                    corp_author: MrcContent.fields.find(field => field['110'])?.['110'].subfields.find(subfield => subfield['a'])?.['a'],
-                    placePub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['a'])?.['a'],
-                    publisher: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['b'])?.['b'],
-                    yearPub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['c'])?.['c'],
-                    edition: MrcContent.fields.find(field => field['250'])?.['250'].subfields.find(subfield => subfield['a'])?.['a'],
-                    series: MrcContent.fields.find(field => field['400'])?.['400'].subfields.find(subfield => subfield['a'])?.['a'],
-                    gen_notes: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'],
-                    isbn: MrcContent.fields.find(field => field['020'])?.['020'].subfields.find(subfield => subfield['a'])?.['a'],
-                    languange: MrcContent.fields.find(field => field['041'])?.['041'].subfields.find(subfield => subfield['a'])?.['a'],
-                    abstract: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'], // Abstract or Summary
+            // File already exists, delete it before overwriting
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    return next(new ErrorHandler('File upload failed', 500));
                 }
+                console.log('Deleted existing file');
+                // Create the file through fs
+                fs.writeFile(filePath, fileData, (err) => {
+                    if (err) {
+                        return next(new ErrorHandler('File upload failed', 500));
+                    }
+                    // Now that the file has been created, we can now read it.
+                })
+                // Read the uploaded file using marcjs
+                const reader = Marc.stream(fs.createReadStream(filePath), 'Iso2709');
+                let Mrcbookdata;
+                reader.on('data', (record) => {
+                    const MrcContent = JSON.parse(record.as('mij'));
+
+                    //  We can read the MRC content through the fields object as is below
+                    //  code below reads the first field content assuming that all mrc is only one content/record
+                    //  we then access the field through the key identifier such as '001'.
+                    //  console.log(MrcContent.fields[0]['001']);
+                    //  code outputs the value of the 001 field: 'UP-CODE'
+                    //  Example:
+                    //  ['040'] catalogue number
+                    //  If you have trouble knowing which ID is which you can refer to this link: https://www.loc.gov/marc/bibliographic/
+
+                    //  Code Below Finds the Field with the ID of '020' which correspondes to the International Standard Book Number (ISBN)
+                    //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']);
+                    //  MrcContent.fields.find(field => field['020']) returns the data of the field with the ID of '020'
+                    //  We still need to access said data through the addition of ['020'] at the end and as such:
+                    //  MrcContent.fields.find(field => field['020'])['020'] <---- We can now access the data inside of the field ['020']
+                    //  This has been done to use .subfields as is the structure of mrc files. and as such we can access the subfields of the field with the ID of '020'
+                    //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['a']); // This will output the value of the subfield with the ID of 'a'
+                    //  console.log(MrcContent.fields.find(field => field['020'])['020'].subfields[0]['b']); // This will output the value of the subfield with the ID of 'b'
+                    //  etc....
+                    //  This has been made inline to ease code structurization.
+
+                    //  Testing:
+                    //  console.log( MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'] );
+
+                    //  040 - Cataloging    // Cataloging Source
+                    //  035 - UP system ID // System Control Number
+
+                    Mrcbookdata = {
+                        // Using tertiary condition here just to ease code length
+                        title: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['a'])?.['a'],
+                        responsibility: MrcContent.fields.find(field => field['245'])?.['245'].subfields.find(subfield => subfield['c'])?.['c'],
+                        uniform_title: MrcContent.fields.find(field => field['240'])?.['240'].subfields.find(subfield => subfield['a'])?.['a'],
+                        main_author: MrcContent.fields.find(field => field['100'])?.['100'].subfields.find(subfield => subfield['a'])?.['a'],
+                        other_author: MrcContent.fields.find(field => field['700'])?.['700'].subfields.find(subfield => subfield['a'])?.['a'],
+                        corp_author: MrcContent.fields.find(field => field['110'])?.['110'].subfields.find(subfield => subfield['a'])?.['a'],
+                        placePub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['a'])?.['a'],
+                        publisher: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['b'])?.['b'],
+                        yearPub: MrcContent.fields.find(field => field['264'])?.['264'].subfields.find(subfield => subfield['c'])?.['c'],
+                        edition: MrcContent.fields.find(field => field['250'])?.['250'].subfields.find(subfield => subfield['a'])?.['a'],
+                        series: MrcContent.fields.find(field => field['400'])?.['400'].subfields.find(subfield => subfield['a'])?.['a'],
+                        gen_notes: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'],
+                        isbn: MrcContent.fields.find(field => field['020'])?.['020'].subfields.find(subfield => subfield['a'])?.['a'],
+                        languange: MrcContent.fields.find(field => field['041'])?.['041'].subfields.find(subfield => subfield['a'])?.['a'],
+                        abstract: MrcContent.fields.find(field => field['520'])?.['520'].subfields.find(subfield => subfield['a'])?.['a'], // Abstract or Summary
+                    }
 
                 });
                 reader.on('end', () => {
                     fs.unlink(filePath, (err) => {
                         if (err) {
-                          return next(new ErrorHandler('File Deletion failed', 500));
+                            return next(new ErrorHandler('File Deletion failed', 500));
                         }
                         console.log('Deleted temp file');
                     });
                     res.status(200).json({
-                        success:true,
+                        success: true,
                         Mrcbookdata
                     })
+                });
             });
-          });
         } else {
             // File doesn't exist, create it first
             fs.writeFile(filePath, fileData, (err) => {
                 if (err) {
-                  return next(new ErrorHandler('File upload failed', 500));
+                    return next(new ErrorHandler('File upload failed', 500));
                 }
                 // Now that the file has been created, we can now read it.
-              })
+            })
             // File doesn't exist, read the uploaded/created file
             const reader = Marc.stream(fs.createReadStream(filePath), 'Iso2709');
             let Mrcbookdata;
@@ -545,16 +568,16 @@ exports.importMRC = async(req,res,next) => {
             reader.on('end', () => {
                 fs.unlink(filePath, (err) => {
                     if (err) {
-                      return next(new ErrorHandler('File Deletion failed', 500));
+                        return next(new ErrorHandler('File Deletion failed', 500));
                     }
                 });
                 res.status(200).json({
-                    success:true,
+                    success: true,
                     Mrcbookdata
                 })
             });
         }
-      });
+    });
 
 
 }
@@ -624,19 +647,19 @@ exports.getBookAccreditation = async (req, res, next) => {
     let sub_arr = []
     let subjects = req.body.subjects
 
-    if (subjects == undefined){
+    if (subjects == undefined) {
         subjects = "No Subject"
     }
 
     const isArray = Array.isArray(subjects)
-    if (isArray == false){
+    if (isArray == false) {
         sub_arr = [subjects]
     } else {
         sub_arr = subjects
     }
 
     const book = await Book.aggregate([
-        { $match: { "subjects": { "$in": sub_arr } } }, 
+        { $match: { "subjects": { "$in": sub_arr } } },
         {
             "$lookup": {
                 "from": "accessions",

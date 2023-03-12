@@ -26,20 +26,16 @@ const BookManagement = () => {
 
     const subjectArr = books.bookSubjects
 
-    const [subjects, setSubjects] = useState([]);
-
-    const [yearPubStart, setyearPubStart] = useState(books.lowestYearPub);
-    const [yearPubEnd, setyearPubEnd] = useState(books.highestYearPub);
+    const [yearPubStart, setyearPubStart] = useState(0);
+    const [yearPubEnd, setyearPubEnd] = useState(3000);
 
     const [new_yearValue, setnew_yearValue] = useState([yearPubStart, yearPubEnd]);
     const [subjectFilter, setSubjectFilter] = useState('');
 
-    // console.log( yearPubStart, yearPubEnd)
-
     const defaultMaterialTheme = createTheme({});
 
     useEffect(() => {
-        dispatch(allBooks())
+        dispatch(allBooks(new_yearValue, subjectFilter))
 
         if (error) {
             alert.error(error);
@@ -54,47 +50,19 @@ const BookManagement = () => {
 
     }, [dispatch, alert, error, navigate, new_yearValue, subjectFilter, isDeleted])
 
-    const handleCheckedChanged = (sub) => {
-        const isChecked = subjects.includes(sub);
+    // setyearPubStart({ ...books.lowestYearPub })
+    // setyearPubEnd({ ...books.highestYearPub })
 
-        if (!isChecked) {
-            setSubjects([...subjects, sub]);
-        } else {
-            const updatedSubjects = [...subjects].filter(s => s !== sub);
-            setSubjects(updatedSubjects);
-        }
-    }
-
-    const filterSubjects = () => {
-        console.log(subjects, yearPubStart, yearPubEnd)
-        console.log(subjects, books.lowestYearPub, books.highestYearPub)
-
-        const formData = new FormData();
-        if(yearPubStart != undefined){
-            formData.set('minYear', yearPubStart)
-        } else {
-            formData.set('minYear', books.lowestYearPub)
-        } 
-
-        if(yearPubEnd != undefined){
-            formData.set('maxYear', yearPubEnd)
-        } else {
-            formData.set('maxYear', books.highestYearPub)
-        }
-        subjects.forEach(subject =>
-            formData.append('subjects', subject)
-        )
-        dispatch(allBooks(formData))
+    const deleteBookHandler = (id) => {
+        dispatch(deleteBook(id))
     }
 
     const filterYearPub = (e) => {
-        const formData = new FormData();
-        formData.set('minYear', yearPubStart)
-        formData.set('maxYear', yearPubEnd)
-        subjects.forEach(subject =>
-            formData.append('subjects', subject)
-        )
-        dispatch(allBooks(formData))
+        setyearPubStart(yearPubStart)
+        setyearPubEnd(yearPubEnd)
+
+        setnew_yearValue([yearPubStart, yearPubEnd])
+        console.log(new_yearValue)
         // dispatch(allBooks(new_yearValue));
     };
 
@@ -102,13 +70,10 @@ const BookManagement = () => {
         setyearPubStart(books.lowestYearPub)
         setyearPubEnd(books.highestYearPub)
 
-
         setnew_yearValue([yearPubStart, yearPubEnd])
+        setSubjectFilter('')
+        // console.log(new_yearValue)
     };
-
-    const deleteBookHandler = (id) => {
-        dispatch(deleteBook(id))
-    }
 
     const col = [
         {
@@ -315,26 +280,20 @@ const BookManagement = () => {
                                     </div>
 
                                     <div className='col-9 filter-subject'>
+                                        <h4 className='text-center'>Filter by Subject</h4>
                                         <div className='row'>
-                                            <div className='col'>
-                                                <h4 className='text-center'>Filter by Subject</h4>
-                                            </div>
-                                            <div className='col'>
-                                                <div className='row' style={{ marginBottom: 10 }}>
-                                                    <button type="button" className="btn btn-primary" onClick={filterSubjects}>Filter  <i class="fa-solid fa-filter"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className='row'>
-
                                             {books.bookSubjects && books.bookSubjects.length > 0 ? (
+                                                subjectArr.map((subject) => {
+                                                    return (
+                                                        <div className='col-2' key={subject}>
+                                                            {/* <input type="checkbox" id={subject} name={subject} value={subject} onChange={() => setSubjectFilter([...subjectFilter, subject])}/> {subject} */}
+                                                            {/* {console.log(subjectFilter)} */}
 
-                                                subjectArr.map((subject, index) => (
-                                                    <div className="col-sm-3" key={index}>
-                                                        <input type="checkbox" id="checkbox" name="checkbox" value={subject} checked={subjects.includes(subject)} onChange={() => handleCheckedChanged(subject)} /> {subject}
-                                                    </div>
-                                                ))
+                                                            <button style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline' }} id={subject} name={subject} value={subject} onClick={() => setSubjectFilter(subject)}> {subject} </button>
+                                                            {/* {console.log(subjectFilter)} */}
+                                                        </div>
+                                                    )
+                                                })
 
                                             ) : (
                                                 <li>Subject not Found</li>
@@ -382,3 +341,53 @@ const BookManagement = () => {
     )
 }
 export default BookManagement
+
+
+exports.getBooks = async (req, res, next) => {
+    // const book = await Book.find();
+    const apiFeatures = new APIFeatures(Book.find(),req.query).filter();
+    const book = await apiFeatures.query
+
+    book.map(b =>{
+        let new_callnumber = ""
+        if (b.Fil == true) { 
+            new_callnumber = "FIL "+ b.call_number
+        } else if (b.Ref == true) {
+            new_callnumber = "REF "+ b.call_number
+        } else if (b.Bio == true) {
+            new_callnumber = "BIO "+ b.call_number
+        } else if (b.Res == true) {
+            new_callnumber = "RES "+ b.call_number
+        } else {
+            new_callnumber = "N/A "+ b.call_number
+        }
+        // console.log(new_callnumber)
+        b.new_callnumber = new_callnumber
+    })
+
+    const yearPub = await Book.find().select('yearPub -_id')
+
+    let yearPub_val = []
+    yearPub.forEach(y => {
+        yearPub_val.push(y.yearPub)
+    });
+
+    let formattedYearPubArr = yearPub_val.map(Number)
+
+    const lowestYearPub = Math.min(...formattedYearPubArr)
+    console.log(lowestYearPub)
+
+    const highestYearPub = Math.max(...formattedYearPubArr)
+    console.log(highestYearPub)
+
+    const bookSubjects = await Book.distinct('subjects')
+    console.log(bookSubjects)
+
+    res.status(200).json({
+        success: true,
+        book,
+        lowestYearPub,
+        highestYearPub,
+        bookSubjects
+    })
+}

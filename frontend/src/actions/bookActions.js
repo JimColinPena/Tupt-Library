@@ -51,18 +51,25 @@ import {
     CLEAR_ERRORS
 } from '../constants/bookConstants'
 
-export const allBooks = (yearPub, subjects) => async (dispatch) => {
+export const allBooks = (bookData) => async (dispatch) => {
     try {
 
         dispatch({ type: ALL_BOOKS_REQUEST })
 
-        let link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
+        // let link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}`
 
-        if (subjects){
-            link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}&subjects=${subjects}`
+        // if (subjects){
+        //     link = `/api/v1/admin/books?&yearPub[lte]=${yearPub[1]}&yearPub[gte]=${yearPub[0]}&subjects=${subjects}`
+        // }
+
+        // const { data } = await axios.get(link)
+
+        const config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
         }
-
-        const { data } = await axios.get(link)
+        const { data } = await axios.post(`/api/v1/admin/books`, bookData, config)
 
         dispatch({
             type: ALL_BOOKS_SUCCESS,
