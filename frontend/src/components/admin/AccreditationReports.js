@@ -69,7 +69,7 @@ const AccreditationReports = () => {
             // paperSize: "A4",
             scale: 0.60,
             margin: 20,
-            fileName: `BOOK ACCESSION LIST (${formatDate})`,
+            fileName: `BOOK ACCREDITATION LIST (${formatDate})`,
             author: 'TUP-T LRC',
             landscape: true
         });
@@ -190,6 +190,7 @@ const AccreditationReports = () => {
                                     <h3 className="text-center"><strong>BOOK ACCREDITATION LIST</strong></h3>
                                     <br />
                                     <h5 className="text-center">{formatDate}</h5>
+                                    <br/>
                                     <div className='row'>
                                         <div className='col-1'>
                                             <h6>Subjects: </h6>
@@ -221,6 +222,7 @@ const AccreditationReports = () => {
                                         <Column field="main_author" title="Author" />
                                         <Column field="publisher" title="Publisher" />
                                         <Column field="yearPub" title="Year" />
+                                        <Column field="subjects" title="Subject(s)" />
                                         <Column field="isbn" title="ISBN" />
                                         <Column field="call_number" title="Call Number" />
                                         <Column field="location" title="Location" />
@@ -233,7 +235,7 @@ const AccreditationReports = () => {
                         <ExcelExport
                             data={books.book}
                             ref={_export}
-                            fileName={`BOOK ACCESSION LIST (${formatDate})`}
+                            fileName={`BOOK ACCREDITATION LIST (${formatDate})`}
                         >
                             <ExcelExportColumn field="accession_numbers" title="Accession" />
                             <ExcelExportColumn field="title" title="Title" />

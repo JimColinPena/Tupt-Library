@@ -374,7 +374,7 @@ exports.singleBookAccession = async (req, res, next) => {
 
     const bookAccessions = getbook_accessions.accession_numbers
 
-    const bookDetails = await Book.findById(req.params.id).select('title -_id')
+    const bookDetails = await Book.findById(req.params.id).select(['title', 'copy','-_id'])
 
 
     res.status(200).json({
@@ -684,6 +684,7 @@ exports.getBookAccreditation = async (req, res, next) => {
                 main_author: 1,
                 publisher: 1,
                 yearPub: 1,
+                subjects: 1,
                 isbn: 1,
                 Fil: 1,
                 Ref: 1,

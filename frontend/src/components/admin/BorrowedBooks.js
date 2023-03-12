@@ -227,13 +227,21 @@ const BorrowedBooks = () => {
 
 																	{(rowData.accessions.includes(acc_number._id)) ?
 																		(
-																			<button type="button" className="btn btn-danger" onClick={() => retrieveAccessionHandler(rowData.userId._id, acc_number._id)} data-dismiss="modal">
-																				<i className="fa fa-arrow-right-to-bracket"></i>
-																			</button>
+																			<div>
+																				<button type="button" className="btn btn-danger" onClick={() => retrieveAccessionHandler(rowData.userId._id, acc_number._id)} data-dismiss="modal">
+																					<i className="fa fa-arrow-right-to-bracket"></i>
+																				</button>
+																				<hr />
+																			</div>
 																		) : (
-																			<button type="button" className="btn btn-success" onClick={() => giveAccessionHandler(rowData.userId._id, acc_number._id)} data-dismiss="modal">
-																				<i className="fa fa-arrow-right-from-bracket"></i>
-																			</button>
+																			<div>
+																				<button type="button" className="btn btn-success" onClick={() => giveAccessionHandler(rowData.userId._id, acc_number._id)} data-dismiss="modal">
+																					<i className="fa fa-arrow-right-from-bracket"></i>
+																				</button>
+																				{/* <br/>
+																				<hr/>
+																				<p>No Accession Set</p> */}
+																			</div>
 																		)}
 																</h4>
 															</div>
@@ -297,9 +305,6 @@ const BorrowedBooks = () => {
 							</div>
 						</div>
 					</div>
-
-
-
 					<div className="modal fade" data-backdrop="false" id={"EditBorrowModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 						<div className="modal-dialog" role="document">
 							<div className="modal-content">
@@ -338,41 +343,6 @@ const BorrowedBooks = () => {
 							</div>
 						</div>
 					</div >
-
-					{/* <div className="modal fade" data-backdrop="false" id={"GiveAccessionModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
-							<div className="modal-dialog" role="document">
-								<div className="modal-content">
-									<div className="modal-header">
-										<h3 className="modal-title" id="DeleteActiveModalLabel">Enter Accession Number(s)</h3>
-										<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div>
-										<form>
-											<div>
-												<label htmlFor="idNumber_field" className="col-sm-6 col-form-label">Accession Number(s)</label>
-												<div className="col-sm-10">
-													<textarea
-														// type="textarea"
-														id="idNumber_field"
-														className="form-control"
-														name='reason'
-														value={accession}
-														onChange={(e) => setAccession(e.target.value)}
-													/>
-												</div>
-											</div>
-										</form>
-									</div>
-									<div className="modal-footer">
-										<button type="button" className="btn btn-warning" onClick={() => updateHandler(rowData._id)} data-dismiss="modal">Update</button>
-										<button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-									</div>
-								</div>
-							</div>
-						</div > */}
-
 					<div className="modal fade" data-backdrop="false" id={"DeclineBookModal" + rowData._id} tabindex="-1" role="dialog" aria-labelledby="DeleteActiveModalLabel" aria-hidden="true">
 						<div className="modal-dialog" role="document">
 							<div className="modal-content">
@@ -408,44 +378,44 @@ const BorrowedBooks = () => {
 		<Fragment>
 			<MetaData title={'TUP-T Online Library - Admin'} />
 			<SideNavbarAdmin />
-				{loading || loading === undefined ? <Loader /> : (
-					<div className="dashboard-container">
-						<div className="table-container">
-							<div className="col-12">
-								{loading ? <Loader /> : (
-									<ThemeProvider theme={defaultMaterialTheme}>
-										<MaterialTable
-											title='Borrowed Books List'
-											data={borrowedbooks}
-											columns={col}
-											localization={
-												{
-													toolbar: {
-														searchPlaceholder: 'ID, Name...'
-													}
+			{loading || loading === undefined ? <Loader /> : (
+				<div className="dashboard-container">
+					<div className="table-container">
+						<div className="col-12">
+							{loading ? <Loader /> : (
+								<ThemeProvider theme={defaultMaterialTheme}>
+									<MaterialTable
+										title='Borrowed Books List'
+										data={borrowedbooks}
+										columns={col}
+										localization={
+											{
+												toolbar: {
+													searchPlaceholder: 'ID, Name...'
 												}
 											}
-											options={{
-												pageSize: 10,
-												headerStyle: {
-													fontSize: 16,
-													fontWeight: 'bold',
-													backgroundColor: '#BA0202',
-													color: '#ffffff',
-												},
-												rowStyle: {
-													fontSize: 15,
-													backgroundColor: '#F9F5F5',
-												},
-												emptyRowsWhenPaging: false
-											}}
-										/>
-									</ThemeProvider>
-								)}
-							</div>
+										}
+										options={{
+											pageSize: 10,
+											headerStyle: {
+												fontSize: 16,
+												fontWeight: 'bold',
+												backgroundColor: '#BA0202',
+												color: '#ffffff',
+											},
+											rowStyle: {
+												fontSize: 15,
+												backgroundColor: '#F9F5F5',
+											},
+											emptyRowsWhenPaging: false
+										}}
+									/>
+								</ThemeProvider>
+							)}
 						</div>
 					</div>
-				)}
+				</div>
+			)}
 		</Fragment>
 	)
 }
