@@ -314,7 +314,7 @@ exports.BookLeaderboards = async (req, res, next) => {
     ])
 
 
-    console.log(bookCounts)
+    // console.log(bookCounts)
     res.status(200).json({
         success: true,
         bookCounts,

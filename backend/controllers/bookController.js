@@ -47,10 +47,10 @@ exports.getBooks = async (req, res, next) => {
     // console.log(min_year, max_year)
     let book = {}
 
-    console.log(req.body.minYear, req.body.maxYear)
+    // console.log(req.body.minYear, req.body.maxYear)
 
-    console.log(sub_arr)
-    console.log(min_year, max_year)
+    // console.log(sub_arr)
+    // console.log(min_year, max_year)
     
     if (sub_arr[0] != undefined || sub_arr[0] != null){
         book = await Book.aggregate([
@@ -81,7 +81,7 @@ exports.getBooks = async (req, res, next) => {
 }
 
 exports.createBook = async (req, res, next) => {
-    console.log(req.body)
+    // console.log(req.body)
     let book = {}
     try {
         if (req.body.bookImage === '') {
@@ -166,7 +166,7 @@ exports.getSingleBook = async (req, res, next) => {
 
 exports.updateBook = async (req, res, next) => {
 
-    console.log(req.body)
+    // console.log(req.body)
     const check_book = await Book.findById(req.params.id);
     let book = {}
     try {
@@ -386,7 +386,7 @@ exports.singleBookAccession = async (req, res, next) => {
 
 exports.editBookAccession = async (req, res, next) => {
     const accession = await Accession.findByIdAndUpdate(req.params.id, { accession_number: req.body.accession })
-    console.log(req.body.bookId)
+    // console.log(req.body.bookId)
     const book = await Book.findById(req.body.bookId)
     const nowDate = new Date();
     const newDate = (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + '/' + nowDate.getFullYear();
@@ -460,7 +460,7 @@ exports.importMRC = async (req, res, next) => {
                 if (err) {
                     return next(new ErrorHandler('File upload failed', 500));
                 }
-                console.log('Deleted existing file');
+                // console.log('Deleted existing file');
                 // Create the file through fs
                 fs.writeFile(filePath, fileData, (err) => {
                     if (err) {
@@ -525,7 +525,7 @@ exports.importMRC = async (req, res, next) => {
                         if (err) {
                             return next(new ErrorHandler('File Deletion failed', 500));
                         }
-                        console.log('Deleted temp file');
+                        // console.log('Deleted temp file');
                     });
                     res.status(200).json({
                         success: true,
@@ -636,7 +636,7 @@ exports.getBookReports = async (req, res, next) => {
         b.call_number = new_callnumber
     })
 
-    console.log(book)
+    // console.log(book)
     res.status(200).json({
         success: true,
         book,

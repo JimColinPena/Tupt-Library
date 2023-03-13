@@ -538,7 +538,7 @@ exports.returnBook = async (req, res, next) => {
             deliveryStatus: 'Delivered'
         }
     );
-    console.log(notification)
+    // console.log(notification)
 
     //email send
     const emailData = {

@@ -68,14 +68,14 @@ exports.getStudentBooks = async (req, res, next) => {
     let formattedYearPubArr = yearPub_val.map(Number)
 
     const lowestYearPub = Math.min(...formattedYearPubArr)
-    console.log(lowestYearPub)
+    // console.log(lowestYearPub)
 
     const highestYearPub = Math.max(...formattedYearPubArr)
-    console.log(highestYearPub)
+    // console.log(highestYearPub)
 
     const bookSubjects = await Book.distinct('subjects')
 
-    console.log(bookSubjects)
+    // console.log(bookSubjects)
 
     res.status(200).json({
         success: true,
