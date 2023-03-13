@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
-import { Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import React from 'react'
+// import { Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import {  Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Loader from '../layout/Loader'
 

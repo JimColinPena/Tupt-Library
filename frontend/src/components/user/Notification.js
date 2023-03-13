@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react"
-import { useNavigate, Link , useParams} from "react-router-dom"
+import { useNavigate,  useParams} from "react-router-dom"
 import { allNotification, deleteSingleNotification, deleteAllNotification, clearErrors } from "../../actions/userActions"
 import { DELETE_NOTIFICATION_RESET, DELETE_ALL_NOTIFICATION_RESET } from "../../constants/userConstants"
 import { useDispatch, useSelector } from "react-redux"
@@ -17,7 +17,7 @@ const Notification = () => {
     let navigate = useNavigate();
     const { id } = useParams();
 
-    const { user  } = useSelector(state => state.auth);
+    // const { user  } = useSelector(state => state.auth);
     const { loading, error, notification  } = useSelector(state => state.notifications);
     const { notificationDeleted } = useSelector(state => state.singleDeleteNotification);
     const { notificationAllDeleted } = useSelector(state => state.allDeleteNotification);
@@ -43,19 +43,19 @@ const Notification = () => {
 
         if (notificationDeleted) {
             alert.success('Notification cleared successfully');
-            navigate('/notification/:id');
+            navigate(`/notification/${id}`);
             dispatch({ type: DELETE_NOTIFICATION_RESET })
             window.location.reload(false)
         }
 
         if (notificationAllDeleted) {
             alert.success('All notification cleared successfully');
-            navigate('/notification/:id');
+            navigate(`/notification/${id}`);
             dispatch({ type: DELETE_ALL_NOTIFICATION_RESET })
             window.location.reload(false)
         }
         
-    }, [dispatch, alert, error, navigate, notificationDeleted, notificationAllDeleted])
+    }, [dispatch, alert, error, navigate, notificationDeleted, notificationAllDeleted, id])
     
     const deleteNotificationHandler = (id) => {
         dispatch(deleteSingleNotification(id))

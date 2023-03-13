@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
 import Modal from 'react-bootstrap/Modal';
 
 
 const Loader = () => {
-    const [show, setShow] = useState(true);
+    const show = useState(true);
     return (
         <Modal size='sm' className="Modal-Loader" show={show} centered>
             <Modal.Body>

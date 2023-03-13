@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import MaterialTable from 'material-table'
 import { ThemeProvider, createTheme } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
+// import Tooltip from '@mui/material/Tooltip';
 
 import MetaData from '../layout/MetaData'
 import Loader from '../layout/Loader'
@@ -23,9 +23,9 @@ const BookSearch = () => {
 
     const { loading, error, studentbooks } = useSelector(state => state.allStudentBooks);
     const { user } = useSelector(state => state.auth)
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    // const [show, setShow] = useState(true);
+    // const handleClose = () => setShow(false);
+    // const handleShow = () => setShow(true);
 
     // const newYearStart = studentbooks.lowestYearPub;
     // const newYearEnd = studentbooks.highestYearPub;
@@ -78,10 +78,10 @@ const BookSearch = () => {
             field: 'call_number',
             searchable: false,
             render: rowData => (
-                (rowData.Fil == true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
-                    (rowData.Ref == true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
-                        (rowData.Bio == true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
-                            (rowData.Res == true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
+                (rowData.Fil === true) ? <div><p>{"FIL " + rowData.call_number}</p></div> :
+                    (rowData.Ref === true) ? <div><p>{"REF " + rowData.call_number}</p></div> :
+                        (rowData.Bio === true) ? <div><p>{"BIO " + rowData.call_number}</p></div> :
+                            (rowData.Res === true) ? <div><p>{"RES " + rowData.call_number}</p></div> :
                                 <div><p>{"N/A " + rowData.call_number}</p></div>
             ),
             cellStyle: {

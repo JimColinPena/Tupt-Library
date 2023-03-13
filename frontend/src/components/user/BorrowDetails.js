@@ -28,10 +28,6 @@ const BorrowDetails = () => {
     const { isConfirm } = useSelector(state => state.confirmBorrowBook);
     const { isCancelAll } = useSelector(state => state.cancelAllBorrowBook);
 
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
     useEffect(() => {
         dispatch(allStudentBorrowBook());
         if (error) {
@@ -52,7 +48,7 @@ const BorrowDetails = () => {
     }, [dispatch, alert, error, isConfirm, isCancelAll])
 
     const [startDate, setStartDate] = useState(new Date());
-    const [dueDate, setDueDate] = useState(new Date());
+    const dueDate = useState(new Date());
     const isWeekday = (date) => {
         const day = date.getDay();
         return day !== 0 && day !== 6;
@@ -70,12 +66,12 @@ const BorrowDetails = () => {
         } else {
 
             if ((startDate.getDay() === 5)) {
-                var days = 3;
+                // var days = 3;
                 // dueDate.setDate(startDate.getDate() + days)
                 dueDate.setTime(startDate.getTime() + (3 * 24 * 3600000));
             }
             else {
-                var days = 1;
+                // var days = 1;
                 // dueDate.setDate(startDate.getDate() + days)
                 dueDate.setTime(startDate.getTime() + (24 * 3600000));
             }

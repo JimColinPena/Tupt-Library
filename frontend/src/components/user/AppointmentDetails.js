@@ -1,7 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { useNavigate, Link } from "react-router-dom";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React, { Fragment, useEffect } from 'react'
 import dateFormat from 'dateformat';
 
 import MetaData from '../layout/MetaData'
@@ -17,16 +14,11 @@ import { allStudentAppointmentBook, clearErrors } from '../../actions/studentAct
 
 
 const AppointmentDetails = () => {
-    const [startDate, setStartDate] = useState(null);
-
     const alert = useAlert();
     const dispatch = useDispatch();
 
     const { loading, error, studentappointmentbook } = useSelector(state => state.allStudentAppointmentBook);
     const { user } = useSelector(state => state.auth)
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     useEffect(() => {
         dispatch(allStudentAppointmentBook());

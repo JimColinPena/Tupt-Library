@@ -25,7 +25,7 @@ const Profile = () => {
                 <Fragment>
                     <MetaData title={'Your Profile'} />
                     {
-                        (user.role == "student" || user.role == "faculty") ? (
+                        (user.role === "student" || user.role === "faculty") ? (
                             <SideNavbarUser />
                         ) : (
                             <SideNavbarAdmin />
@@ -46,13 +46,13 @@ const Profile = () => {
                             <div className="col-md-6">
                                 <hr />
                                 <h5>
-                                    <i className="fa fa-phone"></i>{(user.contact != null || user.contact != undefined) ? (
+                                    <i className="fa fa-phone"></i>{(user.contact !== null || user.contact !== undefined) ? (
                                         <Fragment>(+63) {user.contact}</Fragment>
                                     ) : (
                                         <div>not set</div>
                                     )}
                                     {' '}|{' '}
-                                    <i className="fa fa-envelope"></i>{(user.email != null || user.email != undefined) ? (
+                                    <i className="fa fa-envelope"></i>{(user.email !== null || user.email !== undefined) ? (
                                         <Fragment>{" " + user.email}</Fragment>
                                     ) : (
                                         <div>not set</div>
@@ -60,7 +60,7 @@ const Profile = () => {
                                     {/* <i className="fa fa-envelope"></i> {user.email} */}
                                     <br />
                                     {/* <i className="fa fa-home"></i> {user.address} */}
-                                    <i className="fa fa-home"></i>{(user.address != null || user.address != undefined) ? (
+                                    <i className="fa fa-home"></i>{(user.address !== null || user.address !== undefined) ? (
                                         <Fragment>{" " + user.address}</Fragment>
                                     ) : (
                                         <div>not set</div>

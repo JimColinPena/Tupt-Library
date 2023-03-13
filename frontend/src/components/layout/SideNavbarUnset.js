@@ -1,20 +1,18 @@
 import React, { Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useAlert } from 'react-alert'
-
-import { logout } from '../../actions/userActions'
 
 import Loader from './Loader'
 const SideNavbarAdmin = () => {
-    const alert = useAlert();
-    const dispatch = useDispatch();
-    const { user, loading } = useSelector(state => state.auth)
+    // const alert = useAlert();
+    // const dispatch = useDispatch();
+    // const { user, loading } = useSelector(state => state.auth)
+    const { loading } = useSelector(state => state.auth)
 
-    const logoutHandler = () => {
-        dispatch(logout());
-        alert.success('Logged out successfully.')
-    }
+    // const logoutHandler = () => {
+    //     dispatch(logout());
+    //     alert.success('Logged out successfully.')
+    // }
 
     return (
         <Fragment>

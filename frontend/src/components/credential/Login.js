@@ -1,7 +1,4 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-
-import Loader from '../layout/Loader'
 import MetaData from '../layout/MetaData'
 
 import { useAlert } from 'react-alert'
@@ -18,7 +15,7 @@ const Login = () => {
 
     let navigate = useNavigate();
 
-    const { isAuthenticated, error, loading, user } = useSelector(state => state.auth);
+    const { isAuthenticated, error} = useSelector(state => state.auth);
 
 
     useEffect(() => {
