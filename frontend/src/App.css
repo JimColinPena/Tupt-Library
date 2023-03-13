@@ -43,6 +43,9 @@ textarea {
 
 /* end overriding default css element in boostrap */
 
+.profile-leaderboards-img {
+    width: 5rem;
+}
 .card-header img {
     width: 8rem;
 }

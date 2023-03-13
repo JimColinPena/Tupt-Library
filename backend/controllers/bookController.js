@@ -336,8 +336,18 @@ exports.createBookAccession = async (req, res, next) => {
 }
 
 exports.updateBookAccession = async (req, res, next) => {
+    const today = new Date()
+    let dueDate = new Date()
+
+    if (today.getDay() === 5) {
+        dueDate.setTime(startDate.getTime() + (3 * 24 * 3600000));
+    } else {
+        dueDate.setTime(startDate.getTime() + (24 * 3600000));
+    }
+
     if (req.body.func == 'give') {
-        const userId = await User.findOne({ id_number: req.body.tuptId }).select('_id')
+        console.log('pumasok sa give')
+        const userId = await User.findOne({ id_number: req.body.tuptId })
         if (!userId) {
             return res.status(401).json({ success: false, message: 'No User Found!' })
         }
@@ -349,8 +359,58 @@ exports.updateBookAccession = async (req, res, next) => {
                 userId: userId
             }
         )
+        const bookId = await Book.findOne({
+            accession_numbers: { "$in": [req.body.accession] }
+        })
+        console.log(bookId)
+        await Book.findByIdAndUpdate(
+            { _id: bookId._id },
+            { $inc: { on_shelf: -1, out: 1 } }
+        )
+
+        const checkBorrow = await Borrow.find({ userId: userId })
+        console.log(checkBorrow)
+        if (!checkBorrow) {
+            console.log('no borrow')
+            await Borrow.create({
+                userId: userId._id,
+                bookId: bookId._id,
+                accessions: req.body.accession,
+                borrower_role: userId.role,
+                appointmentDate: today,
+                dueDate: dueDate,
+                status: 'Accepted'
+            })
+        } else {
+            console.log('has borrow')
+            await Borrow.findOneAndUpdate(
+                { _id: checkBorrow._id },
+                {
+                    $push: {
+                        bookId: bookId._id,
+                        accession_numbers: req.body.accession
+                    }
+                },
+            )
+
+        }
 
     } else if (req.body.func == 'retrieve') {
+        const accession = await Accession.findOne({ _id: req.body.accession })
+        const borrow = await Borrow.findOne({ userId: accession.userId })
+        const bookArray = borrow.bookId
+        const user = await User.findOne({ _id: accession.userId })
+
+        await Return.create({
+            userId: accession.userId,
+            bookId: bookArray,
+            course: user.course,
+            returnedDate: today,
+            returnedTo: req.user.id
+        })
+
+        await Borrow.findByIdAndDelete(borrow._id)
+
         await Accession.findOneAndUpdate(
             { _id: req.body.accession },
             {
