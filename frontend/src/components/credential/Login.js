@@ -63,7 +63,7 @@ const Login = () => {
                     </div>
                     <div className="grid2">
                         <div className="login-container">
-                            <img src="images/tupt-logo.png" alt="tupt-logo" className="tupt-logo" />
+                            <img src="../images/tupt-logo.png" alt="tupt-logo" className="tupt-logo" />
                             <form onSubmit={submitHandler}>
                                 <h1>Sign in your account</h1>
                                 <label for="emailaddress">Email Address</label>

@@ -315,10 +315,13 @@ const PersonnelManagement = () => {
                         <div className="table-container">
                             <div className="col-12">
                                 <div className='personnel-button'>
-                                    <Link to={"/personnel/new"}>
-                                        <i className="fa-solid fa-circle-plus"></i>
-                                        Personnel   
-                                    </Link>
+                                    <h1 className='m-0'>
+                                        Personnel
+                                        <Link to={"/personnel/new"}>
+                                            <i className="fa-solid fa-circle-plus"></i>
+                                        </Link>
+
+                                    </h1>
                                 </div>
                                 {loading ? <Loader /> : (
                                     <ThemeProvider theme={defaultMaterialTheme}>

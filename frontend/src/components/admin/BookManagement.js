@@ -70,13 +70,13 @@ const BookManagement = () => {
         console.log(subjects, books.lowestYearPub, books.highestYearPub)
 
         const formData = new FormData();
-        if(yearPubStart != undefined){
+        if (yearPubStart != undefined) {
             formData.set('minYear', yearPubStart)
         } else {
             formData.set('minYear', books.lowestYearPub)
-        } 
+        }
 
-        if(yearPubEnd != undefined){
+        if (yearPubEnd != undefined) {
             formData.set('maxYear', yearPubEnd)
         } else {
             formData.set('maxYear', books.highestYearPub)
@@ -292,8 +292,9 @@ const BookManagement = () => {
 
                                 <div className='book-add'>
                                     <h1 className='m-0'>
-                                        <Link to={"/book/new"}><i className="fa-solid fa-circle-plus"></i></Link>
                                         Add Book
+                                        <Link to={"/book/new"}><i className="fa-solid fa-circle-plus"></i></Link>
+
                                     </h1>
                                 </div>
                                 <div className='row'>
