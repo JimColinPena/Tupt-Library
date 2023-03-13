@@ -370,7 +370,11 @@ exports.updateBookAccession = async (req, res, next) => {
 exports.singleBookAccession = async (req, res, next) => {
     const getbook_accessions = await Book.findById(req.params.id).populate({
         path: 'accession_numbers',
-    }).select('accession_number -_id')
+        populate : {
+            path: 'userId',
+            select: ['name', 'id_number', 'role']
+        }
+    })
 
     const bookAccessions = getbook_accessions.accession_numbers
 

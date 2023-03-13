@@ -193,6 +193,13 @@ const BookAccession = () => {
             }
         },
         {
+            title: 'In possession of',
+            field: 'name',
+            cellStyle: {
+                textAlign: "left"
+            }
+        },
+        {
             title: 'Actions',
             field: '_id',
             // width: 180,
